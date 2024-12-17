@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    <link href="{% static 'css/style.css'%}" rel="stylesheet" />
+
+</head>
+
+<body>
+
+    <section id="header">
+<div class="flex-container">
+    <div>
+        <a href="#"><img src="{%static 'assests/logo.png'%}" class="logo" alt=""></a>
+</div>
+        <div class="center">
+            <ul class="navbar">
+
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            </div>
+            <div class="center cart">
+            <a href="cart.html"><i class="fas fa-shopping-cart fa-2x shopping-cart-icon"></i></a>
+                </div>
+</div>
+    </section>
+    {% for product in products %}
+    <br/><br/><br/>
+<div>
+    <div>
+        <h1 class="black">
+            {{product.name}}
+        </h1>
+        <img src="{{product.image.url}}" alt=""/>
+        <p class="black">
+            {{product.description}}
+        </p>
+        <h3 class="black">
+            {{product.price}}
+            <button class="black">View Products</button>
+    </div>
+</div>
+{% endfor %}
+<br/>
+<br/>
+
+</body>
+
+</html>
