@@ -14,23 +14,44 @@
 <body>
 
     <section id="header">
-<div class="flex-container">
+<div class="container">
     <div>
         <a href="#"><img src="{%static 'assests/logo.png'%}" class="logo" alt=""></a>
-</div>
-        <div class="center">
-            <ul class="navbar">
+    </div>
+    <div class="navbar">
+            <ul class="nav-list">
 
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-            </div>
-            <div class="center cart">
-            <a href="cart.html"><i class="fas fa-shopping-cart fa-2x shopping-cart-icon"></i></a>
+    </div>
+
+  <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search.....">
+
+                    <div class="search-icon">
+                        <i class="fa fa-search"></i>
+                    </div>
+  </div>
+  <div class="search-container">
+                <div class="right-side">
+                    <div class="cart-icon">
+                        <a href="#">
+                            <i class="fa fa-shopping-cart"></i>
+
+
+                        </a>
+                    </div>
+                    <div class="login">
+                        <i class="fa-solid fa-user"></i>
+
+
+
+                    </div>
                 </div>
-</div>
+     </div>
     </section>
     {% for product in products %}
     <br/><br/><br/>
@@ -44,7 +65,7 @@
             {{product.description}}
         </p>
         <h3 class="black">
-            {{product.price}}
+            {{product.price}}</h3>
             <button class="black">View Products</button>
     </div>
 </div>
