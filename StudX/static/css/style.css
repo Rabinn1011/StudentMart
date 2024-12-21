@@ -15,27 +15,27 @@ body {
 #header {
     display: flex;
     align-items: center;
+
     padding:20px;
     background: black;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-    width:100%;
 
 
 }
 
 .container {
     height: 6vh;
-    width : 100%;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-
+    gap:50px;
 
 }
 
 .logo {
-    width: 150px;
+    width: 200px;
     height: auto;
 }
 
@@ -53,7 +53,7 @@ body {
 
 .navbar {
     display: flex;
-
+    width:100%;
     align-items: center;
     padding: 10px 20px;
     font-size: 20px;
@@ -97,7 +97,6 @@ body {
     width: 350px;
     height: 30px;
     border-radius: 10px;
-    outline: none;
 }
 
 .search-icon {
@@ -118,6 +117,7 @@ body {
 .cart-icon {
     display: flex;
 
+    margin-left: 30px;
     font-size: 25px;
 
 }
@@ -186,8 +186,8 @@ body {
     height: 30px;
     width: 30px;
     justify-content: center;
-    color: black;
-    background-color: #f7f7f7;
+    color: #0E0E5A;
+    background-color: #F7F7F7;
     cursor: pointer;
     transition: transform 0.3s ease-in-out;
     overflow: hidden;
@@ -204,3 +204,78 @@ body {
     z-index: 2;
     transition: color 0.3s ease-in-out;
 }
+
+/* product ko card views ko lagi : start */
+body {
+     font-family: Arial, sans-serif;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+}
+
+.product-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 300px;
+    height: 100%;
+    min-height: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #fff;
+    transition: transform 0.2s;
+}
+
+.product-card:hover {
+     transform: scale(1.05);
+}
+
+.product-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.product-title {
+    font-size: 25px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+.view-button {
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #272522;
+    color: #f1e7e7;
+    border-radius: 15px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.view-button:hover{
+     transition: transform 0.2s;
+        background-color: #403c35;
+
+}
+
