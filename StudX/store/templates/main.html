@@ -4,21 +4,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
-    <link href="{% static 'css/style.css'%}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet"/>
+    <link href="{% static 'css/style.css'%}" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
 </head>
 
 <body>
 
-    <section id="header">
-<div class="container">
-    <div>
-        <a href="#"><img src="{%static 'assests/logo.png'%}" class="logo" alt=""></a>
-    </div>
-    <div class="navbar">
+<section id="header">
+    <div class="container">
+        <div>
+            <a href="#"><img alt="" class="logo" src="{%static 'assests/logo.png'%}"></a>
+        </div>
+        <div class="navbar">
             <ul class="nav-list">
 
                 <li><a href="index.html">Home</a></li>
@@ -26,45 +29,56 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-    </div>
+        </div>
 
-  <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search.....">
+        <div class="search-container">
+            <input class="search-input" placeholder="Search....." type="text">
 
-                    <div class="search-icon">
-                        <i class="fa fa-search"></i>
-                    </div>
-
-
-                <div class="right-side">
-                    <div class="cart-icon">
-                        <a href="#">
-                            <i class="fa fa-shopping-cart"></i>
+            <div class="search-icon">
+                <i class="fa fa-search"></i>
+            </div>
+        </div>
 
 
-                        </a>
-                    </div>
-                    <div class="login">
-                        <i class="fa-solid fa-user"></i>
+            <div class="right-side">
+                <div class="cart-icon">
+                    <a href="#">
+                        <i class="fa fa-shopping-cart"></i>
 
 
-
-                    </div>
+                    </a>
                 </div>
-     </div>
-    </section>
-    <div class="product-container">
-  {% for product in products %}
-  <div class="product-card">
-    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-    <h3 class="product-title">{{ product.name }}</h3>
-      <br>
+                <div class="login">
+                    <i class="fa-solid fa-user"></i>
 
 
+                </div>
+            </div>
+    </div>
+</section>
+            <input id="active" type="checkbox">
+            <label class="menu-btn" for="active"><span></span></label>
+            <label class="close" for="active"></label>
+            <div class="wrapper">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contract</a></li>
+                    <li><a href="#">Cart</a></li>
+                </ul>
+            </div>
+<div class="product-container">
+    {% for product in products %}
+    <div class="product-card">
+        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <br>
 
-      <a href="{% url 'product' product.id %}" class="view-button">View Products</a>
-  </div>
-  {% endfor %}
+
+        <a class="view-button" href="{% url 'product' product.id %}">View Products</a>
+    </div>
+    {% endfor %}
 </div>
 </body>
 
