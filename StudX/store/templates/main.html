@@ -19,15 +19,15 @@
 <section id="header">
     <div class="container">
         <div>
-            <a href="#"><img alt="" class="logo" src="{%static 'assests/logo.png'%}"></a>
+            <a href="{% url 'home' %}"><img alt="" class="logo" src="{%static 'assests/logo.png'%}"></a>
         </div>
         <div class="navbar">
             <ul class="nav-list">
 
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="{% url 'home'%}">Home</a></li>
+                <li><a href="{% url 'home' %}">Shop</a></li>
+                <li><a href="{% url 'home' %}">About</a></li>
+                <li><a href="{% url 'home' %}">Contact</a></li>
             </ul>
         </div>
 
@@ -80,6 +80,7 @@
     </div>
     {% endfor %}
 </div>
-</body>
 
+</body>
+<script src="{% static 'js/scripts.js' %}"></script>
 </html>
