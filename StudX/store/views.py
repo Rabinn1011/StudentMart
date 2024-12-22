@@ -6,6 +6,12 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     products =Product.objects.all()
     return render(request,'main.html', {'products':products} )
+def shop(request):
+    return render(request,'shop.html')
+def contact(request):
+    return render(request, 'contact.html')
+def about(request):
+    return render(request, 'about.html')
 
 @login_required
 def add_product(request):
