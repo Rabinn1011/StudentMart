@@ -1,86 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Document</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet"/>
-    <link href="{% static 'css/style.css'%}" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudX - {% block title %}Home{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 <body>
 
-<section id="header">
-    <div class="container">
-        <div>
-            <a href="{% url 'home' %}"><img alt="" class="logo" src="{%static 'assests/logo.png'%}"></a>
-        </div>
-        <div class="navbar">
-            <ul class="nav-list">
+    <!-- Navbar Section -->
+    <nav>
+        {% include 'navbar.html' %}
+    </nav>
 
-                <li><a href="{% url 'home'%}">Home</a></li>
-                <li><a href="{% url 'home' %}">Shop</a></li>
-                <li><a href="{% url 'home' %}">About</a></li>
-                <li><a href="{% url 'home' %}">Contact</a></li>
-            </ul>
-        </div>
+    <!-- Content Section -->
+    <div id="content">
+        {% block content %}
 
-        <div class="search-container">
-            <input class="search-input" placeholder="Search....." type="text">
-
-            <div class="search-icon">
-                <i class="fa fa-search"></i>
-            </div>
-        </div>
-
-
-            <div class="right-side">
-                <div class="cart-icon">
-                    <a href="#">
-                        <i class="fa fa-shopping-cart"></i>
-
-
-                    </a>
-                </div>
-                <div class="login">
-                    <i class="fa-solid fa-user"></i>
-
-
-                </div>
-            </div>
+        {% endblock %}
     </div>
-</section>
-            <input id="active" type="checkbox">
-            <label class="menu-btn" for="active"><span></span></label>
-            <label class="close" for="active"></label>
-            <div class="wrapper">
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Shop</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contract</a></li>
-                    <li><a href="#">Cart</a></li>
-                </ul>
-            </div>
-<div class="product-container">
-    {% for product in products %}
-    <div class="product-card">
-        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
-        <h3 class="product-title">{{ product.name }}</h3>
-        <br>
 
-
-        <a class="view-button" href="{% url 'product' product.id %}">View Products</a>
-    </div>
-    {% endfor %}
-</div>
+    <!-- Footer Section -->
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <footer>
+        <p>&copy; 2024 StudX. All rights reserved.</p>
+    </footer>
 
 </body>
-<script src="{% static 'js/scripts.js' %}"></script>
 </html>

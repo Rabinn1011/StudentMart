@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<section class="item-section">
+
+    <div class="item-card">
+        <div class="item-image">
+            <img alt="" src="{{ product.image.url }}">
+        </div>
+        <div class="item-details">
+            <h2>{{product.name}}</h2>
+            <div class="item-description">
+                <p>{{product.description}}</p>
+            </div>
+            <p class="price">NRs.{{product.price}}</p>
+
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
