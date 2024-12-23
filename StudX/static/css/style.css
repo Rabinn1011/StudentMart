@@ -473,7 +473,7 @@ input[type="checkbox"] {
 }
 
 .item-section {
-    height: 90vh;
+    height: 100%;
 
 }
 
@@ -626,5 +626,22 @@ hr {
     .right-side {
         display: none;
     }
-
+    .item-image{
+        width:80%;
+        margin-left: 0;
+        margin-top: 20px;
+    }
+    .item-card{
+        flex-direction: column;
+    }
+    .item-details h2{
+        font-size: 2.5rem;
+    }
+    hr{
+        margin: 0;
+    }
+    .item-details
+    {
+        width:90%;
+    }
 }
