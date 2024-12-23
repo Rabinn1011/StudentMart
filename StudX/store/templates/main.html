@@ -1,62 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>BikriSewa</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet"/>
-    <link href="{% static 'css/style.css'%}" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
-</head>
-
-<body>
-
-<section id="header">
-    <div class="container">
-        <div>
-            <a href="{% url 'home' %}"><img alt="" class="logo" src="{%static 'assests/logo.png'%}"></a>
-        </div>
-        <div class="navbar">
-            <ul class="nav-list">
-
-                <li><a href="{% url 'home'%}">Home</a></li>
-                <li><a href="{% url 'shop' %}">Shop</a></li>
-                <li><a href="{% url 'about' %}">About Us</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-        </div>
-
-        <div class="search-container">
-            <input class="search-input" placeholder="Search....." type="text">
-
-            <div class="search-icon">
-                <i class="fa fa-search"></i>
-            </div>
-        </div>
-
-
-            <div class="right-side">
-                <div class="cart-icon">
-                    <a href="#">
-                        <i class="fa fa-shopping-cart"></i>
-
-
-                    </a>
-                </div>
-                <div class="login">
-                    <i class="fa-solid fa-user"></i>
-
-
-                </div>
-            </div>
-    </div>
-</section>
-
+{% block content %}
 <div class="product-container">
     {% for product in products %}
     <div class="product-card">
@@ -69,7 +13,4 @@
     </div>
     {% endfor %}
 </div>
-
-</body>
-<script src="{% static 'js/scripts.js' %}"></script>
-</html>
+{% endblock %}

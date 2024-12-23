@@ -9,12 +9,22 @@
         </div>
         <div class="item-details">
             <h2>{{product.name}}</h2>
+            <hr/>
             <div class="item-description">
                 <p>{{product.description}}</p>
             </div>
+            <div class="seller-detail">
+                <img src="{{product.seller.profile.image.url}}" alt="seller-image">
+                <p>Seller Name</p>
+            </div>
+            <div class="box-price-container">
+            <span class="box-price">PRICE :  </span>
             <p class="price">NRs.{{product.price}}</p>
-
-            <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="button-container">
+                <button class="buy">Buy Now</button>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
         </div>
     </div>
 </section>

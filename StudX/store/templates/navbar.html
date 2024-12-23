@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>BikriSewa</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet"/>
     <link href="{% static 'css/style.css'%}" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
@@ -19,7 +18,7 @@
 <section id="header">
     <div class="container">
         <div>
-            <a href="{% url 'home' %}"><img alt="" class="logo" src="{% static 'assets/logo.png' %}"></a>
+            <a href="{% url 'home' %}"><img alt="" class="logo" src="{% static 'assests/logo.png' %}"></a>
         </div>
         <div class="navbar">
             <ul class="nav-list">
@@ -31,13 +30,10 @@
             </ul>
         </div>
 
-        <div class="search-container">
-            <input class="search-input" placeholder="Search..." type="text">
-
-            <div class="search-icon">
-                <i class="fa fa-search"></i>
-            </div>
-        </div>
+       <div class="search-container">
+        <input type="text" placeholder="Search..." class="search-input">
+        <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+    </div>
 
 
             <div class="right-side">
