@@ -1,20 +1,4 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet"/>
-    <link href="{% static 'css/style.css'%}" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
-</head>
-
-<body>
-
 <section id="header">
     <div class="container">
         <div>
@@ -24,8 +8,13 @@
             <ul class="nav-list">
 
                 <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'shop' %}">Shop</a></li>
-                <li><a href="{% url 'about' %}">About Us</a></li>
+
+                <li><a href="{% url 'register' %}">Register</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
                 <li><a href="{% url 'contact' %}">Contact</a></li>
             </ul>
         </div>
@@ -58,8 +47,8 @@
             <div class="wrapper">
                 <ul>
                     <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'shop' %}">Shop</a></li>
-                    <li><a href="{% url 'about' %}">AboutUs</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
                     <li><a href="#">Cart</a></li>
                 </ul>
