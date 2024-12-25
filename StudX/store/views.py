@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render,redirect
-from .forms import ProductForm,SignupForm
+from .forms import ProductForm,SignupForm, SellerForm
 from .models import Product
 from django.contrib.auth.decorators import login_required,permission_required
 
@@ -76,3 +76,15 @@ def register(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+def seller_info(request):
+    if request.method == 'POST':
+        form = SellerForm(request.POST, request.FILES)  # Handle both form data and uploaded files
+        if form.is_valid():
+            seller_detail = form.save(commit=False)
+            seller_detail.seller = request.user  # Set the current user as the seller
+            seller_detail.save()
+            return redirect('home')  # Redirect to a product list or another page
+    else:
+        form =SellerForm()
+    return render(request, 'seller_details.html', {'form': form})

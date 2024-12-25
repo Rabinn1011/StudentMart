@@ -11,6 +11,7 @@ urlpatterns = [
     path('product/<int:pk>', views.product, name='product'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
+    path('seller_detail', views.seller_info, name='seller_info'),
 
 
 ]

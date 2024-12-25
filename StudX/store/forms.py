@@ -2,12 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Product
+from .models import Product, Seller_Details
+
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'image','is_sale','sale_price']
+
+class SellerForm(forms.ModelForm):
+    class Meta:
+        model = Seller_Details
+        fields = ['seller_name','address','phone_number','photo','citizenship_number','dob']
 
 class SignupForm(UserCreationForm):
 
