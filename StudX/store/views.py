@@ -82,7 +82,7 @@ def seller_info(request):
         form = SellerForm(request.POST, request.FILES)  # Handle both form data and uploaded files
         if form.is_valid():
             seller_detail = form.save(commit=False)
-            seller_detail.seller = request.user  # Set the current user as the seller
+            seller_detail.user = request.user  # Set the current user as the seller
             seller_detail.save()
             return redirect('home')  # Redirect to a product list or another page
     else:

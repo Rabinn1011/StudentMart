@@ -28,62 +28,14 @@ class SignupForm(UserCreationForm):
         )
 
 
-        # Last Name field
-        full_name = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'full Name'
-            }),
-            required=True
-        )
-        phone_number = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Phone Number'
-            }),
-            required=True
-        )
-        address = forms.CharField(
-            label="",
-            widget=forms.Textarea(attrs={
-                'class': 'form-control',
-                'placeholder': 'Address',
-                'rows': 3
-            }),
-            required=True
-        )
-        dob = forms.DateField(
-            label="",
-            widget=forms.DateInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Date of Birth',
-                'type': 'date'
-            }),
-            required=True
-        )
-        citizenship_number = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Citizenship Number'
-            }),
-            required=True
-        )
-        photo = forms.ImageField(
-            label="",
-            widget=forms.ClearableFileInput(attrs={
-                'class': 'form-control-file'
-            }),
-            required=False
-        )
+
+
+
 
         class Meta:
             model = User
 
-            fields = ['username', 'email', 'password1', 'password2', 'full_name', 'phone_number', 'address', 'dob',
-                      'citizenship_number', 'photo']
+            fields = ['username', 'email', 'password1', 'password2']
 
         # Add dynamic attributes in the constructor
         def __init__(self, *args, **kwargs):
