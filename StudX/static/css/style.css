@@ -564,7 +564,7 @@ hr {
     gap: 10px;
     margin-top: 10px;
 }
-.buy{
+.blue-button{
     background-color: #4de4ff;
     color: white;
     padding: 10px 30px;
@@ -575,8 +575,19 @@ hr {
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+.green-button {
+     background-color: #68b55c;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-.add-to-cart {
+.red-button {
     background-color: #ff4d4d;
     color: white;
     padding: 10px 30px;
@@ -591,6 +602,28 @@ hr {
 .add-to-cart:hover {
     background-color: #d23d3d;
 }
+
+.heading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 2rem;
+    font-weight: bold;
+}
+.form-seller{
+    margin: 20px;
+}
+.form-container{
+    background-color: #fbf9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 90%;
+    margin: 20px auto;
+    height: 90%;
+}
+
 
 
 @media screen and (min-width: 1500px) {

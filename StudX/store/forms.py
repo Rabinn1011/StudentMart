@@ -14,6 +14,38 @@ class SellerForm(forms.ModelForm):
     class Meta:
         model = Seller_Details
         fields = ['seller_name','address','phone_number','photo','citizenship_number','dob']
+        widgets = {
+            'seller_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your name',
+                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your address',
+                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number',
+                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            }),
+            'photo': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'style': ' margin-bottom:10px;  padding: 10px; font-size: 14px;',
+            }),
+            'citizenship_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your citizenship number',
+                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            }),
+            'dob': forms.DateInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your date of birth',
+                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px;',
+                'type': 'date',
+            }),
+        }
 
 class SignupForm(UserCreationForm):
 
@@ -26,12 +58,6 @@ class SignupForm(UserCreationForm):
             }),
             required=True
         )
-
-
-
-
-
-
         class Meta:
             model = User
 
@@ -43,8 +69,7 @@ class SignupForm(UserCreationForm):
             self.fields['username'].widget.attrs['class'] = 'form-control'
             self.fields['username'].widget.attrs['placeholder'] = 'User Name'
             self.fields['username'].label = ""
-            self.fields[
-                'username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
+            self.fields['username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
 
             self.fields['password1'].widget.attrs['class'] = 'form-control'
             self.fields['password1'].widget.attrs['placeholder'] = 'Password'
