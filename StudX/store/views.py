@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render,redirect
 from .forms import ProductForm,SignupForm, SellerForm
-from .models import Product
+from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
 
 seller_group,created = Group.objects.get_or_create(name='Sellers')
@@ -88,3 +88,11 @@ def seller_info(request):
     else:
         form =SellerForm()
     return render(request, 'seller_details.html', {'form': form})
+
+@login_required
+def seller_profile(request):
+    if request.user.groups.filter(name='Sellers').exists():
+        seller=Seller_Details.objects.get(user=request.user)
+        return render(request,'seller_profile.html',{'seller':seller})
+    else:
+        return redirect('home')

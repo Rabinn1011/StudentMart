@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="item-section">
+       <div class="item-details">
+            <h2>{{seller.seller_name}}</h2>
+            <hr/>
+            <div class="item-description">
+                <p>{{seller_address}}</p>
+            </div>
+            <div class="seller-detail">
+                <img src="{{seller.photo.url}}" alt="seller-image">
+                <p>{{ product.seller }}</p>
+            </div>
+            <div class="box-price-container">
+            <span class="box-price">{{ seller.citizenship_number}} </span>
+            <p class="price">{{seller.phone_number}}</p>
+            </div>
+            <div class="button-container">
+                <button class="blue-button">Edit Profile</button>
+                <button class="red-button">Delete Profile</button>
+            </div>
+        </div>
+    </section>
+{% endblock %}
