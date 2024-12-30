@@ -84,13 +84,39 @@ class SignupForm(UserCreationForm):
             label="",
             widget=forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Email Address'
+                'placeholder': 'Email Address',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+
             }),
             required=True
         )
+        username = forms.CharField(
+            label="",
+            widget=forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'User Name',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+        )
+        password1 = forms.CharField(
+            label="Password",
+            widget=forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your password',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
+        password2 = forms.CharField(
+            label="Confirm Password",
+            widget=forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Confirm your password',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
+
         class Meta:
             model = User
-
             fields = ['username', 'email', 'password1', 'password2']
 
         # Add dynamic attributes in the constructor
