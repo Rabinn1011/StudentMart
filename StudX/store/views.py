@@ -1,7 +1,11 @@
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render,redirect
+from django.contrib import messages
+from django.views.defaults import permission_denied
+
 from .forms import ProductForm,SignupForm, SellerForm
 from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
@@ -25,18 +29,22 @@ def about(request):
 
 
 @login_required
-@permission_required('store.add_product')
+@permission_required('store.add_product', raise_exception=True)
 def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)  # Handle both form data and uploaded files
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.seller = request.user  # Set the current user as the seller
-            product.save()
-            return redirect('home')  # Redirect to a product list or another page
-    else:
-        form = ProductForm()
-    return render(request, 'add_product.html', {'form': form})
+    try:
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES)  # Handle both form data and uploaded files
+            if form.is_valid():
+                product = form.save(commit=False)
+                product.seller = request.user  # Set the current user as the seller
+                product.save()
+                return redirect('home')  # Redirect to a product list or another page
+        else:
+            form = ProductForm()
+        return render(request, 'add_product.html', {'form': form})
+    except PermissionDenied:
+        return redirect('register')
+
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
@@ -58,6 +66,7 @@ def login_user(request):
 
 
 def register(request):
+    messages.info(request,"sala regiser garr product add garna lai")
     form = SignupForm()
     if request.method == 'POST':
         form = SignupForm(request.POST)

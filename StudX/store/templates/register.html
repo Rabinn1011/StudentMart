@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-{% block content %}
+{% if messages %}
+{% for message in messages %}
+    {% block content %}
     <h2>Register</h2>
    <form method="POST" action="{% url 'register' %}">
           {% csrf_token %}
@@ -8,3 +10,5 @@
     </form>
     <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
 {% endblock %}
+{% endfor %}
+{% endif %}
