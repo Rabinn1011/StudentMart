@@ -2,6 +2,8 @@
 
 {% block content %}
     <div class="form-container">
+
+
         <h2 class="heading">Login</h2>
         <form class="form-register" method="POST" action="{% url 'login' %}">
             {% csrf_token %}

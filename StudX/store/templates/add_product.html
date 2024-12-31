@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
+
 {% block content %}
+        <div class="container">
+    <!-- Display messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
 <div class="form-container">
 <h2 class="heading">Add Product</h2>
 <form class="form-design" method="POST" enctype="multipart/form-data">

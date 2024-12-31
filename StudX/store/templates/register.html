@@ -1,22 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="form-container">
-        <h2 class="heading">Register</h2>
-        <form class="form-register" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <p class="spacing">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
-            <div class="heading">
-
-            <button class='blue-button' type="submit">Submit</button>
-            </div>
-        </form>
-
-    </div>
+<div class="form-container">
+    <!-- Message Alerts -->
 
 
+
+    <h2 class="Heading">Register</h2>
+    <form class="form-register" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p class="spacing">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+        <div class="heading">
+            <button class="blue-button" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
-
-
-

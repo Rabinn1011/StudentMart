@@ -8,12 +8,25 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
-<body>
 
+<body>
+<div>
     <!-- Navbar Section -->
 
         {% include "navbar.html" %}
-
+</div>
+<div class="form-container">
+    <!-- Messaging Block -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 
     <!-- Content Section -->
     <div id="content">
