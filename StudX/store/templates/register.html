@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
-{% if messages %}
-{% for message in messages %}
-    {% block content %}
-    <h2>Register</h2>
-   <form method="POST" action="{% url 'register' %}">
-          {% csrf_token %}
-          {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+
+{% block content %}
+    <div class="form-container">
+        <h2 class="heading">Register</h2>
+        <form class="form-register" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p class="spacing">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+            <div class="heading">
+
+            <button class='blue-button' type="submit">Submit</button>
+            </div>
+        </form>
+
+    </div>
+
+
 {% endblock %}
-{% endfor %}
-{% endif %}
+
+
+

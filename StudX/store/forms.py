@@ -9,36 +9,6 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'image','is_sale','sale_price']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter product name',
-                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%; border-radius: 5px;',
-            }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter product description',
-                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%; border-radius: 5px; resize: vertical; height: 120px;',
-            }),
-            'price': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter product price',
-                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; border-radius: 5px;',
-            }),
-            'image': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
-                'style': 'margin: 10px 0; padding: 10px; font-size: 14px;',
-            }),
-            'is_sale': forms.CheckboxInput(attrs={
-                'class': 'form-check-input',
-                'style': 'display:flex;margin: 10px; transform: scale(1.2);',
-            }),
-            'sale_price': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter sale price (if applicable)',
-                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; border-radius: 5px;',
-            }),
-        }
 
 class SellerForm(forms.ModelForm):
     class Meta:
@@ -84,13 +54,39 @@ class SignupForm(UserCreationForm):
             label="",
             widget=forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Email Address'
+                'placeholder': 'Email Address',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+
             }),
             required=True
         )
+        username = forms.CharField(
+            label="",
+            widget=forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'User Name',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+        )
+        password1 = forms.CharField(
+            label="Password",
+            widget=forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your password',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
+        password2 = forms.CharField(
+            label="Confirm Password",
+            widget=forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Confirm your password',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
+
         class Meta:
             model = User
-
             fields = ['username', 'email', 'password1', 'password2']
 
         # Add dynamic attributes in the constructor

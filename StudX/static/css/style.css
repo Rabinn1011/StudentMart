@@ -602,7 +602,9 @@ hr {
 .add-to-cart:hover {
     background-color: #d23d3d;
 }
-
+.spacing{
+    margin-bottom: 50px;
+}
 .heading{
     display: flex;
     justify-content: center;
@@ -614,6 +616,11 @@ hr {
 .form-seller{
     margin: 20px;
 }
+
+.form-register{
+    margin: 20px;
+}
+
 .form-product{
     margin: 20px;
 }
@@ -681,3 +688,5 @@ hr {
         width:90%;
     }
 }
+
+

@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.contrib.auth.models import User
+
 from django.views.defaults import permission_denied
 
 from .forms import ProductForm,SignupForm, SellerForm
@@ -66,11 +68,17 @@ def login_user(request):
 
 
 def register(request):
-    messages.info(request,"sala regiser garr product add garna lai")
+
     form = SignupForm()
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data.get('email')
+
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "This email is already registered. Please use a different email.")
+                return render(request, 'register.html', {'form': form})
             form.save()  # Save User model
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
