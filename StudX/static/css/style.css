@@ -119,44 +119,47 @@ body {
     }
 }
 
- /*success/error message ko yaha samma */
+/*success/error message ko yaha samma */
 
 
+.search-container {
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .search-container {
+.search-input {
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background: #fff;
+    color: black;
+    width: 340px;
+    transition: width 0.4s ease;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .search-input {
-            padding: 10px;
-            border: none;
-            border-radius: 20px;
-            background: #fff;
-            color: black;
-            width: 340px;
-            transition: width 0.4s ease;
-        }
-        .search-input:focus {
-           outline: none;
-            width: 400px;
-        }
-        .search-button {
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-            padding: 10px;
-            margin-left: -40px;
-            transition: transform 0.4s ease;
-        }
-        .search-button:hover {
-            transform: scale(1.5);
-        }
-        .fa-search {
-            color: black;
-        }
+.search-input:focus {
+    outline: none;
+    width: 400px;
+}
+
+.search-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: -40px;
+    transition: transform 0.4s ease;
+}
+
+.search-button:hover {
+    transform: scale(1.5);
+}
+
+.fa-search {
+    color: black;
+}
 
 
 .right-side {
@@ -562,6 +565,7 @@ input[type="checkbox"] {
     color: #333;
     font-weight: bold;
 }
+
 hr {
     display: block;
     height: 2vh;
@@ -572,41 +576,48 @@ hr {
 }
 
 
-.seller-detail{
+.seller-detail {
     display: flex;
     padding: 20px 0;
 }
-.seller-detail img{
-    width:50px;
-    height:50px;
-    border-radius:50px;
+
+.seller-detail img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
     background-color: #d23d3d;
 }
-.seller-detail p{
+
+.seller-detail p {
     align-content: center;
     margin: 10px;
 }
-.box-price-container{
+
+.box-price-container {
     display: flex;
 }
-.box-price{
+
+.box-price {
     font-size: 1.8rem;
     margin: 10px 0;
     font-weight: bold;
 }
+
 .item-details .price {
     font-size: 1.8rem;
     color: #d23d3d;
     margin: 10px;
     font-weight: bold;
 }
-.button-container{
+
+.button-container {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 10px;
 }
-.blue-button{
+
+.blue-button {
     background-color: #4de4ff;
     color: white;
     padding: 10px 30px;
@@ -617,8 +628,9 @@ hr {
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .green-button {
-     background-color: #68b55c;
+    background-color: #68b55c;
     color: white;
     padding: 10px 30px;
     border: none;
@@ -644,10 +656,12 @@ hr {
 .add-to-cart:hover {
     background-color: #d23d3d;
 }
-.spacing{
+
+.spacing {
     margin-bottom: 50px;
 }
-.heading{
+
+.heading {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -655,18 +669,20 @@ hr {
     font-size: 2rem;
     font-weight: bold;
 }
-.form-seller{
+
+.form-seller {
     margin: 20px;
 }
 
-.form-register{
+.form-register {
     margin: 20px;
 }
 
-.form-product{
+.form-product {
     margin: 20px;
 }
-.form-container{
+
+.form-container {
     background-color: #fbf9f9;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -675,7 +691,6 @@ hr {
     margin: 20px auto;
     height: 90%;
 }
-
 
 
 @media screen and (min-width: 1500px) {
@@ -711,23 +726,27 @@ hr {
     .right-side {
         display: none;
     }
-    .item-image{
-        width:80%;
+
+    .item-image {
+        width: 80%;
         margin-left: 0;
         margin-top: 20px;
     }
-    .item-card{
+
+    .item-card {
         flex-direction: column;
     }
-    .item-details h2{
+
+    .item-details h2 {
         font-size: 2.5rem;
     }
-    hr{
+
+    hr {
         margin: 0;
     }
-    .item-details
-    {
-        width:90%;
+
+    .item-details {
+        width: 90%;
     }
 }
 
