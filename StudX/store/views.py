@@ -54,9 +54,16 @@ def add_product(request):
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in to add a product.")
         return redirect(f"/login/?next=/add_product")  # Redirect to login with `next` parameter
-    if not request.user.groups.filter(name="Seller").exists():
+
+    if not request.user.groups.filter(name='Sellers').exists():
         messages.error(request, "You do not have permission to add products. Please register as a Seller.")
-        return redirect('home')
+        return redirect('seller_info')
+
+    seller_details = Seller_Details.objects.filter(user=request.user).first()
+    if not seller_details or not seller_details.is_verified:
+        messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
+        return redirect('seller_profile')
+
     try:
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES)  # Handle form data and uploaded files
