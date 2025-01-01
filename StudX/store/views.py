@@ -23,6 +23,9 @@ seller_group.save()
 
 def home(request):
     products =Product.objects.all()
+    if request.user.is_authenticated:
+       seller_details = Seller_Details.objects.filter(user=request.user).first()
+       return render(request, 'main.html', {'products': products, 'seller_details': seller_details})
     return render(request,'main.html', {'products':products} )
 
 def contact(request):
@@ -144,6 +147,8 @@ def seller_info(request):
             seller_detail = form.save(commit=False)
             seller_detail.user = request.user  # Set the current user as the seller
             seller_detail.save()
+            seller_group1, created = Group.objects.get_or_create(name="Sellers")
+            request.user.groups.add(seller_group1)
             return redirect('home')  # Redirect to a product list or another page
     else:
         form =SellerForm()
