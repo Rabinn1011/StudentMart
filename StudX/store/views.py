@@ -55,14 +55,15 @@ def add_product(request):
         messages.error(request, "You are not logged in. Please log in to add a product.")
         return redirect(f"/login/?next=/add_product")  # Redirect to login with `next` parameter
 
-    if not request.user.groups.filter(name='Sellers').exists():
-        messages.error(request, "You do not have permission to add products. Please register as a Seller.")
-        return redirect('seller_info')
+    if not request.user.is_superuser:
+        if not request.user.groups.filter(name='Sellers').exists():
+           messages.error(request, "You do not have permission to add products. Please register as a Seller.")
+           return redirect('seller_info')
 
-    seller_details = Seller_Details.objects.filter(user=request.user).first()
-    if not seller_details or not seller_details.is_verified:
-        messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
-        return redirect('seller_profile')
+        seller_details = Seller_Details.objects.filter(user=request.user).first()
+        if not seller_details.is_verified:
+           messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
+           return redirect('seller_profile')
 
     try:
         if request.method == 'POST':
@@ -93,6 +94,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, f"Welcome {username}! You have successfully logged in.")
             return redirect(next_url or 'home')
         else:
             messages.error(request, "Invalid username or password.")
