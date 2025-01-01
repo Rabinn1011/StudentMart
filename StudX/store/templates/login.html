@@ -5,7 +5,7 @@
 
 
         <h2 class="heading">Login</h2>
-        <form class="form-register" method="POST" action="{% url 'login' %}">
+        <form class="form-design" method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <input style="margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;"
                    type="text" name="username" placeholder="Enter Your Username">

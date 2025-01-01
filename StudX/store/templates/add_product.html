@@ -2,11 +2,11 @@
 
 {% block content %}
 <div class="form-container">
-<h2 class="heading">Add Product</h2>
-<form class="form-design" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+    <h2 class="heading">Add Product</h2>
+    <form class="form-design" method="POST" enctype="multipart/form-data">
+       {% csrf_token %}
     {{ form.as_p }}
     <button class='green-button' type="submit">Submit</button>
-</form>
+    </form>
 </div>
 {% endblock %}

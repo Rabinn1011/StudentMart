@@ -31,26 +31,47 @@ def about(request):
     return render(request, 'about.html')
 
 
-@login_required
-@permission_required('store.add_product', raise_exception=True)
+# @login_required
+# @permission_required('store.add_product', raise_exception=True)
+# def add_product(request):
+#     try:
+#         if request.method == 'POST':
+#             form = ProductForm(request.POST, request.FILES)  # Handle both form data and uploaded files
+#             if form.is_valid():
+#                 product = form.save(commit=False)
+#                 product.seller = request.user  # Set the current user as the seller
+#                 product.save()
+#                 return redirect('home')  # Redirect to a product list or another page
+#         else:
+#             form = ProductForm()
+#         return render(request, template_name='add_product.html', context={'form': form})
+#
+#     except PermissionDenied:
+#         messages.error(request, "You need to log in or register to add a product.")
+#         return redirect('register')
+
 def add_product(request):
+    if not request.user.is_authenticated:  # Check if user is logged in
+        messages.error(request, "You are not logged in. Please log in to add a product.")
+        return redirect(f"/login/?next=/add_product")  # Redirect to login with `next` parameter
+    if not request.user.groups.filter(name="Seller").exists():
+        messages.error(request, "You do not have permission to add products. Please register as a Seller.")
+        return redirect('home')
     try:
         if request.method == 'POST':
-            form = ProductForm(request.POST, request.FILES)  # Handle both form data and uploaded files
+            form = ProductForm(request.POST, request.FILES)  # Handle form data and uploaded files
             if form.is_valid():
                 product = form.save(commit=False)
                 product.seller = request.user  # Set the current user as the seller
                 product.save()
-                return redirect('home')  # Redirect to a product list or another page
+                return redirect('home')  # Redirect to home or another page
         else:
             form = ProductForm()
-        return render(request, template_name='add_product.html', context={'form': form})
+        return render(request, 'add_product.html', {'form': form})
 
     except PermissionDenied:
-
-        messages.error(request, "You need to log in or register to add a product.")
+        messages.error(request, "You do not have permission to add a product.")
         return redirect('register')
-
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
@@ -58,13 +79,14 @@ def product(request, pk):
 
 
 def login_user(request):
+    next_url = request.GET.get('next')
     if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect(next_url or 'home')
         else:
             messages.error(request, "Invalid username or password.")
             return redirect('login')
