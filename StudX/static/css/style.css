@@ -802,7 +802,7 @@ hr {
   margin-top: 30px;
 }
 
-.product-container {
+.product-container-selpro {
 
     display: flex;
     flex-wrap: wrap;
@@ -830,6 +830,10 @@ hr {
 
 .product-card-selpro:hover {
     transform: scale(1.05);
+}
+
+.products-grid-selpro {
+    display: flex;
 }
 
 .product-image-selpro {

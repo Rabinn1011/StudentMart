@@ -32,9 +32,9 @@
             <!-- Products Section -->
             <div class="products-section">
                 <h3>Products Added by You</h3>
-                {% if products %}
+                {% if products1 %}
                     <div class="products-grid-selpro">
-                        {% for product in products %}
+                        {% for product in products1 %}
                             <div class="product-card-selpro">
                                 <img src="{{ product.image.url }}" alt="{{ product.name }}"
                                      class="product-image-selpro"/>

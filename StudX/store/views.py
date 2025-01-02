@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.views.defaults import permission_denied
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 
@@ -65,7 +65,7 @@ def add_product(request):
         seller_details = Seller_Details.objects.filter(user=request.user).first()
         if not seller_details.is_verified:
            messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
-           return redirect('seller_profile')
+           return redirect('seller_profile',username=request.user.username)
 
     try:
         if request.method == 'POST':
@@ -154,12 +154,32 @@ def seller_info(request):
         form =SellerForm()
     return render(request, 'seller_details.html', {'form': form})
 
-@login_required
-def seller_profile(request):
+
+# def seller_profile(request,username):
+#     if not request.user.is_authenticated:  # Check if user is logged in
+#         messages.error(request, "You are not logged in. Please log in to add a product.")
+#         return redirect(f"/login/?next=/seller_info")
+#     if request.user.groups.filter(name='Sellers').exists():
+#         seller = request.user
+#         products = Product.objects.filter(seller=seller)
+#         seller1 = get_object_or_404(Seller_Details,user__username=username)
+#         seller=Seller_Details.objects.get(user=request.user)
+#         return render(request,'seller_profile.html',{'seller':seller , 'products':products,'seller1':seller1})
+#     else:
+#         return redirect('home')
+def seller_profile(request, username):
+    if not request.user.is_authenticated:  # Check if user is logged in
+        messages.error(request, "You are not logged in. Please log in to add a product.")
+        return redirect(f"/login/?next=/seller_info")
+
     if request.user.groups.filter(name='Sellers').exists():
-        seller = request.user
-        products = Product.objects.filter(seller=seller)
-        seller=Seller_Details.objects.get(user=request.user)
-        return render(request,'seller_profile.html',{'seller':seller , 'products':products})
+        # Get the profile of the seller based on the passed username
+        seller1 = get_object_or_404(Seller_Details, user__username=username)
+
+        # Get all products for the logged-in user (seller)
+        products1 = Product.objects.filter(seller=seller1.user)
+
+        # Render the seller's profile page with the correct context
+        return render(request, 'seller_profile.html', {'seller': seller1, 'products1': products1})
     else:
         return redirect('home')

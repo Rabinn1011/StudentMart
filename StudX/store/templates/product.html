@@ -14,8 +14,10 @@
                 <p>{{product.description}}</p>
             </div>
             <div class="seller-detail">
+                <a href="{% url 'seller_profile' product.seller.username %}">
                 <img src="{{product.seller.profile.image.url}}" alt="seller-image">
-                <p>{{ product.seller }}</p>
+                <p>{{ product.seller.username }}</p>
+                </a>
             </div>
             <div class="box-price-container">
             <span class="box-price">PRICE :  </span>
