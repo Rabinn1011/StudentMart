@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 
-
 from .forms import ProductForm,SignupForm, SellerForm
 from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
@@ -106,6 +105,7 @@ def login_user(request):
         return render(request, 'login.html', {})
 
 
+
 def register(request):
     form = SignupForm()
     if request.method == 'POST':
@@ -157,7 +157,9 @@ def seller_info(request):
 @login_required
 def seller_profile(request):
     if request.user.groups.filter(name='Sellers').exists():
+        seller = request.user
+        products = Product.objects.filter(seller=seller)
         seller=Seller_Details.objects.get(user=request.user)
-        return render(request,'seller_profile.html',{'seller':seller})
+        return render(request,'seller_profile.html',{'seller':seller , 'products':products})
     else:
         return redirect('home')

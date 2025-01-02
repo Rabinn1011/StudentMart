@@ -1,36 +1,54 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<section class="item-section">
+    <section class="item-section">
+        <div class="form-container-selpro">
+            <!-- Seller Details Section -->
+            <h2 class="heading">{{ seller.seller_name }}</h2>
+            <div class="seller-detail">
+                <img src="{{ seller.photo.url }}" alt="seller-image" class="seller-photo"/>
 
-    <div class="form-container">
-        <h2 class="heading">{{ seller.seller_name }}</h2>
-        <div class="seller-detail">
-            <img src="{{ seller.photo.url }}" alt="seller-image">
+                <ul class="seller-info-list">
+                    <li><strong>Name:</strong> {{ seller.seller_name }}</li>
+                    <li><strong>Address:</strong> {{ seller.address }}</li>
+                    <li><strong>Phone Number:</strong> {{ seller.phone_number }}</li>
+                    <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
+                    <li><strong>Date of Birth:</strong> {{ seller.dob|date:"F j, Y" }}</li>
+                    <li>
+                        <strong>Status:</strong>
+                        {% if not seller.is_verified %}
+                            Not Verified
+                        {% else %}
+                            <i class="fa fa-check" aria-hidden="true"></i> Verified
+                        {% endif %}
+                    </li>
+                </ul>
 
-            <ul class="seller-info-list">
-                <li><strong>Name:</strong> {{ seller.seller_name }}</li>
-                <li><strong>Address:</strong> {{ seller.address }}</li>
-                <li><strong>Phone Number:</strong> {{ seller.phone_number }}</li>
-                <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
-                <li><strong>Date of Birth:</strong> {{ seller.dob|date:"F j, Y" }}</li>
-                <li>
-                    <strong>Status:</strong>
-                    {% if not seller.is_verified %}
-                        Not Verified
-                    {% else %}
-                        <i class="fa fa-check" aria-hidden="true"></i> Verified
-                    {% endif %}
-                </li>
-            </ul>
+                <div class="button-container">
+                    <button class="blue-button">Edit Profile</button>
+                    <button class="red-button">Delete Profile</button>
+                </div>
+            </div>
 
-            <div class="button-container">
-                <button class="blue-button">Edit Profile</button>
-                <button class="red-button">Delete Profile</button>
+            <!-- Products Section -->
+            <div class="products-section">
+                <h3>Products Added by You</h3>
+                {% if products %}
+                    <div class="products-grid-selpro">
+                        {% for product in products %}
+                            <div class="product-card-selpro">
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                     class="product-image-selpro"/>
+                                <h4 class="product-title-selpro">{{ product.name }}</h4>
+                                <p class="price-selpro"><strong>Price:</strong> Rs.{{ product.price }}</p>
+
+                                <a class="viewbutton-selpro" href="{% url 'product' product.id %}">View Products</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>You have not added any products yet.</p>
+                {% endif %}
             </div>
         </div>
-    </div>
-
-</section>
+    </section>
 {% endblock %}
-
