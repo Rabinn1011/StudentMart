@@ -14,7 +14,7 @@ body {
 
 #header {
     display: flex;
-    padding: 20px;
+    padding: 20px 0;
     align-items: center;
     width: 100%;
     background: black;
@@ -42,6 +42,8 @@ body {
 
 }
 
+
+
 .logo:hover {
     transform: scale(1.1);
 }
@@ -50,16 +52,12 @@ body {
     display: flex;
     width: 100%;
     align-items: center;
-    padding: 10px 20px;
-    font-size: 20px;
-    font-weight: 700;
 
 }
 
 .nav-list {
     display: flex;
     list-style: none;
-    margin-right: 6rem;
     padding: 0;
 }
 
@@ -127,6 +125,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 80%;
 }
 
 .search-input {
@@ -135,13 +134,13 @@ body {
     border-radius: 20px;
     background: #fff;
     color: black;
-    width: 340px;
+    width: 80%;
     transition: width 0.4s ease;
 }
 
 .search-input:focus {
     outline: none;
-    width: 400px;
+    width: 100%;
 }
 
 .search-button {
@@ -343,9 +342,7 @@ body {
     height: 100%;
     width: 100%;
     background: #000;
-    /*background: linear-gradient(90deg, #f92c78, #4114a1);*/
-    /* background: linear-gradient(375deg, #1cc7d0, #2ede98); */
-    /* background: linear-gradient(-45deg, #e3eefe 0%, #efddfb 100%);*/
+    background: linear-gradient(90deg, #f92c78, #4114a1);
     transition: all 0.6s ease-in-out;
 }
 
@@ -356,7 +353,6 @@ body {
 
 .menu-btn {
     margin-top: 20px;
-    background-color: blueviolet;
     position: absolute;
     z-index: 2;
     right: 20px;
@@ -369,11 +365,17 @@ body {
     border-radius: 50%;
     font-size: 20px;
     cursor: pointer;
-    /*color: #fff;*/
-    /*background: linear-gradient(90deg, #f92c78, #4114a1);*/
-    /* background: linear-gradient(375deg, #1cc7d0, #2ede98); */
-    /* background: linear-gradient(-45deg, #e3eefe 0%, #efddfb 100%); */
+    background: linear-gradient(90deg, #f92c78, #4114a1);
     transition: all 0.3s ease-in-out;
+}
+.menu-btn1 {
+    color: white;
+    position: absolute;
+    z-index: 1;
+    right: 20px;
+    top: 10px;
+    text-align: center;
+    cursor: pointer;
 }
 
 .menu-btn span,
@@ -452,9 +454,7 @@ body {
 .wrapper ul li a:after {
     position: absolute;
     content: "";
-    background: #fff;
-    /*background: linear-gradient(#14ffe9, #ffeb3b, #ff00e0);*/
-    /*background: linear-gradient(375deg, #1cc7d0, #2ede98);*/
+    background: linear-gradient(375deg, #1cc7d0, #2ede98);
     width: 100%;
     height: 100%;
     left: 0;
@@ -690,10 +690,6 @@ hr {
 }
 
 @media screen and (max-width: 1500px) {
-    .navbar {
-        display: none;
-    }
-
     .container {
         width: 90%;
         gap: 0;
@@ -702,10 +698,6 @@ hr {
 }
 
 @media screen and ( max-width: 900px) {
-    .search-container {
-        display: none;
-    }
-
     .item-details h2 {
         font-size: 4rem;
     }

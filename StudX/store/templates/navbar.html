@@ -4,24 +4,6 @@
         <div>
             <a href="{% url 'home' %}"><img alt="" class="logo" src="{% static 'assests/logo.png' %}"></a>
         </div>
-        <div class="navbar">
-            <ul class="nav-list">
-
-                <li><a href="{% url 'home' %}">Home</a></li>
-
-
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'register' %}">Profile</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {%else %}
-                    <li><a href="{% url 'register' %}">Register</a></li>
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                {% endif %}
-                {% if seller_details.is_verified %}
-                   <li><a href="{% url 'add_product' %}">Add Product</a></li>
-                 {% endif %}
-            </ul>
-        </div>
 
        <div class="search-container">
         <input type="text" placeholder="Search..." class="search-input">
@@ -57,5 +39,24 @@
                     <li><a href="#">Cart</a></li>
                 </ul>
             </div>
+<div>
+            <label class="menu-btn1" for="active"><span>
+                        <div class="navbar">
+            <ul class="nav-list">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'register' %}">Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {%else %}
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+                     <li><a href="{% url 'contact' %}">Help & Support</a></li>
+                {% if seller_details.is_verified %}
+                   <li><a href="{% url 'add_product' %}">Add Product</a></li>
+                 {% endif %}
+            </ul>
+        </div>
+            </span></label>
+</div>
 
 
