@@ -578,6 +578,9 @@ hr {
     display: flex;
     padding: 20px 0;
 }
+.sell{
+display: flex;
+}
 
 .seller-detail img {
     width: 50px;

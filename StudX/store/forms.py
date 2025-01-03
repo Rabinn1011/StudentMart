@@ -98,6 +98,22 @@ class SignupForm(UserCreationForm):
                 'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
         })
         )
+        first_name = forms.CharField(
+            label="",
+            widget=forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'First Name',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
+        last_name = forms.CharField(
+            label="",
+            widget=forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Last Name',
+                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            })
+        )
         password1 = forms.CharField(
             label="Password",
             widget=forms.PasswordInput(attrs={
@@ -117,7 +133,7 @@ class SignupForm(UserCreationForm):
 
         class Meta:
             model = User
-            fields = ['username', 'email', 'password1', 'password2']
+            fields = ['username','first_name','last_name','' 'email', 'password1', 'password2']
 
         # Add dynamic attributes in the constructor
         def __init__(self, *args, **kwargs):

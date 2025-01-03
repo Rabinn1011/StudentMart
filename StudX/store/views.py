@@ -6,7 +6,8 @@ from django.views.defaults import permission_denied
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+from django.core.signing import Signer, BadSignature
+from django.http import Http404
 
 from .forms import ProductForm,SignupForm, SellerForm
 from .models import Product, Seller_Details
@@ -167,7 +168,16 @@ def seller_info(request):
 #         return render(request,'seller_profile.html',{'seller':seller , 'products':products,'seller1':seller1})
 #     else:
 #         return redirect('home')
-def seller_profile(request, username):
+
+signer = Signer()
+
+def seller_profile(request, encoded_username):
+    try:
+        # Unsign and verify the username
+        username = signer.unsign(encoded_username)
+    except BadSignature:
+        raise Http404("Invalid or tampered username")
+
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in to add a product.")
         return redirect(f"/login/?next=/seller_info")

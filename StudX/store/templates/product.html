@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block content %}
 <section class="item-section">
 
@@ -14,10 +14,18 @@
                 <p>{{product.description}}</p>
             </div>
             <div class="seller-detail">
-                <a href="{% url 'seller_profile' product.seller.username %}">
-                <img src="{{product.seller.profile.image.url}}" alt="seller-image">
-                <p>{{ product.seller.username }}</p>
-                </a>
+
+                  <div>
+                      <a href="{% url 'seller_profile' product.seller.username %}">
+                <img src="{{product.seller.seller_details.photo.url}}" alt="seller-image">
+                      </a>
+                  </div>
+
+                  <div>
+                      <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
+                <p>{{ product.seller.seller_details.seller_name }}</p>
+                      </a>
+                  </div>
             </div>
             <div class="box-price-container">
             <span class="box-price">PRICE :  </span>
