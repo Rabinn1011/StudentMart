@@ -14,6 +14,6 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('seller_detail', views.seller_info, name='seller_info'),
     path('seller_profile/<str:encoded_username>', views.seller_profile, name='seller_profile'),
-
+    path('edit_profile/', views.edit_seller_profile, name='edit_seller_profile'),
 
 ]

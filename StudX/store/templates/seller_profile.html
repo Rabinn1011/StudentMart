@@ -28,7 +28,7 @@
                 </ul>
             {% if request.user == seller.user %}
                 <div class="button-container">
-                    <button class="blue-button">Edit Profile</button>
+                    <a href="{% url 'edit_seller_profile'%}" class="blue-button">Edit Profile</a>
                     <button class="red-button">Delete Profile</button>
                 </div>
             {% endif %}

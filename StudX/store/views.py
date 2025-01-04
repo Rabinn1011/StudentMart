@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
 from django.http import Http404
 
-from .forms import ProductForm,SignupForm, SellerForm
+from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm
 from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
 
@@ -202,3 +202,25 @@ def seller_profile(request, encoded_username):
         return render(request, 'seller_profile.html', {'seller': seller1, 'products1': products1})
     else:
         return redirect('home')
+
+def edit_seller_profile(request):
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
+        messages.error(request, "You need to be logged in as a seller to edit your profile.")
+        return redirect('login')
+
+        # Get the seller's details
+    seller = get_object_or_404(Seller_Details, user=request.user)
+
+    if request.method == 'POST':
+        form = SellerProfileEditForm(request.POST, request.FILES, instance=seller)
+        if form.is_valid():
+            if not form.cleaned_data['photo']:
+                seller.photo = None
+            form.save()
+            encoded_username = signer.sign(request.user.username)
+            messages.success(request, "Your profile has been updated successfully.")
+            return redirect('seller_profile', encoded_username=encoded_username.split(":")[1])
+    else:
+        form = SellerProfileEditForm(instance=seller)
+
+    return render(request, 'edit_user.html', {'form': form})
