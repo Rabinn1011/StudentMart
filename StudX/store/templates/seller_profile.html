@@ -8,11 +8,15 @@
                 <img src="{{ seller.photo.url }}" alt="seller-image" class="seller-photo"/>
 
                 <ul class="seller-info-list">
-                    <li><strong>Name:</strong> {{ seller.seller_name }}</li>
+                    <li><strong>Seller:</strong> {{ seller.seller_name }}</li>
+                    <li><strong>Name:</strong> {{ seller.user.first_name }} {{ seller.user.last_name }}</li>
                     <li><strong>Address:</strong> {{ seller.address }}</li>
-                    <li><strong>Phone Number:</strong> {{ seller.phone_number }}</li>
-                    <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
+                    <li><strong>Phone Number:</strong> {{ seller.phone_number }}
+                        {% if request.user == seller.user %}
+                         <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
                     <li><strong>Date of Birth:</strong> {{ seller.dob|date:"F j, Y" }}</li>
+                        {% endif %}
+
                     <li>
                         <strong>Status:</strong>
                         {% if not seller.is_verified %}
@@ -22,16 +26,23 @@
                         {% endif %}
                     </li>
                 </ul>
-
+            {% if request.user == seller.user %}
                 <div class="button-container">
                     <button class="blue-button">Edit Profile</button>
                     <button class="red-button">Delete Profile</button>
                 </div>
+            {% endif %}
             </div>
 
             <!-- Products Section -->
             <div class="products-section">
-                <h3>Products Added by You</h3>
+                <h3>Products Added by
+                    {% if request.user == seller.user %}
+                        You
+                    {% else %}
+                        {{ seller.seller_name }}
+                    {% endif %}
+                    </h3>
                 {% if products1 %}
                     <div class="products-grid-selpro">
                         {% for product in products1 %}

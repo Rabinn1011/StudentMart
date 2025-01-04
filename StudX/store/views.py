@@ -172,17 +172,26 @@ def seller_info(request):
 signer = Signer()
 
 def seller_profile(request, encoded_username):
+
     try:
-        # Unsign and verify the username
-        username = signer.unsign(encoded_username)
+        seller_users = Seller_Details.objects.values_list('user__username', flat=True)
+        seller_users = list(seller_users)
+        username = None
+        for seller_user in seller_users:
+            signed_value = f"{seller_user}:{encoded_username}"
+            try:
+                username = signer.unsign(signed_value)
+                break
+            except BadSignature:
+                continue
     except BadSignature:
         raise Http404("Invalid or tampered username")
 
     if not request.user.is_authenticated:  # Check if user is logged in
-        messages.error(request, "You are not logged in. Please log in to add a product.")
-        return redirect(f"/login/?next=/seller_info")
+        messages.error(request, "You are not logged in. Please log in.")
+        return redirect('contact')
 
-    if request.user.groups.filter(name='Sellers').exists():
+    if request.user.is_authenticated:
         # Get the profile of the seller based on the passed username
         seller1 = get_object_or_404(Seller_Details, user__username=username)
 
