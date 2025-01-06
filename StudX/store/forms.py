@@ -188,3 +188,8 @@ class SignupForm(UserCreationForm):
             self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
             self.fields['password2'].label = ""
             self.fields['password2'].help_text = ""
+
+class ProductEditForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'image','is_sale','sale_price']

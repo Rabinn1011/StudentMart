@@ -1,42 +1,49 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% block content %}
-<section class="item-section">
+    <section class="item-section">
 
-    <div class="item-card">
-        <div class="item-image">
-            <img alt="" src="{{ product.image.url }}">
+        <div class="item-card">
+            <div class="item-image">
+                <img alt="" src="{{ product.image.url }}">
+            </div>
+            <div class="item-details">
+                <h2>{{ product.name }}</h2>
+                <hr/>
+                <div class="item-description">
+                    <p>{{ product.description }}</p>
+                </div>
+                <div class="seller-detail">
+
+                    <div>
+                        <a href="{% url 'seller_profile' product.seller.username %}">
+                            <img src="{{ product.seller.seller_details.photo.url }}" alt="seller-image">
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
+                            <p>{{ product.seller.seller_details.seller_name }}</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="box-price-container">
+                    <span class="box-price">PRICE :  </span>
+                    <p class="price">NRs.{{ product.price }}</p>
+                </div>
+                <div class="button-container">
+                    {% if request.user == product.seller %}
+
+                        <a href="{% url 'edit_product' product.id %}" class="blue-button">Edit</a>
+                       <a href="{% url 'delete_product' product.id %}" class="red-button">Delete</a>
+                    {% else %}
+                        <button class="blue-button">Buy Now</button>
+                        <button class="red-button">Add to Cart</button>
+
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="item-details">
-            <h2>{{product.name}}</h2>
-            <hr/>
-            <div class="item-description">
-                <p>{{product.description}}</p>
-            </div>
-            <div class="seller-detail">
-
-                  <div>
-                      <a href="{% url 'seller_profile' product.seller.username %}">
-                <img src="{{product.seller.seller_details.photo.url}}" alt="seller-image">
-                      </a>
-                  </div>
-
-                  <div>
-                      <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
-                <p>{{ product.seller.seller_details.seller_name }}</p>
-                      </a>
-                  </div>
-            </div>
-            <div class="box-price-container">
-            <span class="box-price">PRICE :  </span>
-            <p class="price">NRs.{{product.price}}</p>
-            </div>
-            <div class="button-container">
-                <button class="blue-button">Buy Now</button>
-                <button class="red-button">Add to Cart</button>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
 {% endblock %}

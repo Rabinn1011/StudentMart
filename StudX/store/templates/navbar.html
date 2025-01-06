@@ -5,58 +5,61 @@
             <a href="{% url 'home' %}"><img alt="" class="logo" src="{% static 'assests/logo.png' %}"></a>
         </div>
 
-       <div class="search-container">
-        <input type="text" placeholder="Search..." class="search-input">
-        <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
-    </div>
+        <div class="search-container">
+            <input type="text" placeholder="Search..." class="search-input">
+            <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+        </div>
 
 
-            <div class="right-side">
-                <div class="cart-icon">
-                    <a href="#">
-                        <i class="fa fa-shopping-cart"></i>
-
-
-                    </a>
-                </div>
+        <div class="right-side">
+            <div class="dots" onclick="this.classList.toggle('active');">
                 <div class="login">
-                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-user"></i></div>
 
-
-                </div>
             </div>
+
+            <div class="cart-icon">
+                <a href="#">
+                    <i class="fa fa-shopping-cart"></i>
+
+
+                </a>
+            </div>
+
+        </div>
     </div>
 </section>
-      <input id="active" type="checkbox">
-            <label class="menu-btn" for="active"><span></span></label>
-            <label class="close" for="active"></label>
-            <div class="wrapper">
-                <ul>
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'register' %}">Register</a></li>
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'add_product' %}">AddProduct</a></li>
-                    <li><a href="#">Cart</a></li>
-                </ul>
-            </div>
+<input id="active" type="checkbox">
+<label class="menu-btn" for="active"><span></span></label>
+<label class="close" for="active"></label>
+<div class="wrapper">
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'add_product' %}">AddProduct</a></li>
+        <li><a href="#">Cart</a></li>
+    </ul>
+</div>
 <div>
-            <label class="menu-btn1" for="active"><span>
+    <label class="menu-btn1" for="active"><span>
                         <div class="navbar">
             <ul class="nav-list">
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'register' %}">Profile</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
-                {%else %}
+                {% else %}
                     <li><a href="{% url 'register' %}">Register</a></li>
                     <li><a href="{% url 'login' %}">Login</a></li>
                 {% endif %}
-                     <li><a href="{% url 'contact' %}">Help & Support</a></li>
+                <li><a href="{% url 'contact' %}">Help & Support</a></li>
                 {% if seller_details.is_verified %}
-                   <li><a href="{% url 'add_product' %}">Add Product</a></li>
-                 {% endif %}
+                    <li><a href="{% url 'add_product' %}">Add Product</a></li>
+                {% endif %}
             </ul>
         </div>
             </span></label>
 </div>
+
 
 

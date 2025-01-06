@@ -162,7 +162,7 @@ body {
 
 
 .right-side {
-    margin-left: 2rem;
+    margin-right: 2rem;
     display: flex;
 }
 
@@ -972,4 +972,108 @@ select {
 .clear-photo-button:hover {
     background-color: #c82333;
 }
+/* edit user ko yaha samma*/
 
+/* slider ko suru */
+
+.swiper-slide img{
+    top:25%;
+
+    width:60%;
+    height:70%;
+    object-fit: cover;
+    margin-left: 6rem;
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* slider ko yaha samma */
+/* Footer styles */
+footer {
+    background-color: #204242;
+    color: #e0e0e0;
+    padding: 40px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-content .about-us {
+    text-align: center;
+}
+
+.footer-content h4 {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #ffffff;
+}
+
+.footer-content p {
+    margin: 5px 0;
+    color: #a0a0a0;
+}
+
+.footer-content a {
+    color: #4caf50;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+.social-icons {
+    display: flex;
+    gap: 20px;
+}
+
+.social-icons a {
+    color: #e0e0e0;
+    font-size: 1.8em;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #4caf50;
+}
+
+.footer-content p {
+    font-size: 0.9em;
+    color: #a0a0a0;
+}
+
+.footer-content a {
+    font-size: 0.9em;
+}
+/*footer ko yaha samma*/
+
+/*dropdown menu*/
+
+
+/*dropdown menu yaha samma*/

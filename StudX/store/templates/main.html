@@ -1,16 +1,46 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="product-container">
-    {% for product in products %}
-    <div class="product-card">
-        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
-        <h3 class="product-title">{{ product.name }}</h3>
-        <br>
+    <section>
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide3.png' %}"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide4.png' %}"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}"></div>
+
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+        <!-- Swiper JS -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    </section>
+    <section>
+        <div class="form-container">
+            <div class="product-container">
+
+                {% for product in products %}
+                    <div class="product-card">
+                        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <br>
 
 
-        <a class="view-button" href="{% url 'product' product.id %}">View Products</a>
+                        <a class="view-button" href="{% url 'product' product.id %}">View Products</a>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <section>
+    <div class="form-container">
+        <p>rooooooooooooommmmmmmmmmmm</p>
     </div>
-    {% endfor %}
-</div>
+    </section>
 {% endblock %}

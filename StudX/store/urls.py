@@ -15,5 +15,8 @@ urlpatterns = [
     path('seller_detail', views.seller_info, name='seller_info'),
     path('seller_profile/<str:encoded_username>', views.seller_profile, name='seller_profile'),
     path('edit_profile/', views.edit_seller_profile, name='edit_seller_profile'),
+    path('delete_profile/', views.delete_profile, name='delete_profile'),
+    path('edit_product/<int:pk>/', views.edit_product_form, name='edit_product'),
+    path('delete_product/<int:pk>/', views.delete_product_form, name='delete_product'),
 
 ]

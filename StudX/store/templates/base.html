@@ -7,14 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudX - {% block title %}Home{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body>
 <div>
     <!-- Navbar Section -->
 
-        {% include "navbar.html" %}
+    {% include "navbar.html" %}
 </div>
 <div class="form-container">
     <!-- Messaging Block -->
@@ -29,20 +32,35 @@
     {% endif %}
 </div>
 
-    <!-- Content Section -->
-    <div id="content">
-        {% block content %}
+<!-- Content Section -->
+<div id="content">
+    {% block content %}
 
-        {% endblock %}
+    {% endblock %}
+</div>
+
+<!-- Footer Section -->
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<footer>
+    <div class="footer-content">
+        <div class="about-us">
+            <h4>ABOUT US</h4>
+            <p>StudX: The ultimate online marketplace for students, offering engineering tools, gadgets,
+                clothing, and rental rooms, all in one convenient platform.</p>
+        </div>
+        <p>&copy; 2024 StudX. All rights reserved.</p>
+        <p>Contact us: <a href="mailto:support@moviefiesta.com">support@moviefiesta.com</a></p>
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a>
+            <a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a>
+            <a href="https://discord.com" target="_blank"><i class="bx bxl-discord"></i></a>
+        </div>
     </div>
 
-    <!-- Footer Section -->
-    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <footer>
-        <p>&copy; 2024 StudX. All rights reserved.</p>
-    </footer>
+</footer>
 
 </body>
 <script src="{% static 'js/scripts.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 </html>

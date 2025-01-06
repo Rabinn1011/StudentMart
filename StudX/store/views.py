@@ -224,3 +224,27 @@ def edit_seller_profile(request):
         form = SellerProfileEditForm(instance=seller)
 
     return render(request, 'edit_user.html', {'form': form})
+
+def delete_profile(request):
+    pass
+
+
+def edit_product_form(request, pk):
+    product1 = get_object_or_404(Product, id=pk, seller=request.user)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product1)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your product has been updated successfully.")
+            return redirect('product',pk=form.cleaned_data['pk'])
+    else:
+         form = ProductForm(instance=product1)
+
+    return render(request, 'edit_product.html', {'form': form})
+
+def delete_product_form(request, pk):
+    product1 = get_object_or_404(Product, id=pk, seller=request.user)
+    product1.delete()
+    messages.success(request, "Product has been deleted successfully.")
+
+    return redirect('home')
