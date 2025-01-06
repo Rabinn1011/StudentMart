@@ -891,3 +891,85 @@ display: flex;
 
 /*seller profile ko yaha samma*/
 
+/* edit usr ko suru*/
+
+
+
+
+.item-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.form-container-edisel {
+    background-color: #fbf9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    margin: 20px auto;
+    height: 90%;
+    padding: 10px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="file"],
+textarea,
+
+select {
+
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+
+
+.green-button:hover {
+    background-color: #218838;
+}
+
+.photo-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.clear-photo-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.clear-photo-button:hover {
+    background-color: #c82333;
+}
+
