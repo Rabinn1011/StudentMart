@@ -689,19 +689,23 @@ display: flex;
 
 
 
-@media screen and (min-width: 1500px) {
+@media screen and (min-width: 500px) {
     .menu-btn {
         display: none;
     }
 }
-
-@media screen and (max-width: 1500px) {
-    .container {
-        width: 90%;
-        gap: 0;
+@media screen and (max-width: 500px) {
+    .search-container{
+        display: none;
     }
-
+     .right-side {
+        display: none;
+    }
+     .menu-btn1{
+         display: none;
+     }
 }
+
 
 @media screen and ( max-width: 900px) {
     .item-details h2 {
@@ -711,8 +715,9 @@ display: flex;
 }
 
 @media screen and ( max-width: 700px) {
-    .right-side {
-        display: none;
+
+    .nav-list li{
+        margin-right: 20px;
     }
 
     .item-image {
