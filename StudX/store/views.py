@@ -226,7 +226,13 @@ def edit_seller_profile(request):
     return render(request, 'edit_user.html', {'form': form})
 
 def delete_profile(request):
-    pass
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
+        messages.error(request, "You need to be logged in as a seller to edit your profile.")
+        return redirect('login')
+    request.user.delete()
+    messages.success(request, "Your profile has been deleted successfully.")
+    return redirect('home')
+
 
 
 def edit_product_form(request, pk):
