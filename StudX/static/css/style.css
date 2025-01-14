@@ -986,7 +986,6 @@ select {
     width:60%;
     height:70%;
     object-fit: cover;
-    margin-left: 6rem;
     z-index: 1;
     border-radius: 10px;
 }

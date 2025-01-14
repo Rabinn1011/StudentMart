@@ -18,5 +18,6 @@ urlpatterns = [
     path('delete_profile/', views.delete_profile, name='delete_profile'),
     path('edit_product/<int:pk>/', views.edit_product_form, name='edit_product'),
     path('delete_product/<int:pk>/', views.delete_product_form, name='delete_product'),
+    path('user_profile/<str:encoded_username>', views.user_profile, name='user_profile'),
 
 ]

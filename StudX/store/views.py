@@ -22,11 +22,12 @@ seller_group.permissions.set(permissions)
 seller_group.save()
 
 def home(request):
+    user_in_seller_group = request.user.groups.filter(name='Seller').exists()
     products =Product.objects.all()
     if request.user.is_authenticated:
        seller_details = Seller_Details.objects.filter(user=request.user).first()
        return render(request, 'main.html', {'products': products, 'seller_details': seller_details})
-    return render(request,'main.html', {'products':products} )
+    return render(request,'main.html', {'products':products, 'user_in_seller_group':user_in_seller_group} )
 
 def contact(request):
     return render(request, 'contact.html')
@@ -170,6 +171,29 @@ def seller_info(request):
 #         return redirect('home')
 
 signer = Signer()
+def user_profile(request, encoded_username):
+    try:
+        username = None
+        user_objects = User.objects.values_list('username', flat=True)
+        for user_object in user_objects:
+            signed_value = f"{user_object}:{encoded_username}"
+            try:
+                username = signer.unsign(signed_value)
+                break
+            except BadSignature:
+                continue
+        if username is None:
+            raise Http404("Invalid or tampered username")
+
+    except BadSignature:
+        raise Http404("Invalid or tampered username")
+
+    if not request.user.is_authenticated:
+        messages.error(request, "You are not logged in. Please log in.")
+        return redirect('login')
+
+    user_profile1 = get_object_or_404(User, username=username)
+    return render(request, 'user_profile.html', {'user_profile1': user_profile1})
 
 def seller_profile(request, encoded_username):
 
