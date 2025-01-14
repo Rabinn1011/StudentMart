@@ -3,12 +3,14 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.views.defaults import permission_denied
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
 from django.http import Http404
-
+from django.urls import reverse
 from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm
 from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
@@ -188,12 +190,40 @@ def user_profile(request, encoded_username):
     except BadSignature:
         raise Http404("Invalid or tampered username")
 
+
     if not request.user.is_authenticated:
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
+    if request.user.is_authenticated:
+     user_profile1 = get_object_or_404(User, username=username)
+    # Pass relevant user data to the template
+    context = {
+        'username': user_profile1.username,
+        'first_name': user_profile1.first_name,
+        'last_name': user_profile1.last_name,
+        'email': user_profile1.email,
+        'change_password_url': reverse('password_change'),  # Change Password URL
 
-    user_profile1 = get_object_or_404(User, username=username)
+    }
     return render(request, 'user_profile.html', {'user_profile1': user_profile1})
+
+@login_required
+def password_change(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Keeps the user logged in after changing the password
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password has been successfully updated.')
+
+            return redirect('main.html')  # Redirect to user profile after success
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'password_change.html', {'form': form})
 
 def seller_profile(request, encoded_username):
 

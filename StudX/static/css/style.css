@@ -748,6 +748,7 @@ display: flex;
 }
 /*seller profile ko*/
 .form-container-selpro {
+
     background-color: #fbf9f9;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1153,5 +1154,22 @@ footer {
     display: block;
 }
 
-
 /*dropdown menu yaha samma*/
+
+/*user proofile ko suru*/
+.form-container-usepro {
+    position: relative;
+    background-color: #fbf9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    margin: 20px auto;
+    height: 90%;
+}
+.button-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+/*user profle ko yaha samma*/
