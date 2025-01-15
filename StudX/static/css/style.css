@@ -11,7 +11,10 @@ html,
 body {
     width: 100%;
 }
-
+.flexing{
+    flex-direction: row;
+    display: flex;
+}
 #header {
     display: flex;
     padding: 20px 0;
@@ -789,6 +792,7 @@ display: flex;
 }
 
 .button-container {
+    position: relative;
   margin-top: 20px;
 }
 
@@ -1168,7 +1172,6 @@ footer {
     height: 90%;
 }
 .button-container {
-    position: absolute;
     bottom: 0;
     left: 0;
 }
