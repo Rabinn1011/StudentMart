@@ -1,0 +1,56 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+            <div class="item-image">
+                <img alt="" src="{{ room.photo.url }}">
+            </div>
+            <div class="item-details">
+                <h2>{{ room.owner_name }}</h2>
+                <hr/>
+                <div class="item-description">
+                    <p>{{ room.moreDetails }}</p>
+                </div>
+                <div class="item-description">
+                    <p>{{ room.owner_phone }}</p>
+                </div>
+                <div class="item-description">
+                    <p>{{ room.noOfRooms }}</p>
+                </div>
+
+                <div class="box-price-container">
+                    <span class="box-price">PRICE :  </span>
+                    <p class="price">NRs.{{ room.type }}</p>
+                </div>
+
+            </div>
+
+    <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+</div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var latitude = {{ room.latitude }};
+        var longitude = {{ room.longitude }};
+
+        // Debug: Check if the values are being passed correctly
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude);
+
+        var map = L.map('map').setView([latitude, longitude], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup('<b>{{ room.type }}</b><br>{{ room.location }}').openPopup();
+    });
+</script>
+{% endblock %}
+
+
+
+    </section>
