@@ -2,7 +2,6 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
-from django.views.defaults import permission_denied
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render,redirect,get_object_or_404
@@ -14,6 +13,7 @@ from django.urls import reverse
 from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm
 from .models import Product, Seller_Details
 from django.contrib.auth.decorators import login_required,permission_required
+from rent.models import Room
 
 seller_group,created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
@@ -26,10 +26,11 @@ seller_group.save()
 def home(request):
     user_in_seller_group = request.user.groups.filter(name='Seller').exists()
     products =Product.objects.all()
+    rooms= Room.objects.all()
     if request.user.is_authenticated:
        seller_details = Seller_Details.objects.filter(user=request.user).first()
        return render(request, 'main.html', {'products': products, 'seller_details': seller_details})
-    return render(request,'main.html', {'products':products, 'user_in_seller_group':user_in_seller_group} )
+    return render(request,'main.html', {'products':products,'rooms':rooms, 'user_in_seller_group':user_in_seller_group} )
 
 def contact(request):
     return render(request, 'contact.html')

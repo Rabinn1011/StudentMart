@@ -39,8 +39,18 @@
         </div>
     </section>
     <section>
-    <div class="form-container">
-        <p>rooooooooooooommmmmmmmmmmm</p>
+
+ <div class="form-container">
+        <div class="product-container">
+            {% for room in rooms %}
+                <div class="product-card">
+                    <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
+                    <h3 class="product-title">{{ room.type }}</h3>
+
+                </div>
+            {% endfor %}
+        </div>
     </div>
+
     </section>
 {% endblock %}
