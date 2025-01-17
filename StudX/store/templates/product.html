@@ -5,8 +5,26 @@
 
         <div class="item-card">
             <div class="item-image">
-                <img alt="" src="{{ product.image.url }}">
+
+
+
+<div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img alt="" src="{{ product.image.url }}"></div>
+                {% for image in product.additional_images.all %}
+                 <div class="swiper-slide"><img src="{{image.image.url}}"></div>
+                {% endfor %}
+
+
             </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+        <!-- Swiper JS -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+             </div>
             <div class="item-details">
                 <h2>{{ product.name }}</h2>
                 <hr/>

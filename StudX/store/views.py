@@ -4,14 +4,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.forms.models import modelformset_factory
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
 from django.http import Http404
 from django.urls import reverse
-from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm
-from .models import Product, Seller_Details
+from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm, ProductImageForm
+from .models import Product, Seller_Details, ProductImage
 from django.contrib.auth.decorators import login_required,permission_required
 from rent.models import Room
 
@@ -73,16 +74,23 @@ def add_product(request):
            return redirect('seller_profile',username=request.user.username)
 
     try:
+        ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
         if request.method == 'POST':
-            form = ProductForm(request.POST, request.FILES)  # Handle form data and uploaded files
-            if form.is_valid():
-                product = form.save(commit=False)
+            product_form = ProductForm(request.POST, request.FILES)
+            formset = ImageFormSet(request.POST, request.FILES, queryset=ProductImage.objects.none())
+            if product_form.is_valid() and formset.is_valid():
+                product = product_form.save(commit=False)
                 product.seller = request.user  # Set the current user as the seller
                 product.save()
+                for form in formset.cleaned_data:
+                    if form:
+                        image =form['image']
+                        ProductImage.objects.create(product=product, image=image)
                 return redirect('home')  # Redirect to home or another page
         else:
-            form = ProductForm()
-        return render(request, 'add_product.html', {'form': form})
+            product_form = ProductForm()
+            formset = ImageFormSet(queryset=ProductImage.objects.none())
+        return render(request, 'add_product.html', {'product_form': product_form, 'formset': formset})
 
     except PermissionDenied:
         messages.error(request, "You do not have permission to add a product.")

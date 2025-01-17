@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Product, Seller_Details
+from .models import Product, Seller_Details, ProductImage
 
 
 class ProductForm(forms.ModelForm):
@@ -39,7 +39,10 @@ class ProductForm(forms.ModelForm):
                 'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; border-radius: 5px;',
             }),
         }
-
+class ProductImageForm(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
 
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:
