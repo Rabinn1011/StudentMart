@@ -19,9 +19,17 @@ urlpatterns = [
     path('edit_product/<int:pk>/', views.edit_product_form, name='edit_product'),
     path('delete_product/<int:pk>/', views.delete_product_form, name='delete_product'),
     path('user_profile/<str:encoded_username>', views.user_profile, name='user_profile'),
+
+
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+
     path('password_change/', auth_views.PasswordChangeView.as_view(
         template_name='password_change.html',
         success_url='/contact/',  # Redirect to user profile after successful password change
     ), name='password_change'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='password_rest_form.html'),name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'),name='password_reset_done'),
+    path('password_rest_confirm/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'),name='password_reset_confirm'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),name='password_reset_complete'),
 
 ]
