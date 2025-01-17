@@ -1,4 +1,84 @@
+{#{% extends 'base.html' %}#}
+{#{% block content %}#}
+{#{{ form.as_p }}#}
+{#{% endblock %}#}
 {% extends 'base.html' %}
+
 {% block content %}
-{{ form.as_p }}
+<section class="item-section">
+    <div class="form-container-edipro">
+        <h2>Edit Your Product</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Product Name:</h3>
+                <label for="{{ form.name.id_for_label }}">Name</label>
+                {{ form.name }}
+            </div>
+
+            <!-- Price -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Price:</h3>
+                <label for="{{ form.price.id_for_label }}">Price</label>
+                {{ form.price }}
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Description:</h3>
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+            </div>
+
+            <!-- Main Image -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Main Image:</h3>
+                <label for="{{ form.image.id_for_label }}">Main Image</label>
+                {% if form.image.value %}
+                <div class="photo-preview">
+                    <img src="{{ form.image.value.url }}" alt="Current Product Image" width="150px" height="150px">
+                    <button type="button" id="clear-image" class="clear-photo-button">Clear</button>
+                </div>
+                <br><br>
+                {% endif %}
+                {{ form.image }}
+            </div>
+
+            <!-- Sale Price -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Sale Price:</h3>
+                <label for="{{ form.sale_price.id_for_label }}">Sale Price</label>
+                {{ form.sale_price }}
+            </div>
+
+            <!-- Additional Images -->
+            <div class="form-group">
+                <h3 style="font-weight: 300">Additional Images:</h3>
+                <label for="{{ form.additional_images.id_for_label }}">Add More Images</label>
+                {{ form.additional_images }}
+            </div>
+
+            <button type="submit" class="green-button">Save Changes</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const clearButton = document.getElementById('clear-image');
+        const imageField = document.getElementById('id_image');
+        const imagePreview = document.querySelector('.photo-preview img');
+
+        if (clearButton) {
+            clearButton.addEventListener('click', function () {
+                imageField.value = null;
+                imagePreview.style.display = 'none';
+                clearButton.style.display = 'none';
+            });
+        }
+    });
+</script>
 {% endblock %}

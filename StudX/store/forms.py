@@ -8,7 +8,7 @@ from .models import Product, Seller_Details, ProductImage
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'image','is_sale','sale_price']
+        fields = ['name', 'description', 'category','price', 'image','is_sale','sale_price']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',

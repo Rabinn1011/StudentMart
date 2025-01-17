@@ -304,8 +304,9 @@ def edit_product_form(request, pk):
         form = ProductForm(request.POST, request.FILES, instance=product1)
         if form.is_valid():
             form.save()
+
             messages.success(request, "Your product has been updated successfully.")
-            return redirect('product',pk=form.cleaned_data['pk'])
+            return redirect('product',pk=product1.id)
     else:
          form = ProductForm(instance=product1)
 

@@ -7,24 +7,23 @@
             <div class="item-image">
 
 
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img alt="" src="{{ product.image.url }}"></div>
+                        {% for image in product.additional_images.all %}
+                            <div class="swiper-slide"><img src="{{ image.image.url }}"></div>
+                        {% endfor %}
 
-<div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide"><img alt="" src="{{ product.image.url }}"></div>
-                {% for image in product.additional_images.all %}
-                 <div class="swiper-slide"><img src="{{image.image.url}}"></div>
-                {% endfor %}
 
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
 
+                <!-- Swiper JS -->
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-pagination"></div>
-        </div>
-
-        <!-- Swiper JS -->
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-             </div>
             <div class="item-details">
                 <h2>{{ product.name }}</h2>
                 <hr/>
@@ -53,7 +52,7 @@
                     {% if request.user == product.seller %}
 
                         <a href="{% url 'edit_product' product.id %}" class="blue-button">Edit</a>
-                       <a href="{% url 'delete_product' product.id %}" class="red-button">Delete</a>
+                        <a href="{% url 'delete_product' product.id %}" class="red-button">Delete</a>
                     {% else %}
                         <button class="blue-button">Buy Now</button>
                         <button class="red-button">Add to Cart</button>
