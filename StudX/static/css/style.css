@@ -294,7 +294,7 @@ body {
 }
 
 .product-image {
-    width: 90%;
+    width: 80%;
     height: 200px;
     object-fit: cover;
     border-bottom: 1px solid #ddd;
@@ -327,6 +327,7 @@ body {
     text-transform: uppercase;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-bottom: 10px;
 }
 
 .view-button:hover {
@@ -706,6 +707,22 @@ display: flex;
     }
      .menu-btn1{
          display: none;
+     }
+     .product-title{
+         font-size: 15px;
+     }
+     .view-button{
+         width: 80%;
+         font-size: 10px;
+     }
+     .product-card{
+         width: 45%;
+     }
+     .product-container{
+         gap: 10px;
+     }
+     .product-image{
+         width: 100%;
      }
 
 }
