@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </head>
 
@@ -25,14 +25,38 @@
 <div class="form-container">
     <!-- Messaging Block -->
     {% if messages %}
-        <div class="messages-container">
+        <div class="messages-container" id="messagess">
             {% for message in messages %}
                 <div class="alert {{ message.tags }}">
                     {{ message }}
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const messages = document.getElementById("messagess");
+
+            if (messages) {
+                // Create the progress bar element
+                const progressBar = document.createElement("div");
+                progressBar.classList.add("progress-bar");
+
+                // Append the progress bar to the messages container
+                messages.appendChild(progressBar);
+
+                // Hide the messages container after 5 seconds
+                setTimeout(() => {
+                    messages.style.display = "none";
+                }, 5000);
+            }
+        });
+    </script>
+
 </div>
 
 <!-- Content Section -->

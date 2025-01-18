@@ -2,7 +2,7 @@ var swiper = new Swiper(".mySwiper", {
     spaceBetween: 30,
     centeredSlides: true,
     autoplay: {
-        delay: 2500,
+        delay: 4000,
         disableOnInteraction: false,
     },
     pagination: {
@@ -33,7 +33,7 @@ document.addEventListener('click', () => {
     dropdownMenu.style.display = 'none';
 });
 
-//delete functionality ko
+//delete product (profile ko seller_profile.html ma xa,,, yeta milena! idk why) functionality ko
 
 document.querySelectorAll('.red-button').forEach(button => {
     button.addEventListener('click', function (event) {

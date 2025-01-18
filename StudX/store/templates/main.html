@@ -5,12 +5,18 @@
     <section class="hero-section">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}" alt="Slide 1"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}" alt="Slide 1"
+                                               onclick="scrollToSection('featured-prodd')" style="cursor: pointer;">
+                </div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"></div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide3.png' %}" alt="Slide 3"></div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide4.png' %}" alt="Slide 4"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"
+                                               onclick="redirectToSellerForm()"
+                                               style="cursor: pointer;"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"
+                                               onclick="scrollToSection('romm-section')" style="cursor: pointer;">
+                </div>
             </div>
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
@@ -22,7 +28,7 @@
     </section>
 
     <!-- Products Section -->
-    <section>
+    <section id="featured-prodd">
         <div class="form-container">
             <h2 class="section-title">Featured Products</h2>
             <div class="product-container">
@@ -42,7 +48,7 @@
     </section>
 
     <!-- Rooms Section -->
-    <section>
+    <section id="romm-section">
         <div class="form-container">
             <h2 class="section-title">Available Rooms</h2>
             <div class="product-container">
@@ -59,4 +65,21 @@
             </div>
         </div>
     </section>
+    <script>
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({behavior: 'smooth'});
+        }
+    </script>
+    <script>
+        var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
+
+        function redirectToSellerForm() {
+            if (isAuthenticated) {
+                window.location.href = "/seller_detail/";
+            } else {
+                window.location.href = "/seller-login-required/";
+            }
+        }
+    </script>
+
 {% endblock %}

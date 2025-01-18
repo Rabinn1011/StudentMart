@@ -47,6 +47,9 @@ def about(request):
     return render(request, 'about.html')
 
 
+def login_required_redirect(request):
+    messages.info(request, "You must log in to access the seller form.")
+    return redirect('/login/')
 # @login_required
 # @permission_required('store.add_product', raise_exception=True)
 # def add_product(request):
