@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <section>
+    <!-- Hero Section with Swiper -->
+    <section class="hero-section">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide3.png' %}"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide4.png' %}"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}"></div>
-
+                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}" alt="Slide 1"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide3.png' %}" alt="Slide 3"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide4.png' %}" alt="Slide 4"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"></div>
             </div>
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
@@ -20,37 +20,43 @@
         <!-- Swiper JS -->
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     </section>
+
+    <!-- Products Section -->
     <section>
         <div class="form-container">
+            <h2 class="section-title">Featured Products</h2>
             <div class="product-container">
-
-                {% for product in products %}
-                    <div class="product-card">
-                        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
-                        <h3 class="product-title">{{ product.name }}</h3>
-                        <br>
-
-
-                        <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
-                    </div>
-                {% endfor %}
-
+                {% if products.exists %}
+                    {% for product in products %}
+                        <div class="product-card">
+                            <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-products">No products available at the moment. Please check back later!</p>
+                {% endif %}
             </div>
         </div>
     </section>
+
+    <!-- Rooms Section -->
     <section>
-
- <div class="form-container">
-        <div class="product-container">
-            {% for room in rooms %}
-                <div class="product-card">
-                    <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
-                    <h3 class="product-title">{{ room.type }}</h3>
-
-                </div>
-            {% endfor %}
+        <div class="form-container">
+            <h2 class="section-title">Available Rooms</h2>
+            <div class="product-container">
+                {% if rooms.exists %}
+                    {% for room in rooms %}
+                        <div class="product-card">
+                            <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
+                            <h3 class="product-title">{{ room.type }}</h3>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-rooms">No rooms available at the moment. Please check back later!</p>
+                {% endif %}
+            </div>
         </div>
-    </div>
-
     </section>
 {% endblock %}

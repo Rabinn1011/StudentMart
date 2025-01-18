@@ -280,7 +280,7 @@ body {
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    width: 300px;
+    width: 15rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     justify-content: space-between;
@@ -536,8 +536,8 @@ input[type="checkbox"] {
 }
 
 .item-image {
-    width: 40%;
-    height: 80%;
+    width: 50%;
+    max-height: 20rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -723,6 +723,7 @@ display: flex;
      }
      .product-image{
          width: 100%;
+         height: 100px;
      }
 
 }
@@ -759,9 +760,19 @@ display: flex;
         margin: 0;
     }
 
+
+}
+@media (min-width: 500px)and (max-width: 700px){
     .item-details {
         width: 90%;
     }
+    .product-container{
+        gap: 20px;
+    }
+    .product-card{
+        width: 13rem;
+    }
+
 }
 /*seller profile ko*/
 .form-container-selpro {
@@ -774,12 +785,6 @@ display: flex;
     margin: 20px auto;
     height: 90%;
 }
-
-.item-section {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
 
 
 .seller-detail {
@@ -963,7 +968,7 @@ textarea,
 
 select {
 
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 0.9rem;
@@ -1000,6 +1005,7 @@ select {
 /* slider ko suru */
 
 .swiper-slide img{
+    max-height: 30rem;
     top:20%;
     width:90%;
     height:50%;
