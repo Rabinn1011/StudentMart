@@ -1168,3 +1168,52 @@ footer {
     left: 0;
 }
 /*user profle ko yaha samma*/
+
+/*delete ko confirmation box*/
+.confirm-box {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .confirm-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 400px;
+
+    }
+
+    .confirm-content p {
+        margin-bottom: 20px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .confirm-content .btn {
+        margin: 5px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-danger {
+        background-color: #e63946;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+/*delete ko confirmation box yaha samma*/

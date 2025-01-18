@@ -158,7 +158,7 @@ def activateEmail(request, user, to_email):
         email = EmailMessage(mail_subject, message, to=[to_email])
         email.content_subtype = 'html'  # To send HTML emails
         email.send()
-        messages.success(request, f'Dear <b>{user.username}</b>, please go to your email <b>{to_email}</b> inbox and click on the activation link to complete registration. <b>Note:</b> Check your spam folder.')
+        messages.success(request, f'Dear {user.username}, please go to your email {to_email} inbox and click on the activation link to complete registration. Note: Check your spam folder.')
     except Exception as e:
         messages.error(request, f'Problem sending email to {to_email}. Please try again. Error: {str(e)}')
 

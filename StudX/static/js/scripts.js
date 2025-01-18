@@ -32,3 +32,30 @@ profileIcon.addEventListener('click', (e) => {
 document.addEventListener('click', () => {
     dropdownMenu.style.display = 'none';
 });
+
+//delete functionality ko
+
+document.querySelectorAll('.red-button').forEach(button => {
+    button.addEventListener('click', function (event) {
+        const action = button.getAttribute('data-action');
+
+        if (action === 'delete-product') {
+
+            event.preventDefault();
+            const confirmBox = document.getElementById('custom-confirm');
+            confirmBox.style.display = 'flex';
+
+            // Handle Yes button
+            document.getElementById('confirm-yes').onclick = function () {
+                window.location.href = button.href; // Proceed with deletion
+            };
+
+            // Handle No button
+            document.getElementById('confirm-no').onclick = function () {
+                confirmBox.style.display = 'none';
+            };
+        }
+
+    });
+});
+

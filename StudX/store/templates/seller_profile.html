@@ -13,8 +13,8 @@
                     <li><strong>Address:</strong> {{ seller.address }}</li>
                     <li><strong>Phone Number:</strong> {{ seller.phone_number }}
                         {% if request.user == seller.user %}
-                         <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
-                    <li><strong>Date of Birth:</strong> {{ seller.dob|date:"F j, Y" }}</li>
+                            <li><strong>Citizenship Number:</strong> {{ seller.citizenship_number }}</li>
+                            <li><strong>Date of Birth:</strong> {{ seller.dob|date:"F j, Y" }}</li>
                         {% endif %}
 
                     <li>
@@ -26,13 +26,20 @@
                         {% endif %}
                     </li>
                 </ul>
-            {% if request.user == seller.user %}
-                <div class="button-container">
-                    <a href="{% url 'edit_seller_profile'%}" class="blue-button">Edit Profile</a>
-                    <a href="{% url 'delete_profile'%}" class="red-button">Delete Profile</a>
-
-                </div>
-            {% endif %}
+                {% if request.user == seller.user %}
+                    <div class="button-container">
+                        <a href="{% url 'edit_seller_profile' %}" class="blue-button">Edit Profile</a>
+                        <a href="{% url 'delete_profile' %}" class="red-button" data-action="delete-profile"
+                           onclick="return false;">Delete Profile</a>
+                    </div>
+                    <div id="custom-confirm" class="confirm-box" style="display: none;">
+                        <div class="confirm-content">
+                            <p>Are you sure you want to delete your profile?</p>
+                            <button id="confirm-yes" class="btn btn-danger">Yes</button>
+                            <button id="confirm-no" class="btn btn-secondary">No</button>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
             <!-- Products Section -->
@@ -43,7 +50,7 @@
                     {% else %}
                         {{ seller.seller_name }}
                     {% endif %}
-                    </h3>
+                </h3>
                 {% if products1 %}
                     <div class="products-grid-selpro">
                         {% for product in products1 %}
@@ -62,5 +69,29 @@
                 {% endif %}
             </div>
         </div>
+        <script>
+            document.querySelectorAll('.red-button').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const action = button.getAttribute('data-action');
+                    if (action === 'delete-profile') {
+                        // Show confirmation for deleting a profile
+                        event.preventDefault();
+                        const confirmBox = document.getElementById('custom-confirm');
+                        confirmBox.style.display = 'flex';
+
+                        // Handle Yes button
+                        document.getElementById('confirm-yes').onclick = function () {
+                            window.location.href = button.href; // Proceed with deletion
+                        };
+
+                        // Handle No button
+                        document.getElementById('confirm-no').onclick = function () {
+                            confirmBox.style.display = 'none'; // Hide the dialog
+                        };
+                    }
+
+                });
+            });
+        </script>
     </section>
 {% endblock %}

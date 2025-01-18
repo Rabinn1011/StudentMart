@@ -52,15 +52,30 @@
                     {% if request.user == product.seller %}
 
                         <a href="{% url 'edit_product' product.id %}" class="blue-button">Edit</a>
-                        <a href="{% url 'delete_product' product.id %}" class="red-button">Delete</a>
+                        <a href="{% url 'delete_product' product.id %}"
+                           class="red-button"
+                           data-action="delete-product"
+                           onclick="return false;">Delete</a>
+                        <div id="custom-confirm" class="confirm-box" style="display: none;">
+                            <div class="confirm-content">
+                                <p>Are you sure you want to delete this item?</p>
+                                <button id="confirm-yes" class="btn btn-danger">Yes</button>
+                                <button id="confirm-no" class="btn btn-secondary">No</button>
+                            </div>
+                        </div>
+
                     {% else %}
                         <button class="blue-button">Buy Now</button>
-                        <button class="red-button">Add to Cart</button>
+                        <button class="red-button" data-action="add-to-cart">Add to Cart</button>
 
                     {% endif %}
                 </div>
             </div>
         </div>
+        <script>
+
+
+        </script>
     </section>
 
 {% endblock %}

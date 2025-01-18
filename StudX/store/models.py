@@ -30,7 +30,7 @@ class Product(models.Model):
         ('Books', 'Books'),
         ('Academic Tools', 'Academic Tools'),
         ('Academic Coats', 'Academic Coats'),
-        ('Student Tools', 'Student Tools'),
+        ('Electronics', 'Electronics'),
         ('Table', 'Table'),
         ('Other', 'Other'),
     ]
