@@ -33,9 +33,9 @@ seller_group.permissions.set(permissions)
 seller_group.save()
 
 def home(request):
-    user_in_seller_group = request.user.groups.filter(name='Seller').exists()
-    products =Product.objects.all()
-    rooms= Room.objects.all()
+    user_in_seller_group = request.user.groups.filter(name='Sellers').exists()
+    products =Product.objects.all()[:10]
+    rooms= Room.objects.all()[:10]
     if request.user.is_authenticated:
        seller_details = Seller_Details.objects.filter(user=request.user).first()
        return render(request, 'main.html', {'products': products, 'seller_details': seller_details})

@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from pyexpat.errors import messages
+from django.contrib import messages
 
 from rent.forms import RoomForm
 from rent.models import Room
