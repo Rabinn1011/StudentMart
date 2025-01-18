@@ -79,7 +79,7 @@ def add_product(request):
         seller_details = Seller_Details.objects.filter(user=request.user).first()
         if not seller_details.is_verified:
            messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
-           return redirect('seller_profile',username=request.user.username)
+           return redirect('home')
 
     try:
         ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
