@@ -34,6 +34,7 @@ class Product(models.Model):
         ('Table', 'Table'),
         ('Other', 'Other'),
     ]
+
     name = models.CharField(max_length=100)
     price = models.DecimalField(default=0 ,decimal_places=2,max_digits=6)
     description = models.CharField(max_length=250,default='',blank=True,null=True)

@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Search Results for "{{ query }}"</h1>
+    <section>
+
+
 
     {% if results %}
+        <div class="form-container">
+         <h1>Search Results for "{{ query }}"</h1>
         {% for product in results %}
-            <div class="form-container">
+
 
             <div class="product-container">
             <div class="product-card">
@@ -14,11 +18,11 @@
                 <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
             </div>
         {% endfor %}
-
-    </div>
-    </div>
-
     {% else %}
         <p>No products found.</p>
     {% endif %}
+</div>
+</div>
+
+</section>
 {% endblock %}
