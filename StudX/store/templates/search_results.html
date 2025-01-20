@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Search Results for "{{ query }}"</h1>
+
+    {% if results %}
+        {% for product in results %}
+            <div class="form-container">
+
+            <div class="product-container">
+            <div class="product-card">
+                <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                <h3 class="product-title">{{ product.name }}</h3>
+                <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
+            </div>
+        {% endfor %}
+
+    </div>
+    </div>
+
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+{% endblock %}

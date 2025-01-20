@@ -24,6 +24,10 @@ from django.contrib.auth.decorators import login_required,permission_required
 from rent.models import Room
 from .tokens import account_activation_token
 
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Product
+
 seller_group,created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
 permissions = Permission.objects.filter(content_type=content_type, codename__in=[
@@ -68,6 +72,29 @@ def login_required_redirect(request):
 #     except PermissionDenied:
 #         messages.error(request, "You need to log in or register to add a product.")
 #         return redirect('register')
+
+def search_products(request):
+    query = request.GET.get('q', '').strip()
+    results = []
+
+    if query:
+        # Search for exact matches first
+        exact_match = Product.objects.filter(name__iexact=query)
+
+        if exact_match.exists():
+            results = exact_match
+        else:
+            # Partial matches in product names or matching categories
+            partial_matches = Product.objects.filter(
+                Q(seller__seller_name__icontains=query) | #seller name batw ni garna khojeko, milena
+                Q(name__icontains=query) | Q(category__icontains=query)
+            )
+            results = partial_matches
+
+    return render(request, 'search_results.html', {'query': query, 'results': results})
+
+
+
 
 def add_product(request):
     if not request.user.is_authenticated:  # Check if user is logged in
