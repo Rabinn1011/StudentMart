@@ -86,7 +86,7 @@ def search_products(request):
         else:
             # Partial matches in product names or matching categories
             partial_matches = Product.objects.filter(
-                Q(seller__seller_name__icontains=query) | #seller name batw ni garna khojeko, milena
+            # Q(seller__seller_name__icontains=query) |
                 Q(name__icontains=query) | Q(category__icontains=query)
             )
             results = partial_matches

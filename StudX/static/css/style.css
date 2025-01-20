@@ -123,6 +123,10 @@ body {
     }
 }
 
+.alert.info .progress-bar {
+    background-color: dodgerblue;
+}
+
 .alert.success .progress-bar {
     background-color: #28a745;
 
@@ -181,7 +185,7 @@ body {
 
 .search-input:focus {
     outline: none;
-    width: 100%;
+    width: 90%;
 }
 
 .search-button {
