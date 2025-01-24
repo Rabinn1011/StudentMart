@@ -57,6 +57,8 @@
                         <div class="product-card">
                             <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
                             <h3 class="product-title">{{ room.type }}</h3>
+                            <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
+
                         </div>
                     {% endfor %}
                 {% else %}
