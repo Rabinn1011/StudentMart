@@ -1,3 +1,5 @@
+import json
+from cart.cart import Cart
 from django.core.mail import EmailMessage
 
 from django.contrib.auth import authenticate, login, logout, get_user_model
@@ -7,8 +9,10 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.forms.models import modelformset_factory
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
@@ -19,7 +23,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm, ProductImageForm
-from .models import Product, Seller_Details, ProductImage
+from .models import Product, Seller_Details, ProductImage, CartProfile
 from django.contrib.auth.decorators import login_required,permission_required
 from rent.models import Room
 from .tokens import account_activation_token
@@ -35,6 +39,11 @@ permissions = Permission.objects.filter(content_type=content_type, codename__in=
 ])
 seller_group.permissions.set(permissions)
 seller_group.save()
+
+@receiver(post_save,sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        CartProfile.objects.create(user=instance)
 
 def home(request):
     user_in_seller_group = request.user.groups.filter(name='Sellers').exists()
@@ -147,6 +156,17 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+
+
+            current_user=CartProfile.objects.get(user__id=request.user.id)
+            saved_cart=current_user.old_cart
+            if saved_cart:
+                coverted_cart=json.loads(saved_cart)
+                cart=Cart(request)
+                for key,value in coverted_cart.items():
+                    cart.db_add(product=key, quantity=value)
+
+
             messages.success(request, f"Welcome {username}! You have successfully logged in.")
             return redirect(next_url or 'home')
         else:

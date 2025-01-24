@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 import os
 
+class CartProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    old_cart = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
 
 class Seller_Details(models.Model):
     seller_name = models.CharField(max_length=100)

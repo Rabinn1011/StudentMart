@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Product, Seller_Details, ProductImage
+from .models import Product, Seller_Details, ProductImage, CartProfile
 
 # Register your models here.
 admin.site.register(Product)
 admin.site.register(ProductImage)
 admin.site.register(Seller_Details)
-
+admin.site.register(CartProfile)
