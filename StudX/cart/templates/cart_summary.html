@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if cart_products.exists %}
+    Item in Your Cart
+    {% for product in cart_products %}
+        <div class="product-card">
+            <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+            <h3 class="product-title">{{ product.name }}</h3>
+            <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
+            <button type="button" data-index="{{ product.id }}" class=" view-button red-button delete-product">Remove</button>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="no-products">No products available at the moment. Please check back later!</p>
+{% endif %}
+    <script>
+    $(document).on('click', '.delete-product', function(e){
+    e.preventDefault();
+    // grab the product id
+    //var productid = $(this).data('index');
+
+    $.ajax({
+    type: 'POST',
+    url: '{% url 'cart_delete' %}',
+    data: {
+      product_id: $(this).data('index'),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+      action: 'post'
+    },
+    success: function(json){
+        //console.log(json)
+        //document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+    },
+
+    error: function(xhr, errmsg, err){
+
+    }
+
+
+    });
+
+})
+    </script>
+{% endblock %}

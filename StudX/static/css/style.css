@@ -581,7 +581,7 @@ input[type="checkbox"] {
 
 .item-image {
     width: 50%;
-    max-height: 20rem;
+    max-height: 30rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -592,7 +592,7 @@ input[type="checkbox"] {
 
 .item-image img {
     border-radius: 10px;
-    max-width: 100%;
+    max-width: 20rem;
     max-height: 100%;
 }
 

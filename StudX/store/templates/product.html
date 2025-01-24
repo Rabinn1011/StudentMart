@@ -66,16 +66,43 @@
 
                     {% else %}
                         <button class="blue-button">Buy Now</button>
-                        <button class="red-button" data-action="add-to-cart">Add to Cart</button>
+                        <button id= "add-cart" class="red-button" value="{{ product.id }}" data-action="add-to-cart">Add to Cart</button>
 
                     {% endif %}
                 </div>
             </div>
         </div>
-        <script>
+<script>
+// Check if button pressed
+$(document).on('click', '#add-cart', function(e){
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_add' %}',
+        data: {
+    product_id: $('#add-cart').val(),
+    csrfmiddlewaretoken: '{{ csrf_token }}',
+    action: 'post'
+        },
+
+        success: function(json){
+            document.getElementById("cart_quantity")
+            location.reload();
+        },
+
+        error: function(xhr, errmsg, err){
+
+        }
 
 
-        </script>
+    });
+
+
+
+})
+
+
+</script>
     </section>
 
 {% endblock %}
