@@ -147,25 +147,29 @@ def product(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, 'product.html', {'product': product})
 
-
 def login_user(request):
     next_url = request.GET.get('next')
-    if request.method=='POST':
+    if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
 
+            # handle CartProfile
+            try:
+                current_user = CartProfile.objects.get(user__id=request.user.id)
+                saved_cart = current_user.old_cart
 
-            current_user=CartProfile.objects.get(user__id=request.user.id)
-            saved_cart=current_user.old_cart
-            if saved_cart:
-                coverted_cart=json.loads(saved_cart)
-                cart=Cart(request)
-                for key,value in coverted_cart.items():
-                    cart.db_add(product=key, quantity=value)
+                # Restore the saved cart if it exists
+                if saved_cart:
+                    converted_cart = json.loads(saved_cart)
+                    cart = Cart(request)
+                    for key, value in converted_cart.items():
+                        cart.db_add(product=key, quantity=value)
 
+            except CartProfile.DoesNotExist:
+                CartProfile.objects.create(user=request.user)
 
             messages.success(request, f"Welcome {username}! You have successfully logged in.")
             return redirect(next_url or 'home')
