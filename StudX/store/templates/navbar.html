@@ -43,7 +43,7 @@
                                 {% endif %}
 
                                 <li><a href="{% url 'logout' %}">Logout</a></li>
-                                <li><a href="">My Cart</a></li>
+                                <li><a href="{% url 'cart_summary' %}">My Cart</a></li>
                             {% else %}
                                 <li><a href="{% url 'register' %}">Register</a></li>
                                 <li><a href="{% url 'login' %}">Login</a></li>

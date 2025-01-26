@@ -2,7 +2,7 @@
 {% block content %}
     <div class="form-container">
 {% if cart_products.exists %}
-    Item in Your Cart
+    <p class="heading"> Item in Your Cart</p>
     {% for product in cart_products %}
         <div class="product-card">
             <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
@@ -12,7 +12,7 @@
         </div>
     {% endfor %}
 {% else %}
-    <p >No products available at the moment. Please check back later!</p>
+    <p class="heading">No products available at the moment. Please check back later!</p>
 {% endif %}
     </div>
     <script>
