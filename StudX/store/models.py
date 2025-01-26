@@ -15,6 +15,7 @@ class Seller_Details(models.Model):
     address = models.CharField(max_length=250)
     phone_number = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='uploads/profile_photos/', null=True, blank=True)
+    chitizenship_photo = models.ImageField(upload_to='uploads/chitizenship/', null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_verified = models.BooleanField(default=False)
     citizenship_number = models.CharField(max_length=250)

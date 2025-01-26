@@ -47,7 +47,7 @@ class ProductImageForm(forms.ModelForm):
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:
         model = Seller_Details
-        fields = ['seller_name', 'photo', 'address', 'phone_number', 'citizenship_number', 'dob']
+        fields = ['seller_name', 'photo', 'address', 'phone_number', 'citizenship_number','chitizenship_photo', 'dob']
         widgets = {
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -81,7 +81,7 @@ class SellerProfileEditForm(forms.ModelForm):
 class SellerForm(forms.ModelForm):
     class Meta:
         model = Seller_Details
-        fields = ['seller_name','address','phone_number','photo','citizenship_number','dob']
+        fields = ['seller_name','address','phone_number','photo','citizenship_number','chitizenship_photo','dob']
         widgets = {
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -98,6 +98,7 @@ class SellerForm(forms.ModelForm):
                 'placeholder': 'Enter your phone number',
                 'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
+
             'photo': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
                 'style': ' margin-bottom:10px;  padding: 10px; font-size: 14px;',
@@ -106,6 +107,10 @@ class SellerForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Enter your citizenship number',
                 'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+            }),
+            'chitizenship_photo': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'style': ' margin-bottom:10px;  padding: 10px; font-size: 14px;',
             }),
             'dob': forms.DateInput(attrs={
                 'class': 'form-control',

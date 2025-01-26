@@ -83,7 +83,7 @@
                     <li><a href="{% url 'register' %}">Register</a></li>
                     <li><a href="{% url 'login' %}">Login</a></li>
                 {% endif %}
-                  <li><a href="{% url 'contact' %}">Help & Support</a></li>
+                  <li><a href="{% url 'help_and_support' %}">Help & Support</a></li>
                   {% if seller_details.is_verified %}
                       <li><a href="{% url 'add_product' %}">Add Product</a></li>
                   {% endif %}
