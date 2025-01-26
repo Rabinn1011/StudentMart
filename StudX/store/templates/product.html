@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% block content %}
@@ -7,9 +8,13 @@
         <div class="item-image">
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img alt="" src="{{ product.image.url }}"></div>
+                    <div class="swiper-slide">
+                        <img alt="" src="{{ product.image.url }}">
+                    </div>
                     {% for image in product.additional_images.all %}
-                        <div class="swiper-slide"><img src="{{ image.image.url }}"></div>
+                        <div class="swiper-slide">
+                            <img src="{{ image.image.url }}">
+                        </div>
                     {% endfor %}
                 </div>
                 <div class="swiper-button-next"></div>
@@ -32,7 +37,6 @@
                         <img src="{{ product.seller.seller_details.photo.url }}" alt="seller-image">
                     </a>
                 </div>
-
                 <div>
                     <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
                         <p>{{ product.seller.seller_details.seller_name }}</p>
@@ -59,7 +63,10 @@
                     </div>
                 {% else %}
                     <button class="blue-button">Buy Now</button>
-                    <button id="add-cart" class="red-button" value="{{ product.id }}" data-action="add-to-cart">Add to Cart</button>
+<form action="{% url 'initiate_khalti_payment' product.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="blue-button">Pay with Khalti</button>
+</form>                    <button id="add-cart" class="red-button" value="{{ product.id }}" data-action="add-to-cart">Add to Cart</button>
                 {% endif %}
             </div>
         </div>
@@ -89,7 +96,6 @@
                 action: 'post'
             },
             success: function (json) {
-                document.getElementById("cart_quantity")
                 location.reload();
             },
             error: function (xhr, errmsg, err) {
@@ -98,8 +104,7 @@
         });
         {% else %}
         // User is not logged in, show login prompt modal
-        const loginPrompt = document.getElementById('login-prompt');
-        loginPrompt.style.display = 'flex';
+        document.getElementById('login-prompt').style.display = 'flex';
 
         // Handle Yes button
         document.getElementById('login-yes').onclick = function () {
@@ -108,11 +113,56 @@
 
         // Handle No button
         document.getElementById('login-no').onclick = function () {
-            loginPrompt.style.display = 'none'; // Hide the modal
+            document.getElementById('login-prompt').style.display = 'none';
         };
         {% endif %}
     });
     </script>
-</section>
+   <script src="https://khalti.com/static/khalti-checkout.js"></script>
+<script>
+    var khaltiConfig = {
+        "publicKey": "{{ settings.KHALTI_PUBLIC_KEY }}",  // Use the correct public key
+        "productIdentity": "{{ product.id }}",
+        "productName": "{{ product.name }}",
+        "productUrl": window.location.href,
+        "amount": {{ product.price|floatformat:0 }} * 100, // Convert to paisa
+        "eventHandler": {
+            onSuccess: function (payload) {
+                fetch("{% url 'khalti_verify' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: new URLSearchParams({
+                        "token": payload.token,
+                        "amount": payload.amount
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        alert("Payment Successful!");
+                        window.location.href = "/order-confirmation/";
+                    } else {
+                        alert("Payment Failed!");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            },
+            onError: function (error) {
+                console.log("Khalti Error:", error);
+            },
+            onClose: function () {
+                console.log("Khalti widget closed.");
+            }
+        }
+    };
 
+    var khaltiCheckout = new KhaltiCheckout(khaltiConfig);
+    document.getElementById("khalti-payment-button").onclick = function () {
+        khaltiCheckout.show({ amount: {{ product.price|floatformat:0 }} * 100 });
+    };
+</script>
+</section>
 {% endblock %}

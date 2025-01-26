@@ -16,6 +16,12 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+KHALTI_PUBLIC_KEY = "fa0543e3dbf8427294dea672f66f7cb3"
+KHALTI_SECRET_KEY = "192d9257f58d40038ab9d962e4eb99f0"
+
+# Use sandbox API URLs (for testing)
+KHALTI_INITIATE_URL = "https://a.khalti.com/api/v2/epayment/initiate/"
+KHALTI_VERIFY_URL = "https://a.khalti.com/api/v2/payment/verify/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
