@@ -4,9 +4,9 @@
     <section>
 
 
-
+ <div class="form-container">
     {% if results %}
-        <div class="form-container">
+
          <h1>Search Results for "{{ query }}"</h1>
         {% for product in results %}
 
@@ -19,7 +19,7 @@
             </div>
         {% endfor %}
     {% else %}
-        <p>No products found.</p>
+        <p class="heading">No products found.</p>
     {% endif %}
 </div>
 </div>
