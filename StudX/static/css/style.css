@@ -29,6 +29,12 @@ body {
 
 
 }
+.head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
 
 #id_email,#id_new_password1,#id_new_password2,#id_old_password{
    margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;
@@ -597,8 +603,7 @@ input[type="checkbox"] {
 }
 
 .item-details {
-    padding: 20px;
-    width: 60%;
+    padding: 10px;
     height: 80%;
 }
 
@@ -792,6 +797,9 @@ display: flex;
 
 @media screen and ( max-width: 700px) {
 
+    .head{
+        flex-direction: column;
+    }
     .nav-list li{
         margin-right: 20px;
     }
