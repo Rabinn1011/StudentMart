@@ -15,6 +15,7 @@ class Cart():
     def db_add(self, product, quantity=1):
         product_id = str(product)
         product_qty = str(quantity)
+
         if product_id in self.cart:
             pass
         else:
@@ -25,8 +26,13 @@ class Cart():
         if self.request.user.is_authenticated:
             current_user = CartProfile.objects.filter(user__id=self.request.user.id)
             carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
-            current_user.update(old_cart=str(carty))
+            carty = carty.replace("'", "\"")
+
+            # Check if cart is empty, set old_cart to None or empty string
+            if self.cart:  # If cart has items
+                current_user.update(old_cart=str(carty))
+            else:  # If cart is empty
+                current_user.update(old_cart=None)
 
     def add(self, product, quantity=1):
         product_id = str(product.id)
