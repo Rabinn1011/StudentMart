@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+    <div class="form-container">
 {% if cart_products.exists %}
     Item in Your Cart
     {% for product in cart_products %}
@@ -11,8 +12,9 @@
         </div>
     {% endfor %}
 {% else %}
-    <p class="no-products">No products available at the moment. Please check back later!</p>
+    <p >No products available at the moment. Please check back later!</p>
 {% endif %}
+    </div>
     <script>
     $(document).on('click', '.delete-product', function(e){
     e.preventDefault();
