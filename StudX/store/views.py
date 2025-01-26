@@ -418,3 +418,6 @@ def delete_product_form(request, pk):
     messages.success(request, "Product has been deleted successfully.")
 
     return redirect('home')
+
+def help_and_support(request):
+    return render(request, 'help_and_support.html')
