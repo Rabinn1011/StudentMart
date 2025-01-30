@@ -1,5 +1,5 @@
 """
-ASGI config for StudX project.
+ASGI config for StudX_mini project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'StudX.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'StudX_mini.settings')
 
 application = get_asgi_application()
