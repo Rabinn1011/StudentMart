@@ -460,8 +460,8 @@ def initiate_khalti_payment(request, product_id):
 
 def khalti_verify(request):
     if request.method == "POST":
-        token = request.POST.get("token")  # ✅ Get token from frontend
-        amount = request.POST.get("amount")  # ✅ Get amount in paisa
+        token = request.POST.get("token")
+        amount = request.POST.get("amount")
 
         if not token or not amount:
             return JsonResponse({"status": "failure", "message": "Missing token or amount"}, status=400)
