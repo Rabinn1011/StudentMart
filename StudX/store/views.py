@@ -1,4 +1,7 @@
 import json
+import requests
+from django.conf import settings
+
 from cart.cart import Cart
 from django.core.mail import EmailMessage
 
@@ -16,14 +19,14 @@ from django.shortcuts import redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm, ProductImageForm
-from .models import Product, Seller_Details, ProductImage, CartProfile
+from .models import Product, Seller_Details, ProductImage, CartProfile, Order
 from django.contrib.auth.decorators import login_required,permission_required
 from rent.models import Room
 from .tokens import account_activation_token
@@ -421,3 +424,144 @@ def delete_product_form(request, pk):
 
 def help_and_support(request):
     return render(request, 'help_and_support.html')
+
+def initiate_khalti_payment(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    amount = int(product.price * 100)  # Convert NPR to paisa
+
+    payload = {
+        "return_url": request.build_absolute_uri(reverse("khalti_payment_callback")),
+        "website_url": "https://yourwebsite.com/",
+        "amount": amount,
+        "purchase_order_id": f"order_{product.id}",
+        "purchase_order_name": product.name,
+    }
+
+    headers = {
+        "Authorization": f"Key {settings.KHALTI_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # Debugging: Print request data before sending it
+    print("Initiating Khalti Payment with:", payload)
+    print("Using Secret Key:", settings.KHALTI_SECRET_KEY)
+
+    response = requests.post(settings.KHALTI_INITIATE_URL, json=payload, headers=headers)
+
+    # Debugging: Print response
+    print("Khalti Response Status:", response.status_code)
+    print("Khalti Response Data:", response.text)
+
+    if response.status_code == 200:
+        data = response.json()
+        return redirect(data["payment_url"])  # Redirect user to Khalti payment page
+    else:
+        return JsonResponse({"error": "Payment initiation failed", "details": response.text}, status=400)
+
+def khalti_verify(request):
+    if request.method == "POST":
+        token = request.POST.get("token")
+        amount = request.POST.get("amount")
+
+        if not token or not amount:
+            return JsonResponse({"status": "failure", "message": "Missing token or amount"}, status=400)
+
+        headers = {
+            "Authorization": f"Key {settings.KHALTI_SECRET_KEY}"
+        }
+
+        data = {
+            "token": token,
+            "amount": amount
+        }
+
+        response = requests.post(settings.KHALTI_VERIFY_URL, data=data, headers=headers)
+
+        if response.status_code == 200:
+            return JsonResponse({"status": "success", "message": "Payment verified!"})
+        else:
+            return JsonResponse({"status": "failure", "message": "Verification failed", "details": response.json()}, status=400)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+#
+# def khalti_payment_callback(request):
+#     pidx = request.GET.get("pidx")
+#     amount = request.GET.get("amount")
+#
+#     if not pidx or not amount:
+#         messages.error(request, "Invalid payment request. Missing pidx or amount.")
+#         return redirect("home")
+#
+#     headers = {"Authorization": f"Key {settings.KHALTI_SECRET_KEY}"}
+#
+#     lookup_url = "https://a.khalti.com/api/v2/epayment/lookup/"
+#     lookup_payload = {"pidx": pidx}
+#     print(lookup_payload)
+#     logger.info(f"Fetching token from Khalti with: {lookup_payload}")
+#
+#     lookup_response = requests.post(lookup_url, json=lookup_payload, headers=headers)
+#
+#     if lookup_response.status_code == 200:
+#         lookup_data = lookup_response.json()
+#         logger.info(f"Khalti Lookup Response: {lookup_data}")  # Debugging log
+#
+#         token = lookup_data.get("payment_token")
+#         print(token)
+#         if not token:
+#             messages.error(request, "Failed to fetch payment token. Please contact support.")
+#             return redirect("home")
+#     else:
+#         messages.error(request, "Failed to fetch transaction details. Please contact support.")
+#         return redirect("home")
+#
+#     verify_url = "https://a.khalti.com/api/v2/payment/verify/"
+#     verify_payload = {
+#         "token": token,
+#         "amount": int(amount)
+#     }
+#
+#     logger.info(f"Sending verification request to Khalti with: {verify_payload}")
+#
+#     verify_response = requests.post(verify_url, json=verify_payload, headers=headers)
+#
+#     if verify_response.status_code == 200:
+#         verify_data = verify_response.json()
+#         logger.info(f"Khalti Verification Response: {verify_data}")  # Debugging log
+#
+#         if verify_data.get("status") == "Completed":
+#             messages.success(request, "Payment Successful! Thank you for your purchase.")
+#             return redirect("home")
+#
+#     messages.error(request, "Payment verification failed. Please contact support.")
+#     return redirect("home")
+def khalti_payment_callback(request):
+    logger = logging.getLogger(__name__)
+    pidx = request.GET.get("pidx")
+    amount = request.GET.get("amount")
+
+    if not pidx or not amount:
+        messages.error(request, "Invalid payment request. Missing pidx or amount.")
+        return redirect("home")
+
+    headers = {"Authorization": f"Key {settings.KHALTI_SECRET_KEY}"}
+    verify_url = "https://a.khalti.com/api/v2/epayment/lookup/"
+    verify_payload = {"pidx": pidx}
+
+    logger.info(f"Sending verification request to Khalti with: {verify_payload}")
+    verify_response = requests.post(verify_url, json=verify_payload, headers=headers)
+
+    if verify_response.status_code == 200:
+        verify_data = verify_response.json()
+        logger.info(f"Khalti Verification Response: {verify_data}")
+
+        if verify_data.get("status") == "Completed":
+            messages.success(request, "Payment Successful! Thank you for your purchase.")
+            return redirect("home")
+
+    messages.error(request, "Payment verification failed. Please contact support.")
+    return redirect("home")

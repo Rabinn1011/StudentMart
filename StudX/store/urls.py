@@ -12,6 +12,9 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
     path('help/', views.help_and_support, name='help_and_support'),
+    path("khalti/initiate/<int:product_id>/", views.initiate_khalti_payment, name="initiate_khalti_payment"),
+    path("khalti/callback/", views.khalti_payment_callback, name="khalti_payment_callback"),
+    path("khalti/verify/", views.khalti_verify, name="khalti_verify"),
 
     path('product/<int:pk>', views.product, name='product'),
     path('login/', views.login_user, name='login'),
