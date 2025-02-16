@@ -77,7 +77,12 @@
             <div class="navbar">
               <ul class="nav-list">
                 {% if user.is_authenticated %}
-                    <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Profile</a></li>
+                  {% if seller_details.is_verified %}
+                    <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller Profile</a></li>
+                      {% else %}
+                      <li><a href="{% url 'seller_info' %}">Become a Seller</a> </li>
+                      {% endif %}
+
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'register' %}">Register</a></li>
@@ -85,6 +90,7 @@
                 {% endif %}
                   <li><a href="{% url 'help_and_support' %}">Help & Support</a></li>
                   {% if seller_details.is_verified %}
+                      <li><a href="{% url 'add_room' %}">Add Room</a></li>
                       <li><a href="{% url 'add_product' %}">Add Product</a></li>
                   {% endif %}
              </ul>
