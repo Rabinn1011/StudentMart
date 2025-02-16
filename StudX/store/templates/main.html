@@ -8,14 +8,19 @@
                 <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}" alt="Slide 1"
                                                onclick="scrollToSection('featured-prodd')" style="cursor: pointer;">
                 </div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide3.png' %}" alt="Slide 3"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide4.png' %}" alt="Slide 4"></div>
+                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"
+                                               onclick="scrollToSection('romm-section')" style="cursor: pointer;"></div>
+                <div class="swiper-slide"><a href="{% url 'search' %}?q=Electronics"> <img
+                        src="{% static 'assests/slide3.png' %}" alt="Slide 3"></a></div>
+                <div class="swiper-slide" onclick="loadSaleProducts()"><img src="{% static 'assests/slide4.png' %}"
+                                                                            alt="Slide 4" style="cursor: pointer;"></div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"
                                                onclick="redirectToSellerForm()"
                                                style="cursor: pointer;"></div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"
-                                               onclick="scrollToSection('romm-section')" style="cursor: pointer;">
+                                               onclick="redirectToAddRoom()"
+                                               style="cursor: pointer;">
+
                 </div>
             </div>
             <div class="swiper-button-next"></div>
@@ -68,6 +73,12 @@
         </div>
     </section>
     <script>
+        function loadSaleProducts() {
+            window.location.href = "/search/?on_sale=true";
+        }
+
+    </script>
+    <script>
         function scrollToSection(sectionId) {
             document.getElementById(sectionId).scrollIntoView({behavior: 'smooth'});
         }
@@ -78,6 +89,18 @@
         function redirectToSellerForm() {
             if (isAuthenticated) {
                 window.location.href = "/seller_detail/";
+            } else {
+                window.location.href = "/seller-login-required/";
+            }
+        }
+    </script>
+
+    <script>
+        var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
+
+        function redirectToAddRoom() {
+            if (isAuthenticated) {
+                window.location.href = "/add_room/";
             } else {
                 window.location.href = "/seller-login-required/";
             }
