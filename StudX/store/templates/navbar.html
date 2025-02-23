@@ -10,15 +10,15 @@
 
         <form class="search-container" action="{% url 'search' %}" method="get">
 
-                <input
-                        type="search"
-                        name="q"
-                        placeholder="Search..."
-                        class="search-input"
-                        required>
-                <button type="submit" class="search-button">
-                    <i class="fas fa-search"></i>
-                </button>
+            <input
+                    type="search"
+                    name="q"
+                    placeholder="Search..."
+                    class="search-input"
+                    required>
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
 
         </form>
 
@@ -32,21 +32,22 @@
                         <a id="profile-icon"><i class=" login fa-solid fa-user"></i></a>
                         <ul class="sub1" id="dropdown-menu">
                             {% if user.is_authenticated %}
-                                {% if seller_details.is_verified %}
-                                    <li>
-                                        <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
-                                            Profile</a></li>
-                                {% else %}
-                                    <li>
-                                        <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User Profile</a>
-                                    </li>
-                                {% endif %}
-
-                                <li><a href="{% url 'logout' %}">Logout</a></li>
-                                <li><a href="{% url 'cart_summary' %}">My Cart</a></li>
+                            {% if seller_details.is_verified %}
+                            <li>
+                                <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
+                                    Profile</a></li>
                             {% else %}
-                                <li><a href="{% url 'register' %}">Register</a></li>
-                                <li><a href="{% url 'login' %}">Login</a></li>
+                            <li>
+                                <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User
+                                    Profile</a>
+                            </li>
+                            {% endif %}
+
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                            <li><a href="{% url 'cart_summary' %}">My Cart</a></li>
+                            {% else %}
+                            <li><a href="{% url 'register' %}">Register</a></li>
+                            <li><a href="{% url 'login' %}">Login</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -64,10 +65,24 @@
 <label class="close" for="active"></label>
 <div class="wrapper">
     <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
+        {% if user.is_authenticated %}
+        {% if seller_details.is_verified %}
+        <li><a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">SellerProfile</a>
+        </li>
+        {% else %}
+        <li><a href="{% url 'seller_info' %}">BecomeASeller</a></li>
+        {% endif %}
+
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
         <li><a href="{% url 'register' %}">Register</a></li>
         <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+        <li><a href="{% url 'help_and_support' %}">Help&Support</a></li>
+        {% if seller_details.is_verified %}
+        <li><a href="{% url 'add_room' %}">AddRoom</a></li>
         <li><a href="{% url 'add_product' %}">AddProduct</a></li>
+        {% endif %}
         <li><a href="#">Cart</a></li>
     </ul>
 </div>
