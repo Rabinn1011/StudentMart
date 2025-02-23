@@ -26,7 +26,7 @@ body {
     padding: 10px 0;
     align-items: center;
     width: 100%;
-    background: black;
+    background: #000;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
 
 
@@ -219,22 +219,44 @@ body {
     color: black;
 }
 
-
 .right-side {
-    margin-right: 0.8rem;
     display: flex;
+    align-items: center;
+
+    margin-right: 3rem; /* Moves the items left */
+}
+.right-side .primary1 li a {
+
+    transition: 0.3s;
 }
 
-.cart-icon {
-    display: flex;
-
-    margin-left: 30px;
+.bye {
     font-size: 25px;
-
 }
 
-.cart-icon a {
+.right-side .primary1 li a:hover {
+    color: #ffcc00;
+}
+
+/* Cart Icon Styling */
+.cart-icon {
+    padding-left: 60px;
+    display: flex;
     color: white;
+    margin-left: 30 px
+    font-size: 50px;
+}
+
+#cart-quantity {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 50%;
 }
 
 .cart-icon a:hover {
