@@ -13,6 +13,8 @@
 
 html,
 body {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+
     width: 100%;
 }
 .flexing{
@@ -24,11 +26,11 @@ body {
     padding: 10px 0;
     align-items: center;
     width: 100%;
-    background: black;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-
+    background: #1b1b1b;
+   box-shadow: 0px 4px 10px rgba(27, 27, 27, 0.7);
 
 }
+
 .head {
     display: flex;
     justify-content: center;
@@ -42,6 +44,7 @@ body {
 
 
 .container {
+
     width: 100%;
     height: 90px;
     display: flex;
@@ -216,22 +219,44 @@ body {
     color: black;
 }
 
-
 .right-side {
-    margin-right: 0.8rem;
     display: flex;
+    align-items: center;
+
+    margin-right: 3rem; /* Moves the items left */
+}
+.right-side .primary1 li a {
+
+    transition: 0.3s;
 }
 
-.cart-icon {
-    display: flex;
-
-    margin-left: 30px;
+.bye {
     font-size: 25px;
-
 }
 
-.cart-icon a {
+.right-side .primary1 li a:hover {
+    color: #ffcc00;
+}
+
+/* Cart Icon Styling */
+.cart-icon {
+    padding-left: 60px;
+    display: flex;
     color: white;
+    margin-left: 30 px
+    font-size: 50px;
+}
+
+#cart-quantity {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 50%;
 }
 
 .cart-icon a:hover {
@@ -284,9 +309,8 @@ body {
 }
 
 .login {
+
     display: flex;
-
-
     margin-left: 40px;
     font-size: 25px;
     border: 2px solid white;
@@ -318,6 +342,51 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+/* Categories Section */
+.categories-container {
+    text-align: center;
+    margin-bottom: 20px;
+     padding: 0 10px; /* Small padding to prevent edge overflow */
+}
+
+.categories-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+.categories-list {
+    display: flex;
+     flex-wrap: wrap;  /* Allows categories to move to next line */
+    justify-content: center;
+    gap: 15px;
+     max-width: 100%;
+}
+
+.categories-list a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: #ddd;
+    transition: background 0.3s ease;
+     white-space: nowrap; /* Prevents text from breaking weirdly */
+}
+
+.categories-list a:hover {
+    background: #bbb;
+}
+
+/* Products Section */
+.products-container {
+    flex-grow: 1; /* Takes remaining space */
+
+}
+
+/* Product Grid */
 .product-container {
     display: flex;
     flex-wrap: wrap;
@@ -325,17 +394,16 @@ body {
     gap: 40px;
 }
 
+/* Product Card */
 .product-card {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
     margin-top: 20px;
-    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 10px;
     width: 15rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    justify-content: space-between;
     padding: 5px;
-    background-color: #fff;
     transition: transform 0.2s;
 }
 
@@ -574,6 +642,8 @@ input[type="checkbox"] {
 }
 
 .item-card {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
     display: flex;
     align-items: center;
     background-color: #fbf9f9;
@@ -586,6 +656,7 @@ input[type="checkbox"] {
 }
 
 .item-image {
+
     width: 50%;
     max-height: 30rem;
     display: flex;
@@ -731,13 +802,26 @@ display: flex;
 }
 
 .form-container {
-    background-color: #fbf9f9;
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     width: 90%;
     margin: 10px auto;
     min-height: 450px;
+    height: 90%;
+}
+
+.form-containers {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 90%;
+    margin: 10px auto;
+    align-items: flex-start; /* Aligns items at the top */
     height: 90%;
 }
 
@@ -912,6 +996,8 @@ display: flex;
 }
 
 .product-card-selpro {
+     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+
     margin-top: 20px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -924,7 +1010,7 @@ display: flex;
     text-align: center;
     justify-content: space-between;
     padding: 15px;
-    background-color: #fff;
+
     transition: transform 0.2s;
 }
 
@@ -993,6 +1079,8 @@ display: flex;
 }
 
 .form-container-edisel {
+     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
     background-color: #fbf9f9;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1079,9 +1167,10 @@ select {
     height: 80%;
 }
 .swiper-slide {
+     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
     text-align: center;
     font-size: 18px;
-    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1092,7 +1181,7 @@ select {
 /* slider ko yaha samma */
 /* Footer styles */
 footer {
-    background-color: #204242;
+    background: #1b1b1b;
     color: #e0e0e0;
     padding: 40px 0;
     position: relative;

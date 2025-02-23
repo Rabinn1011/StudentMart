@@ -30,7 +30,7 @@ KHALTI_VERIFY_URL = "https://a.khalti.com/api/v2/payment/verify/"
 SECRET_KEY = 'django-insecure-nfihn(n0z=r%4-@nka18%pl#h&mx00a++t%x!=r#zd*7g%(bnt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.100.11','192.168.1.70', 'localhost', '127.0.0.1',
                  'Robinn.pythonanywhere.com']
