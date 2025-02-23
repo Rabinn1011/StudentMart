@@ -342,6 +342,47 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+/* Categories Section */
+/* Categories Section (Now Horizontal) */
+.categories-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.categories-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.categories-list {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.categories-list a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: #ddd;
+    transition: background 0.3s ease;
+}
+
+.categories-list a:hover {
+    background: #bbb;
+}
+
+/* Products Section */
+.products-container {
+    flex-grow: 1; /* Takes remaining space */
+
+}
+
+/* Product Grid */
 .product-container {
     display: flex;
     flex-wrap: wrap;
@@ -349,20 +390,16 @@ body {
     gap: 40px;
 }
 
-
+/* Product Card */
 .product-card {
-     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
     margin-top: 20px;
-    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 10px;
     width: 15rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    justify-content: space-between;
     padding: 5px;
-
     transition: transform 0.2s;
 }
 
@@ -769,6 +806,19 @@ display: flex;
     width: 90%;
     margin: 10px auto;
     min-height: 450px;
+    height: 90%;
+}
+
+.form-containers {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 90%;
+    margin: 10px auto;
+
+    align-items: flex-start; /* Aligns items at the top */
     height: 90%;
 }
 

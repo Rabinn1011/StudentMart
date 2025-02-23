@@ -1,110 +1,130 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <!-- Hero Section with Swiper -->
-    <section class="hero-section">
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide"><a href="{% url 'search' %}?q=Books"> <img src="{% static 'assests/slide1.png' %}" alt="Slide 1"
-                                                                                     style="cursor: pointer;"></a>
-                </div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"
-                                               onclick="scrollToSection('romm-section')" style="cursor: pointer;"></div>
-                <div class="swiper-slide"><a href="{% url 'search' %}?q=Electronics"> <img
-                        src="{% static 'assests/slide3.png' %}" alt="Slide 3"></a></div>
-                <div class="swiper-slide" onclick="loadSaleProducts()"><img src="{% static 'assests/slide4.png' %}"
-                                                                            alt="Slide 4" style="cursor: pointer;"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"
-                                               onclick="redirectToSellerForm()"
-                                               style="cursor: pointer;"></div>
-                <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"
-                                               onclick="redirectToAddRoom()"
-                                               style="cursor: pointer;">
-
-                </div>
+<!-- Hero Section with Swiper -->
+<section class="hero-section">
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><a href="{% url 'search' %}?q=Books"> <img src="{% static 'assests/slide1.png' %}"
+                                                                                 alt="Slide 1"
+                                                                                 style="cursor: pointer;"></a>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-pagination"></div>
+            <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"
+                                           onclick="scrollToSection('romm-section')" style="cursor: pointer;"></div>
+            <div class="swiper-slide"><a href="{% url 'search' %}?q=Electronics"> <img
+                    src="{% static 'assests/slide3.png' %}" alt="Slide 3"></a></div>
+            <div class="swiper-slide" onclick="loadSaleProducts()"><img src="{% static 'assests/slide4.png' %}"
+                                                                        alt="Slide 4" style="cursor: pointer;"></div>
+            <div class="swiper-slide"><img src="{% static 'assests/slide5.png' %}" alt="Slide 5"
+                                           onclick="redirectToSellerForm()"
+                                           style="cursor: pointer;"></div>
+            <div class="swiper-slide"><img src="{% static 'assests/slide6.png' %}" alt="Slide 6"
+                                           onclick="redirectToAddRoom()"
+                                           style="cursor: pointer;">
+
+            </div>
         </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+    </div>
 
-        <!-- Swiper JS -->
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    </section>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</section>
 
-    <!-- Products Section -->
-    <section id="featured-prodd">
-        <div class="form-container">
+<!-- Products Section -->
+<section id="products-section">
+    <div class="form-containers">
+        <!-- Categories Section -->
+        <div class="categories-container">
+            <h2 class="categories-title">Categories</h2>
+            <div class="categories-list">
+                <a href="{% url 'search' %}?q=Academic Tools">Academic Tools</a>
+                <a href="{% url 'search' %}?q=Electronics">Electronics</a>
+                <a href="{% url 'search' %}?q=Books">Books</a>
+                <a href="{% url 'search' %}?q=Academic Coats">Clothing</a>
+                <a href="{% url 'search' %}?q=Table">Tables</a>
+                <a href="{% url 'search' %}?q=Others">Others</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-container">
+        <!-- Featured Products Section -->
+        <div class="products-container">
             <h2 class="section-title">Featured Products</h2>
             <div class="product-container">
                 {% if products.exists %}
-                    {% for product in products %}
-                        <div class="product-card">
-                            <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
-                            <h3 class="product-title">{{ product.name }}</h3>
-                            <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
-                        </div>
-                    {% endfor %}
+                {% for product in products %}
+                <div class="product-card">
+                    <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
+                </div>
+                {% endfor %}
                 {% else %}
-                    <p class="no-products">No products available at the moment. Please check back later!</p>
+                <p class="no-products">No products available at the moment. Please check back later!</p>
                 {% endif %}
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Rooms Section -->
-    <section id="romm-section">
-        <div class="form-container">
-            <h2 class="section-title">Available Rooms</h2>
-            <div class="product-container">
-                {% if rooms.exists %}
-                    {% for room in rooms %}
-                        <div class="product-card">
-                            <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
-                            <h3 class="product-title">{{ room.type }}</h3>
-                            <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
 
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="no-rooms">No rooms available at the moment. Please check back later!</p>
-                {% endif %}
+<!-- Rooms Section -->
+<section id="romm-section">
+    <div class="form-container">
+        <h2 class="section-title">Available Rooms</h2>
+        <div class="product-container">
+            {% if rooms.exists %}
+            {% for room in rooms %}
+            <div class="product-card">
+                <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
+                <h3 class="product-title">{{ room.type }}</h3>
+                <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
+
             </div>
+            {% endfor %}
+            {% else %}
+            <p class="no-rooms">No rooms available at the moment. Please check back later!</p>
+            {% endif %}
         </div>
-    </section>
-    <script>
-        function loadSaleProducts() {
-            window.location.href = "/search/?on_sale=true";
-        }
+    </div>
+</section>
+<script>
+    function loadSaleProducts() {
+        window.location.href = "/search/?on_sale=true";
+    }
 
-    </script>
-    <script>
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({behavior: 'smooth'});
-        }
-    </script>
-    <script>
-        var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
+</script>
+<script>
+    function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({behavior: 'smooth'});
+    }
+</script>
+<script>
+    var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
 
-        function redirectToSellerForm() {
-            if (isAuthenticated) {
-                window.location.href = "/seller_detail/";
-            } else {
-                window.location.href = "/seller-login-required/";
-            }
+    function redirectToSellerForm() {
+        if (isAuthenticated) {
+            window.location.href = "/seller_detail/";
+        } else {
+            window.location.href = "/seller-login-required/";
         }
-    </script>
+    }
+</script>
 
-    <script>
-        var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
+<script>
+    var isAuthenticated = {% if user.is_authenticated %} true {% else %} false {% endif %};
 
-        function redirectToAddRoom() {
-            if (isAuthenticated) {
-                window.location.href = "/add_room/";
-            } else {
-                window.location.href = "/seller-login-required/";
-            }
+    function redirectToAddRoom() {
+        if (isAuthenticated) {
+            window.location.href = "/add_room/";
+        } else {
+            window.location.href = "/seller-login-required/";
         }
-    </script>
+    }
+</script>
 
 {% endblock %}
