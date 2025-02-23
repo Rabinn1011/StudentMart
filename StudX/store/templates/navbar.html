@@ -32,13 +32,13 @@
                         <a id="profile-icon"><i class=" login fa-solid fa-user"></i></a>
                         <ul class="sub1" id="dropdown-menu">
                             {% if user.is_authenticated %}
-                                {% if user_in_seller_group %}
+                                {% if seller_details.is_verified %}
                                     <li>
                                         <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
                                             Profile</a></li>
                                 {% else %}
                                     <li>
-                                        <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">Profile</a>
+                                        <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User Profile</a>
                                     </li>
                                 {% endif %}
 

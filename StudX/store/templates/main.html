@@ -5,8 +5,8 @@
     <section class="hero-section">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="{% static 'assests/slide1.png' %}" alt="Slide 1"
-                                               onclick="scrollToSection('featured-prodd')" style="cursor: pointer;">
+                <div class="swiper-slide"><a href="{% url 'search' %}?q=Books"> <img src="{% static 'assests/slide1.png' %}" alt="Slide 1"
+                                                                                     style="cursor: pointer;"></a>
                 </div>
                 <div class="swiper-slide"><img src="{% static 'assests/slide2.png' %}" alt="Slide 2"
                                                onclick="scrollToSection('romm-section')" style="cursor: pointer;"></div>
