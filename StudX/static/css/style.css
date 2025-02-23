@@ -344,22 +344,25 @@ body {
 
 
 /* Categories Section */
-/* Categories Section (Now Horizontal) */
 .categories-container {
     text-align: center;
     margin-bottom: 20px;
+     padding: 0 10px; /* Small padding to prevent edge overflow */
 }
 
 .categories-title {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 10px;
+
 }
 
 .categories-list {
     display: flex;
+     flex-wrap: wrap;  /* Allows categories to move to next line */
     justify-content: center;
     gap: 15px;
+     max-width: 100%;
 }
 
 .categories-list a {
@@ -370,6 +373,7 @@ body {
     border-radius: 5px;
     background: #ddd;
     transition: background 0.3s ease;
+     white-space: nowrap; /* Prevents text from breaking weirdly */
 }
 
 .categories-list a:hover {
@@ -817,7 +821,6 @@ display: flex;
     overflow: hidden;
     width: 90%;
     margin: 10px auto;
-
     align-items: flex-start; /* Aligns items at the top */
     height: 90%;
 }

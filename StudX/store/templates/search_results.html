@@ -6,7 +6,7 @@
         {% if request.GET.on_sale %}
             <h1>On Sale Products</h1>
         {% elif query %}
-            <h1>Search Results for "{{ query }}"</h1>
+            <h1>{{ query }}</h1>
         {% endif %}
 
         {% if results %}
