@@ -281,8 +281,8 @@ body {
     border-radius: 50%;
 }
 
-.cart-icon a:hover {
-    color: blue;
+.cart-icon:hover {
+
     animation: shaky 0.6s ease-in-out;
 }
 
@@ -451,7 +451,7 @@ body {
 
 @media (max-width: 400px) { /* Adjust for mobile screens */
     .product-title {
-        min-height: auto; /* Remove fixed min-height */
+        min-height: 40px; /* Remove fixed min-height */
         max-height: none; /* Allow it to adjust naturally */
         font-size: 25px; /* Slightly reduce font size */
         color: #333;
@@ -511,7 +511,7 @@ body {
     height: 100%;
     width: 100%;
     background: #000;
-    background: linear-gradient(90deg, #f92c78, #4114a1);
+    background: #1b1b1b;
     transition: all 0.6s ease-in-out;
 }
 
@@ -534,11 +534,11 @@ body {
     border-radius: 50%;
     font-size: 20px;
     cursor: pointer;
-    background: linear-gradient(90deg, #f92c78, #4114a1);
+    background: linear-gradient(to right, #3FCFA8, #333333);
     transition: all 0.3s ease-in-out;
 }
 .menu-btn1 {
-    color: white;
+    color: pink;
     position: absolute;
     z-index: 1;
     right: 20px;
