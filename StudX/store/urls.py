@@ -15,7 +15,8 @@ urlpatterns = [
     path("khalti/initiate/<int:product_id>/", views.initiate_khalti_payment, name="initiate_khalti_payment"),
     path("khalti/callback/", views.khalti_payment_callback, name="khalti_payment_callback"),
     path("khalti/verify/", views.khalti_verify, name="khalti_verify"),
-
+    path("order/<int:order_id>/receipt/", views.order_receipt, name="order_receipt"),
+    path("order/<int:order_id>/receipt/pdf/", views.generate_receipt_pdf, name="generate_receipt_pdf"),
     path('product/<int:pk>', views.product, name='product'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),

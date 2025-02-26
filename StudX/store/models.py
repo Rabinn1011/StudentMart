@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-import os
+import os , uuid
 
 class CartProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -25,11 +25,7 @@ class Seller_Details(models.Model):
         return self.seller_name
 
 def product_image_upload_path(instance, filename):
-    """
-    Define the upload path for images.
-    Create a folder for each product using the product's name or ID.
-    """
-    folder_name = slugify(instance.name)  # Use the product name slugified as the folder name
+    folder_name = slugify(instance.name)
     return os.path.join('uploads/products', folder_name, filename)
 
 class Product(models.Model):
@@ -50,7 +46,7 @@ class Product(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
     sale_price = models.DecimalField(default=0 ,decimal_places=2,max_digits=6)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES,default='Other')
-
+    is_sold = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -73,12 +69,19 @@ class ProductImage(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_id = models.CharField(max_length=50)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_id = models.CharField(max_length=100, unique=True)
-    status = models.CharField(max_length=20, default="Pending")
-    created_at = models.DateTimeField(auto_now_add=True)
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    order_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)  # Unique Order ID
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Buyer
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Product Ordered
+    amount = models.PositiveIntegerField()  # Amount in paisa (NPR x100)
+    khalti_pidx = models.CharField(max_length=100, blank=True, null=True, unique=True)  # Khalti Transaction ID
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')  # Payment Status
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp
 
     def __str__(self):
-        return f"Order {self.transaction_id} - {self.status}"
+        return f"Order {self.order_id} - {self.product.name} - {self.status}"

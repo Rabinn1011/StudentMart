@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from unicodedata import category
 
 from .models import Product, Seller_Details, ProductImage
 
@@ -200,4 +201,4 @@ class SignupForm(UserCreationForm):
 class ProductEditForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'image','is_sale','sale_price']
+        fields = ['name', 'description','category','price', 'image','is_sale','sale_price']

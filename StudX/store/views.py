@@ -1,10 +1,10 @@
 import json
 import requests
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 from django.conf import settings
-
 from cart.cart import Cart
 from django.core.mail import EmailMessage
-
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -15,11 +15,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.forms.models import modelformset_factory
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseForbidden
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_str, force_bytes
@@ -27,28 +27,26 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm, ProductImageForm
 from .models import Product, Seller_Details, ProductImage, CartProfile, Order
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required,permission_required
 from rent.models import Room
 from .tokens import account_activation_token
 
 from django.shortcuts import render
 from django.db.models import Q
-from .models import Product, Seller_Details
+from .models import Product,Order
 
-seller_group, created = Group.objects.get_or_create(name='Sellers')
+seller_group,created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
 permissions = Permission.objects.filter(content_type=content_type, codename__in=[
-    'add_product', 'change_product', 'delete_product'
+    'add_product','change_product','delete_product'
 ])
 seller_group.permissions.set(permissions)
 seller_group.save()
 
-
-@receiver(post_save, sender=User)
+@receiver(post_save,sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         CartProfile.objects.create(user=instance)
-
 
 def home(request):
     user_in_seller_group = request.user.groups.filter(name='Sellers').exists()
@@ -62,8 +60,6 @@ def home(request):
 
 def contact(request):
     return render(request, 'contact.html')
-
-
 def about(request):
     return render(request, 'about.html')
 
@@ -71,8 +67,6 @@ def about(request):
 def login_required_redirect(request):
     messages.info(request, "You must log in to access the seller form.")
     return redirect('/login/')
-
-
 # @login_required
 # @permission_required('store.add_product', raise_exception=True)
 # def add_product(request):
@@ -91,6 +85,7 @@ def login_required_redirect(request):
 #     except PermissionDenied:
 #         messages.error(request, "You need to log in or register to add a product.")
 #         return redirect('register')
+
 def search_products(request):
     query = request.GET.get('q', '').strip()
     on_sale = request.GET.get('on_sale', '')  # Check if the request is filtering for sale items
@@ -112,6 +107,8 @@ def search_products(request):
     return render(request, 'search_results.html', {'query': query, 'results': results})
 
 
+
+
 def add_product(request):
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in to add a product.")
@@ -119,14 +116,13 @@ def add_product(request):
 
     if not request.user.is_superuser:
         if not request.user.groups.filter(name='Sellers').exists():
-            messages.error(request, "You do not have permission to add products. Please register as a Seller.")
-            return redirect('seller_info')
+           messages.error(request, "You do not have permission to add products. Please register as a Seller.")
+           return redirect('seller_info')
 
         seller_details = Seller_Details.objects.filter(user=request.user).first()
         if not seller_details.is_verified:
-            messages.error(request,
-                           "You are not a verified seller. Please update your profile or wait for admin response.")
-            return redirect('home')
+           messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
+           return redirect('home')
 
     try:
         ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
@@ -139,7 +135,7 @@ def add_product(request):
                 product.save()
                 for form in formset.cleaned_data:
                     if form:
-                        image = form['image']
+                        image =form['image']
                         ProductImage.objects.create(product=product, image=image)
                 return redirect('home')  # Redirect to home or another page
         else:
@@ -151,11 +147,9 @@ def add_product(request):
         messages.error(request, "You do not have permission to add a product.")
         return redirect('register')
 
-
 def product(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, 'product.html', {'product': product})
-
 
 def login_user(request):
     next_url = request.GET.get('next')
@@ -209,7 +203,6 @@ def activate(request, uidb64, token):
 
     return redirect('home')
 
-
 def activateEmail(request, user, to_email):
     mail_subject = "Activate your user account."
     message = render_to_string("template_activate_account.html", {
@@ -223,8 +216,7 @@ def activateEmail(request, user, to_email):
         email = EmailMessage(mail_subject, message, to=[to_email])
         email.content_subtype = 'html'  # To send HTML emails
         email.send()
-        messages.success(request,
-                         f'Dear {user.username}, please go to your email {to_email} inbox and click on the activation link to complete registration. Note: Check your spam folder.')
+        messages.success(request, f'Dear {user.username}, please go to your email {to_email} inbox and click on the activation link to complete registration. Note: Check your spam folder.')
     except Exception as e:
         messages.error(request, f'Problem sending email to {to_email}. Please try again. Error: {str(e)}')
 
@@ -236,7 +228,7 @@ def register(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             user = form.save(commit=False)
-            user.is_active = False
+            user.is_active=False
             # Check if email already exists
             if User.objects.filter(email=email).exists():
                 messages.error(request, "This email is already registered. Please use a different email.")
@@ -259,12 +251,11 @@ def register(request):
 
     return render(request, 'register.html', {'form': form})
 
-
 def logout_user(request):
+
     logout(request)
     messages.success(request, "You have successfully logged out.")
     return redirect('home')
-
 
 @login_required
 def seller_info(request):
@@ -312,8 +303,6 @@ def seller_info(request):
 #         return redirect('home')
 
 signer = Signer()
-
-
 def user_profile(request, encoded_username):
     try:
         username = None
@@ -331,11 +320,12 @@ def user_profile(request, encoded_username):
     except BadSignature:
         raise Http404("Invalid or tampered username")
 
+
     if not request.user.is_authenticated:
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
     if request.user.is_authenticated:
-        user_profile1 = get_object_or_404(User, username=username)
+     user_profile1 = get_object_or_404(User, username=username)
     # Pass relevant user data to the template
     context = {
         'username': user_profile1.username,
@@ -346,7 +336,6 @@ def user_profile(request, encoded_username):
 
     }
     return render(request, 'user_profile.html', {'user_profile1': user_profile1})
-
 
 @login_required
 def password_change(request):
@@ -366,8 +355,8 @@ def password_change(request):
 
     return render(request, 'password_change.html', {'form': form})
 
-
 def seller_profile(request, encoded_username):
+
     try:
         seller_users = Seller_Details.objects.values_list('user__username', flat=True)
         seller_users = list(seller_users)
@@ -398,7 +387,6 @@ def seller_profile(request, encoded_username):
     else:
         return redirect('home')
 
-
 def edit_seller_profile(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
         messages.error(request, "You need to be logged in as a seller to edit your profile.")
@@ -421,7 +409,6 @@ def edit_seller_profile(request):
 
     return render(request, 'edit_user.html', {'form': form})
 
-
 def delete_profile(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
         messages.error(request, "You need to be logged in as a seller to edit your profile.")
@@ -432,14 +419,17 @@ def delete_profile(request):
 
 
 def edit_product_form(request, pk):
-    product1 = get_object_or_404(Product, id=pk, seller=request.user)
+    product1 = get_object_or_404(Product, id=pk, seller=request.user)  # Ensure seller matches logged-in user
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product1)
         if form.is_valid():
             form.save()
-
             messages.success(request, "Your product has been updated successfully.")
-            return redirect('product', pk=product1.id)
+            return redirect('product', pk=product1.id)  # Redirect correctly
+        else:
+            messages.error(request, "Your product has not been updated.")
+
     else:
         form = ProductForm(instance=product1)
 
@@ -453,20 +443,20 @@ def delete_product_form(request, pk):
 
     return redirect('home')
 
-
 def help_and_support(request):
     return render(request, 'help_and_support.html')
-
 
 def initiate_khalti_payment(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     amount = int(product.price * 100)  # Convert NPR to paisa
+    user=request.user
 
+    order= Order.objects.create(user=user,product=product,amount=amount)
     payload = {
         "return_url": request.build_absolute_uri(reverse("khalti_payment_callback")),
         "website_url": "https://yourwebsite.com/",
         "amount": amount,
-        "purchase_order_id": f"order_{product.id}",
+        "purchase_order_id": str(order.order_id),
         "purchase_order_name": product.name,
     }
 
@@ -487,10 +477,11 @@ def initiate_khalti_payment(request, product_id):
 
     if response.status_code == 200:
         data = response.json()
+        order.khalti_pidx = data["pidx"]
+        order.save()
         return redirect(data["payment_url"])  # Redirect user to Khalti payment page
     else:
         return JsonResponse({"error": "Payment initiation failed", "details": response.text}, status=400)
-
 
 def khalti_verify(request):
     if request.method == "POST":
@@ -514,68 +505,14 @@ def khalti_verify(request):
         if response.status_code == 200:
             return JsonResponse({"status": "success", "message": "Payment verified!"})
         else:
-            return JsonResponse({"status": "failure", "message": "Verification failed", "details": response.json()},
-                                status=400)
+            return JsonResponse({"status": "failure", "message": "Verification failed", "details": response.json()}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
-
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-
-#
-# def khalti_payment_callback(request):
-#     pidx = request.GET.get("pidx")
-#     amount = request.GET.get("amount")
-#
-#     if not pidx or not amount:
-#         messages.error(request, "Invalid payment request. Missing pidx or amount.")
-#         return redirect("home")
-#
-#     headers = {"Authorization": f"Key {settings.KHALTI_SECRET_KEY}"}
-#
-#     lookup_url = "https://a.khalti.com/api/v2/epayment/lookup/"
-#     lookup_payload = {"pidx": pidx}
-#     print(lookup_payload)
-#     logger.info(f"Fetching token from Khalti with: {lookup_payload}")
-#
-#     lookup_response = requests.post(lookup_url, json=lookup_payload, headers=headers)
-#
-#     if lookup_response.status_code == 200:
-#         lookup_data = lookup_response.json()
-#         logger.info(f"Khalti Lookup Response: {lookup_data}")  # Debugging log
-#
-#         token = lookup_data.get("payment_token")
-#         print(token)
-#         if not token:
-#             messages.error(request, "Failed to fetch payment token. Please contact support.")
-#             return redirect("home")
-#     else:
-#         messages.error(request, "Failed to fetch transaction details. Please contact support.")
-#         return redirect("home")
-#
-#     verify_url = "https://a.khalti.com/api/v2/payment/verify/"
-#     verify_payload = {
-#         "token": token,
-#         "amount": int(amount)
-#     }
-#
-#     logger.info(f"Sending verification request to Khalti with: {verify_payload}")
-#
-#     verify_response = requests.post(verify_url, json=verify_payload, headers=headers)
-#
-#     if verify_response.status_code == 200:
-#         verify_data = verify_response.json()
-#         logger.info(f"Khalti Verification Response: {verify_data}")  # Debugging log
-#
-#         if verify_data.get("status") == "Completed":
-#             messages.success(request, "Payment Successful! Thank you for your purchase.")
-#             return redirect("home")
-#
-#     messages.error(request, "Payment verification failed. Please contact support.")
-#     return redirect("home")
 def khalti_payment_callback(request):
     logger = logging.getLogger(__name__)
     pidx = request.GET.get("pidx")
@@ -585,20 +522,88 @@ def khalti_payment_callback(request):
         messages.error(request, "Invalid payment request. Missing pidx or amount.")
         return redirect("home")
 
+    order = Order.objects.filter(khalti_pidx=pidx).first()
+
+    if not order:
+        messages.error(request, "Order not found for this transaction.")
+        return redirect("home")
+
     headers = {"Authorization": f"Key {settings.KHALTI_SECRET_KEY}"}
     verify_url = "https://a.khalti.com/api/v2/epayment/lookup/"
     verify_payload = {"pidx": pidx}
 
     logger.info(f"Sending verification request to Khalti with: {verify_payload}")
     verify_response = requests.post(verify_url, json=verify_payload, headers=headers)
-
     if verify_response.status_code == 200:
         verify_data = verify_response.json()
         logger.info(f"Khalti Verification Response: {verify_data}")
 
         if verify_data.get("status") == "Completed":
+            order.status = "completed"
+            product=order.product
+            product.is_sold = True
+            product.save()
+            order.save()
             messages.success(request, "Payment Successful! Thank you for your purchase.")
             return redirect("home")
-
+    order.status = "failed"
+    order.save()
     messages.error(request, "Payment verification failed. Please contact support.")
     return redirect("home")
+
+@login_required  # Ensure the user is logged in
+def order_receipt(request, order_id):
+    order = get_object_or_404(Order, id=order_id, status="completed")
+
+    # Restrict access: Only the buyer can view this order
+    if request.user != order.user:
+        messages.error(request,"You are not authorized to view this receipt.")
+        return redirect("home")
+
+    return render(request, "order_receipt.html", {"order": order})
+
+logger = logging.getLogger(__name__)
+
+@login_required  # Ensures only logged-in users can access
+def generate_receipt_pdf(request, order_id):
+    try:
+        # Retrieve the order
+        order = get_object_or_404(Order, id=order_id)
+
+        # Restrict access: Only the user who placed the order can download
+        if request.user != order.user:
+            return HttpResponseForbidden("You are not authorized to view this receipt.")
+
+        # Create a PDF response
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="receipt_{order.order_id}.pdf"'
+
+        # Initialize PDF canvas
+        p = canvas.Canvas(response, pagesize=letter)
+        width, height = letter
+
+        # Add title
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(200, height - 50, "Order Receipt")
+
+        # Add order details
+        p.setFont("Helvetica", 12)
+        p.drawString(50, height - 100, f"Order ID: {order.order_id}")
+        p.drawString(50, height - 120, f"Product: {order.product.name if order.product else 'N/A'}")
+        p.drawString(50, height - 140, f"Amount Paid: NPR {order.amount / 100:.2f}")
+        p.drawString(50, height - 160, f"Transaction ID: {order.khalti_pidx if order.khalti_pidx else 'N/A'}")
+        p.drawString(50, height - 180, f"Date: {order.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+        p.drawString(50, height - 200, f"Status: {order.status}")
+
+        # Footer message
+        p.setFont("Helvetica-Oblique", 10)
+        p.drawString(50, height - 250, "Thank you for shopping with us!")
+
+        # Finalize PDF
+        p.showPage()
+        p.save()
+
+        return response
+
+    except Exception as e:
+        return HttpResponse(f"An error occurred while generating the receipt. Error: {str(e)}", status=500)
