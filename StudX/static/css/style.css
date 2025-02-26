@@ -187,6 +187,14 @@ body {
     width: 80%;
 }
 
+.mbl-search-container {
+    padding-top: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+
 .search-input {
     padding: 10px;
     border: none;
@@ -195,6 +203,20 @@ body {
     color: black;
     width: 80%;
     transition: width 0.4s ease;
+}
+
+.mbl-search-input {
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background: #fff;
+    color: black;
+    width: 80%;
+    transition: width 0.4s ease;
+}
+
+.mbl-search-input:focus {
+    outline: none;
 }
 
 .search-input:focus {
