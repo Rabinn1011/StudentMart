@@ -40,13 +40,12 @@
         <div class="categories-container">
             <h2 class="categories-title">Categories</h2>
             <div class="categories-list">
-                <a href="{% url 'search' %}?q=Academic Tools">Academic Tools</a>
-                <a href="{% url 'search' %}?q=Electronics">Electronics</a>
-                <a href="{% url 'search' %}?q=Books">Books</a>
-                <a href="{% url 'search' %}?q=Academic Coats">Clothing</a>
-                <a href="{% url 'search' %}?q=Table">Tables</a>
-                <a href="{% url 'search' %}?q=Others">Others</a>
-
+                <button class="category-button" data-category="Academic Tools">Academic Tools</button>
+                <button class="category-button" data-category="Electronics">Electronics</button>
+                <button class="category-button" data-category="Books">Books</button>
+                <button class="category-button" data-category="Academic Coats">Clothing</button>
+                <button class="category-button" data-category="Table">Tables</button>
+                <button class="category-button" data-category="Others">Others</button>
             </div>
         </div>
 
@@ -54,23 +53,22 @@
         <!-- Featured Products Section -->
         <div class="products-container">
             <h2 class="section-title">Featured Products</h2>
-            <div class="product-container">
-                {% if products.exists %}
+            <div id="product-container" class="product-container">
                 {% for product in products %}
                 <div class="product-card">
                     <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
                     <h3 class="product-title">{{ product.name }}</h3>
-                    <h5 class="product-location"><i class="fa-solid fa-map-marker-alt"></i>
-                        {{product.seller.seller_details.address}}
+                    <h5 class="product-location">
+                        <i class="fa-solid fa-map-marker-alt"></i> {{ product.seller.seller_details.address }}
                     </h5>
                     <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
                 </div>
-                {% endfor %}
-                {% else %}
+                {% empty %}
                 <p class="no-products">No products available at the moment. Please check back later!</p>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
+
     </div>
 </section>
 
@@ -128,6 +126,46 @@
             window.location.href = "/seller-login-required/";
         }
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoryButtons = document.querySelectorAll(".category-button");
+
+        categoryButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const category = this.getAttribute("data-category");
+                const productContainer = document.getElementById("product-container");
+
+                fetch(`/filter-products/?category=${encodeURIComponent(category)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        productContainer.innerHTML = ""; // Clear existing products
+
+                        if (data.length === 0) {
+                            productContainer.innerHTML = "<p class='no-products'>No products available in this category.</p>";
+                            return;
+                        }
+
+                        data.forEach(product => {
+                            const productCard = `
+                                <div class="product-card">
+                                    <img alt="${product.name}" class="product-image" src="${product.image_url}">
+                                    <h3 class="product-title">${product.name}</h3>
+                                    <h5 class="product-location">
+                                        <i class="fa-solid fa-map-marker-alt"></i> ${product.location}
+                                    </h5>
+                                    <a class="view-button" href="/product/${product.id}">View Product</a>
+                                </div>
+                            `;
+                            productContainer.innerHTML += productCard;
+                        });
+                    })
+                    .catch(error => console.error("Error fetching products:", error));
+            });
+        });
+    });
+
 </script>
 
 {% endblock %}

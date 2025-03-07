@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 from django.conf import settings
 from cart.cart import Cart
 from django.core.mail import EmailMessage
+from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -57,6 +58,22 @@ def home(request):
        rooms=rooms
        return render(request, 'main.html', {'products': products,'rooms':rooms, 'seller_details': seller_details})
     return render(request,'main.html', {'products':products,'rooms':rooms, 'user_in_seller_group':user_in_seller_group} )
+
+def filter_products(request):
+    category = request.GET.get("category")
+    products = Product.objects.filter(category=category)
+
+    data = [
+        {
+            "id": product.id,
+            "name": product.name,
+            "image_url": product.image.url if product.image else "",
+            "location": product.seller.seller_details.address,
+        }
+        for product in products
+    ]
+
+    return JsonResponse(data, safe=False)
 
 def contact(request):
     return render(request, 'contact.html')
