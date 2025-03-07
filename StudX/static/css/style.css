@@ -429,7 +429,22 @@ body {
     transition: transform 0.2s;
 }
 
+.product-card-room {
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 15rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 5px;
+    transition: transform 0.2s;
+}
 .product-card:hover {
+    transform: scale(1.05);
+}
+
+.product-card-room:hover {
     transform: scale(1.05);
 }
 
@@ -500,6 +515,49 @@ body {
 
 }
 
+
+/* Pagination Container */
+#pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+    padding-bottom:10px;
+}
+
+/* Pagination Buttons */
+#pagination-controls button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Disabled Buttons */
+#pagination-controls button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Page Number */
+#page-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    padding: 6px 12px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
 /* yaha samma*/
 
 .wrapper {
@@ -539,7 +597,7 @@ body {
 }
 .menu-btn1 {
     color: pink;
-
+    position: absolute;
     z-index: 1;
     right: 20px;
     top: 10px;

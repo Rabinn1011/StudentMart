@@ -49,31 +49,61 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         CartProfile.objects.create(user=instance)
 
+
 def home(request):
     user_in_seller_group = request.user.groups.filter(name='Sellers').exists()
-    products =Product.objects.all()[:10]
-    rooms= Room.objects.all()[:10]
+
+    products = Product.objects.all()
+    rooms = Room.objects.all()[:10]  # Keep rooms limited to 10
+
+    # Pagination logic
+    paginator = Paginator(products, 20)  # Show 5 products per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # AJAX check
+        product_list = [
+            {
+                "id": product.id,
+                "name": product.name,
+                "image": product.image.url,
+                "location": product.seller.seller_details.address,
+            } for product in page_obj.object_list
+        ]
+        return JsonResponse(
+            {"products": product_list, "has_next": page_obj.has_next(), "has_prev": page_obj.has_previous()})
+
+    context = {
+        'products': page_obj,
+        'rooms': rooms,
+        'user_in_seller_group': user_in_seller_group
+    }
+
     if request.user.is_authenticated:
-       seller_details = Seller_Details.objects.filter(user=request.user).first()
-       rooms=rooms
-       return render(request, 'main.html', {'products': products,'rooms':rooms, 'seller_details': seller_details})
-    return render(request,'main.html', {'products':products,'rooms':rooms, 'user_in_seller_group':user_in_seller_group} )
+        seller_details = Seller_Details.objects.filter(user=request.user).first()
+        context["seller_details"] = seller_details
+
+    return render(request, 'main.html', context)
 
 def filter_products(request):
-    category = request.GET.get("category")
-    products = Product.objects.filter(category=category)
+    category = request.GET.get("category", None)
 
-    data = [
+    if category:
+        products = Product.objects.filter(category=category)
+    else:
+        products = Product.objects.all()[:10]  # Fetch all products if no category is specified
+
+    product_list = [
         {
             "id": product.id,
             "name": product.name,
-            "image_url": product.image.url if product.image else "",
+            "image_url": product.image.url,
             "location": product.seller.seller_details.address,
         }
         for product in products
     ]
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse(product_list, safe=False)
 
 def contact(request):
     return render(request, 'contact.html')
