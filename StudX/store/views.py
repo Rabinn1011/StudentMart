@@ -87,11 +87,14 @@ def home(request):
 
 def filter_products(request):
     category = request.GET.get("category", None)
+    page = request.GET.get("page", 1)  # Get current page number
 
+    products = Product.objects.all()
     if category:
-        products = Product.objects.filter(category=category)
-    else:
-        products = Product.objects.all()[:10]  # Fetch all products if no category is specified
+        products = products.filter(category=category)
+
+    paginator = Paginator(products, 10)  # 5 products per page
+    paginated_products = paginator.get_page(page)
 
     product_list = [
         {
@@ -100,10 +103,15 @@ def filter_products(request):
             "image_url": product.image.url,
             "location": product.seller.seller_details.address,
         }
-        for product in products
+        for product in paginated_products
     ]
 
-    return JsonResponse(product_list, safe=False)
+    return JsonResponse({
+        "products": product_list,
+        "has_next": paginated_products.has_next(),
+        "has_prev": paginated_products.has_previous(),
+        "current_page": paginated_products.number,
+    })
 
 def contact(request):
     return render(request, 'contact.html')

@@ -137,36 +137,41 @@
     }
 </script>
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const categoryButtons = document.querySelectorAll(".category-button");
+        let currentPage = 1;
+        let currentCategory = null; // Store selected category
+
         const productContainer = document.getElementById("product-container");
+        const prevButton = document.getElementById("prev-page");
+        const nextButton = document.getElementById("next-page");
+        const pageNumber = document.getElementById("page-number");
 
-        categoryButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const category = this.getAttribute("data-category");
+        function fetchProducts(category = null, page = 1) {
+            currentPage = page;
+            currentCategory = category;  // Update global category
 
-                let url = "/filter-products/";
-                if (category) {
-                    url += `?category=${encodeURIComponent(category)}`;
-                }
+            let url = `/filter-products/?page=${page}`;
+            if (category) {
+                url += `&category=${encodeURIComponent(category)}`;
+            }
 
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => updateProductList(data))
-                    .catch(error => console.error("Error fetching products:", error));
-            });
-        });
+            fetch(url)
+                .then(response => response.json())
+                .then(data => updateProductList(data))
+                .catch(error => console.error("Error fetching products:", error));
+        }
 
         function updateProductList(data) {
             productContainer.innerHTML = ""; // Clear existing products
 
-            if (data.length === 0) {
+            if (data.products.length === 0) {
                 productContainer.innerHTML = "<p class='no-products'>No products available.</p>";
                 return;
             }
 
-            data.forEach(product => {
+            data.products.forEach(product => {
                 const productCard = `
                     <div class="product-card">
                         <img alt="${product.name}" class="product-image" src="${product.image_url}">
@@ -179,73 +184,42 @@
                 `;
                 productContainer.innerHTML += productCard;
             });
-        }
-    });
-</script>
 
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let currentPage = 1;
-        const productsPerPage = 10;
-        let allProducts = [...document.querySelectorAll(".product-card")];
-        let filteredProducts = allProducts;
-
-        function showProducts(page) {
-            const start = (page - 1) * productsPerPage;
-            const end = start + productsPerPage;
-
-            // Hide all products
-            allProducts.forEach(product => product.style.display = "none");
-
-            // Show only products for the current page
-            filteredProducts.slice(start, end).forEach(product => product.style.display = "block");
-
-            // Update page number
-            document.getElementById("page-number").innerText = page;
-
-            // Enable/Disable pagination buttons
-            document.getElementById("prev-page").disabled = page === 1;
-            document.getElementById("next-page").disabled = end >= filteredProducts.length;
+            // Update pagination controls
+            pageNumber.innerText = data.current_page;
+            prevButton.disabled = !data.has_prev;
+            nextButton.disabled = !data.has_next;
         }
 
-        // Handle category filtering
+        // Handle category clicks
         document.querySelectorAll(".category-button").forEach(button => {
             button.addEventListener("click", function () {
-                const selectedCategory = button.dataset.category;
-                currentPage = 1;
-
-
-                // Filter products based on category
-                filteredProducts = allProducts.filter(product =>
-                    product.getAttribute("data-category") === selectedCategory
-                );
-
-                // Reset pagination
-                showProducts(currentPage);
+                const category = button.dataset.category || null;
+                fetchProducts(category, 1); // Reset to first page when changing category
             });
         });
 
-        // Pagination controls
-        document.getElementById("next-page").addEventListener("click", () => {
-            if ((currentPage * productsPerPage) < filteredProducts.length) {
-                currentPage++;
-                showProducts(currentPage);
+        // Handle pagination
+        nextButton.addEventListener("click", function () {
+            if (!nextButton.disabled) {
+                fetchProducts(currentCategory, currentPage + 1);
             }
         });
 
-        document.getElementById("prev-page").addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                showProducts(currentPage);
+        prevButton.addEventListener("click", function () {
+            if (!prevButton.disabled) {
+                fetchProducts(currentCategory, currentPage - 1);
             }
         });
 
-        // Initial Load
-        showProducts(currentPage);
+        // Initial load (fetch all products with pagination)
+        fetchProducts();
     });
 </script>
+
+
+
+
 
 
 {% endblock %}
