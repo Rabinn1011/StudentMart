@@ -9,7 +9,7 @@ from .models import *
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'category','price', 'image','is_sale','sale_price']
+        fields = ['name', 'description', 'category', 'price', 'image', 'is_sale', 'sale_price']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -40,6 +40,8 @@ class ProductForm(forms.ModelForm):
                 'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; border-radius: 5px;',
             }),
         }
+
+
 class ProductImageForm(forms.ModelForm):
     class Meta:
         model = ProductImage
@@ -49,20 +51,30 @@ class ProductImageForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['comment']
+        fields = ['comment', 'rating']
+        rating = forms.IntegerField(
+            widget=forms.NumberInput(attrs={
+                'type': 'range',  #range input for star selection
+                'min': 1,
+                'max': 5,
+                'step': 1,
+            }),
+            validators=[MinValueValidator(1), MaxValueValidator(5)]
+        )
         widgets = {
             'comment': forms.Textarea(attrs={
                 'rows': 3,  # Reduce the number of visible rows
                 'cols': 50,  # Optional, controls width
-                'style': 'width: 100%; height: 80px; resize: none; font-size: 14px; padding: 8px;',  # Custom styling
+                'style': 'width: 80%; height: 80px; resize: none; font-size: 14px; padding: 8px;',  # Custom styling
                 'placeholder': 'Write your review here...',
             })
         }
 
+
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:
         model = Seller_Details
-        fields = ['seller_name', 'photo', 'address', 'phone_number', 'citizenship_number','chitizenship_photo', 'dob']
+        fields = ['seller_name', 'photo', 'address', 'phone_number', 'citizenship_number', 'chitizenship_photo', 'dob']
         widgets = {
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -96,7 +108,7 @@ class SellerProfileEditForm(forms.ModelForm):
 class SellerForm(forms.ModelForm):
     class Meta:
         model = Seller_Details
-        fields = ['seller_name','address','phone_number','photo','citizenship_number','chitizenship_photo','dob']
+        fields = ['seller_name', 'address', 'phone_number', 'photo', 'citizenship_number', 'chitizenship_photo', 'dob']
         widgets = {
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -135,84 +147,86 @@ class SellerForm(forms.ModelForm):
             }),
         }
 
+
 class SignupForm(UserCreationForm):
+    # Define fields with custom widgets
+    email = forms.EmailField(
+        label="",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Email Address',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
 
-        # Define fields with custom widgets
-        email = forms.EmailField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Email Address',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-
-            }),
-            required=True
-        )
-        username = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'User Name',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        }),
+        required=True
+    )
+    username = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'User Name',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
         })
-        )
-        first_name = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'First Name',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-            })
-        )
-        last_name = forms.CharField(
-            label="",
-            widget=forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Last Name',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-            })
-        )
-        password1 = forms.CharField(
-            label="Password",
-            widget=forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your password',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-            })
-        )
-        password2 = forms.CharField(
-            label="Confirm Password",
-            widget=forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Confirm your password',
-                'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-            })
-        )
+    )
+    first_name = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'First Name',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+    )
+    last_name = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Last Name',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+    )
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your password',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Confirm your password',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        })
+    )
 
-        class Meta:
-            model = User
-            fields = ['username','first_name','last_name','' 'email', 'password1', 'password2']
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', '' 'email', 'password1', 'password2']
 
-        # Add dynamic attributes in the constructor
-        def __init__(self, *args, **kwargs):
-            super(SignupForm, self).__init__(*args, **kwargs)
-            self.fields['username'].widget.attrs['class'] = 'form-control'
-            self.fields['username'].widget.attrs['placeholder'] = 'User Name'
-            self.fields['username'].label = ""
-            self.fields['username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
+    # Add dynamic attributes in the constructor
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'User Name'
+        self.fields['username'].label = ""
+        self.fields[
+            'username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
 
-            self.fields['password1'].widget.attrs['class'] = 'form-control'
-            self.fields['password1'].widget.attrs['placeholder'] = 'Password'
-            self.fields['password1'].label = ""
-            self.fields[
-                'password1'].help_text = '<span class="form-text text-muted"><small>Your password must contain at least 8 characters.</small></span>'
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['placeholder'] = 'Password'
+        self.fields['password1'].label = ""
+        self.fields[
+            'password1'].help_text = '<span class="form-text text-muted"><small>Your password must contain at least 8 characters.</small></span>'
 
-            self.fields['password2'].widget.attrs['class'] = 'form-control'
-            self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
-            self.fields['password2'].label = ""
-            self.fields['password2'].help_text = ""
+        self.fields['password2'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
+        self.fields['password2'].label = ""
+        self.fields['password2'].help_text = ""
+
 
 class ProductEditForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description','category','price', 'image','is_sale','sale_price']
+        fields = ['name', 'description', 'category', 'price', 'image', 'is_sale', 'sale_price']

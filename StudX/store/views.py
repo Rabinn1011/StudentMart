@@ -224,12 +224,12 @@ def product(request, pk):
             review.user = request.user
             review.save()
 
-            # Log the review text
-            print(f"New review submitted: {review.comment}")
+            # Log the review text (debugging ko lagi )
+           # print(f"New review submitted: {review.comment}")
 
             # Render the new review to HTML
             review_html = render_to_string('review_item.html', {'review': review})
-            print(f"Review HTML: {review_html}")
+           # print(f"Review HTML: {review_html}")
 
             return JsonResponse({
                 'success': True,

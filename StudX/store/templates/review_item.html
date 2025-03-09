@@ -2,7 +2,16 @@
     <div class="review-header">
         <strong>{{ review.user.username }}</strong>
         <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
-
+    </div>
+        <div class="review-rating">
+        <!-- Display star rating -->
+        {% for i in "12345" %}
+            {% if i|add:0 <= review.rating %}
+                <span class="star filled">★</span>  <!-- Filled star -->
+            {% else %}
+                <span class="star">☆</span>  <!-- Empty star -->
+            {% endif %}
+        {% endfor %}
     </div>
     <div class="review-comment" style="min-height:24px;">
         <div>{{ review.comment }}</div>
