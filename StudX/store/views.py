@@ -1,4 +1,4 @@
-import json
+import json, logging
 import requests
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -16,7 +16,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.forms.models import modelformset_factory
-from django.shortcuts import redirect,get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.signing import Signer, BadSignature
@@ -26,25 +26,26 @@ from django.urls import reverse
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from .forms import ProductForm, SignupForm, SellerForm, SellerProfileEditForm, ProductImageForm
+from .forms import *
 from .models import Product, Seller_Details, ProductImage, CartProfile, Order
-from django.contrib.auth.decorators import login_required,permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from rent.models import Room
 from .tokens import account_activation_token
-
+from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from django.db.models import Q
-from .models import Product,Order
+from .models import Product, Order
 
-seller_group,created = Group.objects.get_or_create(name='Sellers')
+seller_group, created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
 permissions = Permission.objects.filter(content_type=content_type, codename__in=[
-    'add_product','change_product','delete_product'
+    'add_product', 'change_product', 'delete_product'
 ])
 seller_group.permissions.set(permissions)
 seller_group.save()
 
-@receiver(post_save,sender=User)
+
+@receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         CartProfile.objects.create(user=instance)
@@ -85,6 +86,7 @@ def home(request):
 
     return render(request, 'main.html', context)
 
+
 def filter_products(request):
     category = request.GET.get("category", None)
     page = request.GET.get("page", 1)  # Get current page number
@@ -113,8 +115,11 @@ def filter_products(request):
         "current_page": paginated_products.number,
     })
 
+
 def contact(request):
     return render(request, 'contact.html')
+
+
 def about(request):
     return render(request, 'about.html')
 
@@ -122,6 +127,8 @@ def about(request):
 def login_required_redirect(request):
     messages.info(request, "You must log in to access the seller form.")
     return redirect('/login/')
+
+
 # @login_required
 # @permission_required('store.add_product', raise_exception=True)
 # def add_product(request):
@@ -162,8 +169,6 @@ def search_products(request):
     return render(request, 'search_results.html', {'query': query, 'results': results})
 
 
-
-
 def add_product(request):
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in to add a product.")
@@ -171,13 +176,14 @@ def add_product(request):
 
     if not request.user.is_superuser:
         if not request.user.groups.filter(name='Sellers').exists():
-           messages.error(request, "You do not have permission to add products. Please register as a Seller.")
-           return redirect('seller_info')
+            messages.error(request, "You do not have permission to add products. Please register as a Seller.")
+            return redirect('seller_info')
 
         seller_details = Seller_Details.objects.filter(user=request.user).first()
         if not seller_details.is_verified:
-           messages.error(request, "You are not a verified seller. Please update your profile or wait for admin response.")
-           return redirect('home')
+            messages.error(request,
+                           "You are not a verified seller. Please update your profile or wait for admin response.")
+            return redirect('home')
 
     try:
         ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
@@ -190,7 +196,7 @@ def add_product(request):
                 product.save()
                 for form in formset.cleaned_data:
                     if form:
-                        image =form['image']
+                        image = form['image']
                         ProductImage.objects.create(product=product, image=image)
                 return redirect('home')  # Redirect to home or another page
         else:
@@ -202,9 +208,61 @@ def add_product(request):
         messages.error(request, "You do not have permission to add a product.")
         return redirect('register')
 
+
+logger = logging.getLogger(__name__)
+
+
 def product(request, pk):
-    product = Product.objects.get(id=pk)
-    return render(request, 'product.html', {'product': product})
+    product = get_object_or_404(Product, id=pk)
+    reviews = product.reviews.all().order_by('-created_at')
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+
+            # Log the review text
+            print(f"New review submitted: {review.comment}")
+
+            # Render the new review to HTML
+            review_html = render_to_string('review_item.html', {'review': review})
+            print(f"Review HTML: {review_html}")
+
+            return JsonResponse({
+                'success': True,
+                'review_html': review_html,
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors,
+            })
+    else:
+        form = ReviewForm()
+
+    return render(request, 'product.html', {
+        'product': product,
+        'reviews': reviews,
+        'form': form,
+    })
+
+
+@login_required
+@require_POST
+def delete_review(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+        # Check if the current user is the author of the review
+        if request.user == review.user:
+            review.delete()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'You are not authorized to delete this review.'})
+    except Review.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Review not found.'})
 
 def login_user(request):
     next_url = request.GET.get('next')
@@ -258,6 +316,7 @@ def activate(request, uidb64, token):
 
     return redirect('home')
 
+
 def activateEmail(request, user, to_email):
     mail_subject = "Activate your user account."
     message = render_to_string("template_activate_account.html", {
@@ -271,7 +330,8 @@ def activateEmail(request, user, to_email):
         email = EmailMessage(mail_subject, message, to=[to_email])
         email.content_subtype = 'html'  # To send HTML emails
         email.send()
-        messages.success(request, f'Dear {user.username}, please go to your email {to_email} inbox and click on the activation link to complete registration. Note: Check your spam folder.')
+        messages.success(request,
+                         f'Dear {user.username}, please go to your email {to_email} inbox and click on the activation link to complete registration. Note: Check your spam folder.')
     except Exception as e:
         messages.error(request, f'Problem sending email to {to_email}. Please try again. Error: {str(e)}')
 
@@ -283,7 +343,7 @@ def register(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             user = form.save(commit=False)
-            user.is_active=False
+            user.is_active = False
             # Check if email already exists
             if User.objects.filter(email=email).exists():
                 messages.error(request, "This email is already registered. Please use a different email.")
@@ -306,11 +366,12 @@ def register(request):
 
     return render(request, 'register.html', {'form': form})
 
-def logout_user(request):
 
+def logout_user(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")
     return redirect('home')
+
 
 @login_required
 def seller_info(request):
@@ -358,6 +419,8 @@ def seller_info(request):
 #         return redirect('home')
 
 signer = Signer()
+
+
 def user_profile(request, encoded_username):
     try:
         username = None
@@ -375,12 +438,11 @@ def user_profile(request, encoded_username):
     except BadSignature:
         raise Http404("Invalid or tampered username")
 
-
     if not request.user.is_authenticated:
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
     if request.user.is_authenticated:
-     user_profile1 = get_object_or_404(User, username=username)
+        user_profile1 = get_object_or_404(User, username=username)
     # Pass relevant user data to the template
     context = {
         'username': user_profile1.username,
@@ -391,6 +453,7 @@ def user_profile(request, encoded_username):
 
     }
     return render(request, 'user_profile.html', {'user_profile1': user_profile1})
+
 
 @login_required
 def password_change(request):
@@ -410,8 +473,8 @@ def password_change(request):
 
     return render(request, 'password_change.html', {'form': form})
 
-def seller_profile(request, encoded_username):
 
+def seller_profile(request, encoded_username):
     try:
         seller_users = Seller_Details.objects.values_list('user__username', flat=True)
         seller_users = list(seller_users)
@@ -442,6 +505,7 @@ def seller_profile(request, encoded_username):
     else:
         return redirect('home')
 
+
 def edit_seller_profile(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
         messages.error(request, "You need to be logged in as a seller to edit your profile.")
@@ -463,6 +527,7 @@ def edit_seller_profile(request):
         form = SellerProfileEditForm(instance=seller)
 
     return render(request, 'edit_user.html', {'form': form})
+
 
 def delete_profile(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Sellers').exists():
@@ -498,15 +563,17 @@ def delete_product_form(request, pk):
 
     return redirect('home')
 
+
 def help_and_support(request):
     return render(request, 'help_and_support.html')
+
 
 def initiate_khalti_payment(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     amount = int(product.price * 100)  # Convert NPR to paisa
-    user=request.user
+    user = request.user
 
-    order= Order.objects.create(user=user,product=product,amount=amount)
+    order = Order.objects.create(user=user, product=product, amount=amount)
     payload = {
         "return_url": request.build_absolute_uri(reverse("khalti_payment_callback")),
         "website_url": "https://yourwebsite.com/",
@@ -538,6 +605,7 @@ def initiate_khalti_payment(request, product_id):
     else:
         return JsonResponse({"error": "Payment initiation failed", "details": response.text}, status=400)
 
+
 def khalti_verify(request):
     if request.method == "POST":
         token = request.POST.get("token")
@@ -560,13 +628,16 @@ def khalti_verify(request):
         if response.status_code == 200:
             return JsonResponse({"status": "success", "message": "Payment verified!"})
         else:
-            return JsonResponse({"status": "failure", "message": "Verification failed", "details": response.json()}, status=400)
+            return JsonResponse({"status": "failure", "message": "Verification failed", "details": response.json()},
+                                status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def khalti_payment_callback(request):
     logger = logging.getLogger(__name__)
@@ -595,7 +666,7 @@ def khalti_payment_callback(request):
 
         if verify_data.get("status") == "Completed":
             order.status = "completed"
-            product=order.product
+            product = order.product
             product.is_sold = True
             product.save()
             order.save()
@@ -606,18 +677,21 @@ def khalti_payment_callback(request):
     messages.error(request, "Payment verification failed. Please contact support.")
     return redirect("home")
 
+
 @login_required  # Ensure the user is logged in
 def order_receipt(request, order_id):
     order = get_object_or_404(Order, id=order_id, status="completed")
 
     # Restrict access: Only the buyer can view this order
     if request.user != order.user:
-        messages.error(request,"You are not authorized to view this receipt.")
+        messages.error(request, "You are not authorized to view this receipt.")
         return redirect("home")
 
     return render(request, "order_receipt.html", {"order": order})
 
+
 logger = logging.getLogger(__name__)
+
 
 @login_required  # Ensures only logged-in users can access
 def generate_receipt_pdf(request, order_id):

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from unicodedata import category
 
-from .models import Product, Seller_Details, ProductImage
+from .models import *
 
 
 class ProductForm(forms.ModelForm):
@@ -44,6 +44,20 @@ class ProductImageForm(forms.ModelForm):
     class Meta:
         model = ProductImage
         fields = ['image']
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={
+                'rows': 3,  # Reduce the number of visible rows
+                'cols': 50,  # Optional, controls width
+                'style': 'width: 100%; height: 80px; resize: none; font-size: 14px; padding: 8px;',  # Custom styling
+                'placeholder': 'Write your review here...',
+            })
+        }
 
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:

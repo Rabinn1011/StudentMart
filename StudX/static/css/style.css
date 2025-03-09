@@ -1496,3 +1496,102 @@ footer {
     }
 /*delete ko confirmation box yaha samma*/
 
+/* reviews section ko suru */
+.reviews-section h3{
+    display:flex;
+    justify-content:center;
+    font-size: 1.5rem;
+}
+
+
+.review-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+.reviews-list {
+    margin-top: 20px;
+}
+
+.review-item {
+    padding: 15px;
+    border-bottom: 1px solid #111111;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-header strong {
+    font-size: 1.1rem;
+    color: #007bff;
+}
+
+.review-date {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.review-comment div {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
+}
+
+.delete-review {
+    background-color: red;  /* Red background */
+    color: white;  /* White text */
+    border: none;  /* Remove default border */
+    padding: 6px 12px;  /* Adjust padding */
+    border-radius: 5px;  /* Rounded corners */
+    cursor: pointer;  /* Show pointer on hover */
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.delete-review:hover {
+    background-color: darkred;  /* Darker red on hover */
+}
+
+.modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+.modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        width: 300px;
+        margin: 20% auto;
+    }
+.modal-content p {
+    margin-bottom: 20px;
+    }
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px; /* Adjust this value to widen spacing */
+    margin-top: 10px;
+}
+
+/* reviews section ko yaha samma */
+
