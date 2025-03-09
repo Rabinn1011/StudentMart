@@ -65,7 +65,7 @@ class ReviewForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={
                 'rows': 3,  # Reduce the number of visible rows
                 'cols': 50,  # Optional, controls width
-                'style': 'width: 80%; height: 80px; resize: none; font-size: 14px; padding: 8px;',  # Custom styling
+
                 'placeholder': 'Write your review here...',
             })
         }

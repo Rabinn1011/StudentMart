@@ -3,9 +3,7 @@
 {% block content %}
 
 <style>
-    .review-rating {
-    margin: 10px 0;
-}
+
 
 .star {
     font-size: 1.5rem;
@@ -201,31 +199,48 @@
 
 <div class="form-container">
     <div class="reviews-section">
-        <h3>Customer Reviews</h3>
+        <h3 style="margin-bottom:10px;">Customer Reviews</h3>
 
         {% if request.user.is_authenticated %}
-        <div class="review-form" style="margin-left:20px;">
+        <div class="review-form-container">
             <form id="review-form" method="post">
                 {% csrf_token %}
                 {{ form.comment }}
-                <div class="rating-input">
-                    <label for="id_rating">Rating:</label>
-                    {{ form.rating }}
-                    <span class="rating-value">5</span> <!-- Display the selected rating -->
+                <div class="star-rating">
+                    <span class="star" data-value="1">☆</span>
+                    <span class="star" data-value="2">☆</span>
+                    <span class="star" data-value="3">☆</span>
+                    <span class="star" data-value="4">☆</span>
+                    <span class="star" data-value="5">☆</span>
+                    <input type="hidden" id="id_rating" name="rating" value="5">
+                    <!-- Hidden input to store the selected rating -->
                 </div>
-                <button type="submit" class="blue-button" style="margin-top:10px;">Submit Review</button>
+                <button type="submit" class="submit-button">Submit Review</button>
             </form>
         </div>
         {% else %}
-        <p style="margin-top: 15px; margin-left: 15px;"><a href="{% url 'login' %}" class="blue-button">Login</a> to
-            leave a review.</p>
+        <p style="margin-top: 15px; margin-left: 15px;">
+            <a href="{% url 'login' %}" class="blue-button">Login</a> to leave a review.
+        </p>
         {% endif %}
 
         <div id="reviews-list" class="reviews-list">
             {% for review in reviews %}
             <div class="review-item">
                 <div class="review-header">
-                    <strong>{{ review.user.username }}</strong>
+                    <div class ="user-info">
+                        <strong>{{ review.user.username }}</strong>
+                        <div class="review-rating" style="position:relative;">
+                            <!-- Display star rating -->
+                            {% for i in "12345" %}
+                            {% if i|add:0 <= review.rating %}
+                            <span class="star filled">★</span>  <!-- Filled star -->
+                            {% else %}
+                            <span class="star">☆</span>  <!-- Empty star -->
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                     <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
                     {% if request.user == review.user %}
                     <button class="delete-review" data-review-id="{{ review.id }}">Delete</button>
@@ -240,16 +255,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="review-rating">
-                    <!-- Display star rating -->
-                    {% for i in "12345" %}
-                    {% if i|add:0 <= review.rating %}
-                    <span class="star filled">★</span>  <!-- Filled star -->
-                    {% else %}
-                    <span class="star">☆</span>  <!-- Empty star -->
-                    {% endif %}
-                    {% endfor %}
-                </div>
+
                 <div class="review-comment">
                     <p>{{ review.comment }}</p>
                 </div>
@@ -295,6 +301,37 @@
             });
         });
     });
+</script>
+
+<script>
+    $(document).ready(function () {
+    // Handle star rating selection
+    $('.star-rating .star').on('click', function () {
+        const value = $(this).data('value'); // Get the selected rating value
+
+        // Update the hidden input field
+        $('#id_rating').val(value);
+
+        // Update the stars to reflect the selected rating
+        $('.star-rating .star').each(function () {
+            if ($(this).data('value') <= value) {
+                $(this).addClass('filled').text('★'); // Filled star
+            } else {
+                $(this).removeClass('filled').text('☆'); // Empty star
+            }
+        });
+    });
+
+    // Initialize the stars based on the default value (e.g., 5)
+    const defaultRating = $('#id_rating').val();
+    $('.star-rating .star').each(function () {
+        if ($(this).data('value') <= defaultRating) {
+            $(this).addClass('filled').text('★'); // Filled star
+        } else {
+            $(this).removeClass('filled').text('☆'); // Empty star
+        }
+    });
+});
 </script>
 <script>
     $(document).ready(function () {
@@ -350,11 +387,6 @@
             $(document).off('click', '#cancel-delete').on('click', '#cancel-delete', function () {
                 $('#delete-confirm').remove(); // Remove the modal
             });
-        });
-
-        // Update the displayed rating value
-        $('#id_rating').on('input', function () {
-            $('.rating-value').text($(this).val()); // Update the displayed rating
         });
     });
 </script>
