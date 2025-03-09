@@ -2,9 +2,7 @@
     <div class="review-header">
         <strong>{{ review.user.username }}</strong>
         <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
-        {% if request.user == review.user %}
-        <button class="delete-review" data-review-id="{{ review.id }}">Delete</button>
-        {% endif %}
+
     </div>
     <div class="review-comment" style="min-height:24px;">
         <div>{{ review.comment }}</div>
