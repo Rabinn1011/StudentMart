@@ -62,151 +62,206 @@ document.querySelectorAll('.red-button').forEach(button => {
 
 // js for taking comment and replies
 $(document).ready(function () {
-        // Comment submission
-        $("#comment-form").submit(function (e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
+    // Function to format the date properly
+    function formatDate(dateString) {
+        let date = new Date(dateString);
+        let options = { year: "numeric", month: "long", day: "numeric" };
+        return date.toLocaleDateString("en-US", options);
+    }
+    // Comment submission
+    $("#comment-form").submit(function (e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
 
-            $.ajax({
-                type: "POST",
-                url: "/add_comment/",
-                data: formData,
-                success: function (response) {
-                    if (response.error) {
-                        alert(response.error);
+        $.ajax({
+            type: "POST",
+            url: "/add_comment/",
+            data: formData,
+            success: function (response) {
+                if (response.error) {
+                    alert(response.error);
+                } else {
+                    var formattedDate = formatDate(response.created_at);
+                    var deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Comment</button>`;
+                    var newCommentHTML = `
+                        <li id="comment-${response.id}" class="comment">
+                            <div class="comment-header">
+                                <strong>${response.user}</strong>
+                                <span class="comment-date">${formattedDate}</span>
+                                ${deleteButton}
+                            </div>
+                            <div class="comment-content">
+                                ${response.content}
+                            </div>
+                            <button class="reply-btn" data-id="${response.id}">Reply</button>
+                            <ul class="reply-list"></ul>
+                        </li>
+                    `;
+
+                    if (response.parent) {
+                        $(`#comment-${response.parent} .reply-list`).append(newCommentHTML);
                     } else {
-                        var newCommentHTML = `
-                            <li id="comment-${response.id}" class="comment">
-                                <div class="comment-header">
-                                    <strong>${response.user}</strong>
-                                    <span class="comment-date">${response.created_at}</span>
-                                </div>
-                                <div class="comment-content">
-                                    ${response.content}
-                                </div>
-                                <button class="reply-btn" data-id="${response.id}">Reply</button>
-                                <ul class="reply-list"></ul>
-                            </li>
-                        `;
-
-                        // Insert new comment
-                        if (response.parent) {
-                            // Append reply to its parent comment's reply list
-                            $(`#comment-${response.parent} .reply-list`).append(newCommentHTML);
-                        } else {
-                            // Add new parent comment to the list
-                            $("#comment-list").prepend(newCommentHTML);
-                        }
-
-                        // Add replies to the comment (if any)
-                        if (response.replies) {
-                            response.replies.forEach(function (reply) {
-                                var replyHTML = `
-                                    <li class="reply">
-                                        <div class="comment-header">
-                                            <strong>${reply.user}</strong>
-                                            <span class="comment-date">${reply.created_at}</span>
-                                        </div>
-                                        <div class="comment-content">
-                                            ${reply.content}
-                                        </div>
-                                    </li>
-                                `;
-                                $(`#comment-${response.id} .reply-list`).append(replyHTML);
-                            });
-                        }
-
-                        // Reapply styles for the new elements
-                        applyCommentStyles();
-
-                        // Clear the comment form
-                        $("#comment-content").val("");
-                        $("#parent-id").val("");  // Reset parent ID
+                        $("#comment-list").prepend(newCommentHTML);
                     }
+
+                    // Add replies to the comment (if any)
+                    if (response.replies) {
+                        response.replies.forEach(function (reply) {
+                            var replyHTML = `
+                                <li class="reply">
+                                    <div class="comment-header">
+                                        <strong>${reply.user}</strong>
+                                        <span class="comment-date">${formattedReplyDate}</span>
+                                        ${deleteButton}
+                                    </div>
+                                    <div class="comment-content">
+                                        ${reply.content}
+                                    </div>
+                                </li>
+                            `;
+                            $(`#comment-${response.id} .reply-list`).append(replyHTML);
+                        });
+                    }
+
+                    // Reapply styles and bind events for new comments
+                    applyCommentStyles();
+                    bindDeleteEvent();
+
+                    $("#comment-content").val("");
+                    $("#parent-id").val("");
                 }
-            });
-        });
-
-        // Show reply textarea when "Reply" is clicked
-        $(document).on("click", ".reply-btn", function () {
-            var parentID = $(this).data("id");
-
-            // Show the specific reply textarea for this comment
-            var replyTextarea = $("#reply-" + parentID);
-            replyTextarea.toggle();  // Show or hide the reply textarea
-
-            // Toggle the text of the button (Reply/Cancel Reply)
-            if (replyTextarea.is(":visible")) {
-                $(this).text("Cancel Reply");
-            } else {
-                $(this).text("Reply");
             }
         });
+    });
 
-        // Post reply when "Post Reply" button is clicked
-        $(document).on("click", ".reply-submit", function () {
-            var parentID = $(this).data("parent");
-            var replyContent = $("#reply-" + parentID + " .reply-content").val();
-            var productID = $("input[name='product_id']").val();
+    // Show reply textarea when "Reply" is clicked
+    $(document).on("click", ".reply-btn", function () {
+        var parentID = $(this).data("id");
+        var replyTextarea = $("#reply-" + parentID);
+        replyTextarea.toggle();
 
-            if (replyContent.trim() === "") {
-                alert("Reply content cannot be empty!");
+        if (replyTextarea.is(":visible")) {
+            $(this).text("Cancel Reply");
+        } else {
+            $(this).text("Reply");
+        }
+    });
+
+    // Post reply when "Post Reply" button is clicked
+    $(document).on("click", ".reply-submit", function () {
+        var parentID = $(this).data("parent");
+        var replyContent = $("#reply-" + parentID + " .reply-content").val();
+        var productID = $("input[name='product_id']").val();
+
+        if (replyContent.trim() === "") {
+            alert("Reply content cannot be empty!");
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/add_comment/",
+            data: {
+                'product_id': productID,
+                'parent': parentID,
+                'content': replyContent,
+                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+            },
+            success: function (response) {
+                if (response.error) {
+                    alert(response.error);
+                } else {
+                    var formattedDate = formatDate(response.created_at);
+                    var deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Reply</button>`;
+                    var newReplyHTML = `
+                        <li class="reply">
+                            <div class="comment-header">
+                                <strong>${response.user}</strong>
+                                <span class="comment-date">${formattedDate}</span>
+                                ${deleteButton}
+                            </div>
+                            <div class="comment-content">
+                                ${response.content}
+                            </div>
+                        </li>
+                    `;
+                    $("#comment-" + parentID + " .reply-list").append(newReplyHTML);
+
+                    applyCommentStyles();
+                    bindDeleteEvent();
+
+                    $("#reply-" + parentID).hide();
+                    $("#reply-" + parentID + " .reply-content").val("");
+                    $(".reply-btn[data-id='" + parentID + "']").text("Reply");
+                }
+            }
+        });
+    });
+
+    // Bind delete event to dynamically added delete buttons
+    function bindDeleteEvent() {
+        $(document).off("click", ".delete-btn").on("click", ".delete-btn", function () {
+            var commentID = $(this).data("id");
+
+            if (!confirm("Are you sure you want to delete this comment?")) {
                 return;
             }
 
             $.ajax({
                 type: "POST",
-                url: "/add_comment/",
+                url: `/delete_comment/${commentID}/`,
                 data: {
-                    'product_id': productID,
-                    'parent': parentID,
-                    'content': replyContent,
                     'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                 },
                 success: function (response) {
-                    if (response.error) {
-                        alert(response.error);
+                    if (response.success) {
+                        $(`#comment-${commentID}`).remove();
                     } else {
-                        var newReplyHTML = `
-                            <li class="reply">
-                                <div class="comment-header">
-                                    <strong>${response.user}</strong>
-                                    <span class="comment-date">${response.created_at}</span>
-                                </div>
-                                <div class="comment-content">
-                                    ${response.content}
-                                </div>
-                            </li>
-                        `;
-                        // Add the new reply below the respective comment
-                        $("#comment-" + parentID + " .reply-list").append(newReplyHTML);
-
-                        // Reapply styles for the new reply
-                        applyCommentStyles();
-
-                        // Hide reply textarea after posting
-                        $("#reply-" + parentID).hide();
-
-                        // Reset the reply textarea
-                        $("#reply-" + parentID + " .reply-content").val("");
-                        $(".reply-btn[data-id='" + parentID + "']").text("Reply");
+                        alert("Error deleting comment.");
                     }
                 }
             });
         });
+    }
 
-        // Function to apply CSS styles after adding comments or replies
-        function applyCommentStyles() {
-            // Reinitialize styles for new comments or replies
-            $(".comment-header strong").css("color", "#007bff");
-            $(".reply-btn").css("background", "#28a745").css("color", "white");
-            $(".reply-btn").hover(function () {
-                $(this).css("background", "#218838");
-            }, function () {
-                $(this).css("background", "#28a745");
-            });
-        }
-    });
+    // Call this function once on page load
+    bindDeleteEvent();
+
+    // Function to apply CSS styles after adding comments or replies
+    function applyCommentStyles() {
+        $(".comment-header strong").css("color", "#007bff");
+        $(".reply-btn").css({
+            "background": "#28a745",
+            "color": "white",
+            "border": "none",
+            "padding": "5px 10px",
+            "cursor": "pointer"
+        }).hover(function () {
+            $(this).css("background", "#218838");
+        }, function () {
+            $(this).css("background", "#28a745");
+        });
+
+        $(".delete-btn").css({
+            "background-color": "#e74c3c",
+            "color": "white",
+            "padding": "5px 10px",
+            "border": "none",
+            "border-radius": "3px",
+            "cursor": "pointer",
+            "font-size": "14px",
+            "margin-left": "10px"
+        }).hover(function () {
+            $(this).css("background", "#c82333");
+        }, function () {
+            $(this).css("background", "#dc3545");
+        });
+    }
+});
+
+
+
+
 
 
 
