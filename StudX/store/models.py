@@ -69,6 +69,17 @@ class ProductImage(models.Model):
         return f"Image for {self.product.name}"
 
 
+
+class Comment(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name="comments")  # Assuming you have a Product model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies")
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.content[:20]}"
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),

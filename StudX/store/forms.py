@@ -47,7 +47,11 @@ class ProductImageForm(forms.ModelForm):
         model = ProductImage
         fields = ['image']
 
-
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content', 'parent']
+        widgets = {'parent': forms.HiddenInput()}  # Hide parent field in the form
 
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:

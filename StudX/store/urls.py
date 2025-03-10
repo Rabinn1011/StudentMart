@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from . import views
 from .views import login_required_redirect
-from .views import search_products, filter_products
+from .views import *
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -19,6 +19,9 @@ urlpatterns = [
     path("order/<int:order_id>/receipt/", views.order_receipt, name="order_receipt"),
     path("order/<int:order_id>/receipt/pdf/", views.generate_receipt_pdf, name="generate_receipt_pdf"),
     path('product/<int:pk>', views.product, name='product'),
+    path('add_comment/', add_comment, name="add_comment"),
+    path('delete_comment/<int:id>/', views.delete_comment, name='delete_comment'),
+    path('delete_reply/<int:id>/', views.delete_reply, name='delete_reply'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('seller_detail/', views.seller_info, name='seller_info'),

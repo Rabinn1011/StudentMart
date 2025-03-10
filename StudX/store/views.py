@@ -213,8 +213,62 @@ logger = logging.getLogger(__name__)
 
 
 def product(request, pk):
-    product = Product.objects.get(id=pk)
-    return render(request, 'product.html', {'product': product})
+    product = get_object_or_404(Product, id=pk)
+    comments = product.comments.filter(parent=None).order_by('-created_at')  # Get only parent comments
+    form = CommentForm()
+    return render(request, 'product.html', {'product': product, 'comments': comments, 'form': form})
+
+
+@login_required
+def add_comment(request):
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.product_id = request.POST.get('product_id')  # Get product ID from AJAX
+            comment.save()
+
+            # Get the latest comment data and replies
+            parent_comment = comment.parent.id if comment.parent else None
+            response_data = {
+                'id': comment.id,
+                'user': comment.user.username,
+                'content': comment.content,
+                'created_at': comment.created_at.strftime("%Y-%m-%d %H:%M"),
+                'parent': parent_comment
+            }
+
+            # Include replies for the comment if it's a parent comment
+            if not comment.parent:
+                replies = []
+                for reply in comment.replies.all():
+                    replies.append({
+                        'user': reply.user.username,
+                        'content': reply.content,
+                        'created_at': reply.created_at.strftime("%Y-%m-%d %H:%M")
+                    })
+                response_data['replies'] = replies
+
+            return JsonResponse(response_data)
+
+    return JsonResponse({'error': 'Invalid data'}, status=400)
+
+def delete_comment(request, id):
+    if request.user.is_authenticated:
+        # Get the comment by id and ensure it's the logged-in user
+        comment = get_object_or_404(Comment, id=id, user=request.user)
+        comment.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=403)
+
+def delete_reply(request, id):
+    if request.user.is_authenticated:
+        # Get the reply by id and ensure it's the logged-in user
+        reply = get_object_or_404(Comment, id=id, user=request.user, parent__isnull=False)
+        reply.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=403)
 
 
 def login_user(request):

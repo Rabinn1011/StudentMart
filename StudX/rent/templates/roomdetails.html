@@ -130,37 +130,106 @@
 <!-- Add this script for AJAX submission -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#review-form').on('submit', function (e) {
-            e.preventDefault();  // Prevent the form from submitting normally
+$(document).ready(function () {
+    // Handle review form submission
+    $('#review-form').on('submit', function (e) {
+        e.preventDefault();  // Prevent the form from submitting normally
 
-            $.ajax({
-                type: 'POST',
-                url: '{% url "room_details" room.id %}',  // Use the correct URL name
-                data: $(this).serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        // Log the review HTML
-                        console.log("Review HTML:", response.review_html);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "add_review" room.id %}',  // Use the correct URL for adding review
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.success) {
+                    // Create the review HTML using the response data
+                    const reviewHtml = `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>${response.review_data.username}</strong>
+                                <span class="review-date">${response.review_data.created_at}</span>
+                            </div>
+                            <div class="review-rating">
+                                ${getStarRatingHtml(response.review_data.rating)}
+                            </div>
+                            <div class="review-comment" style="min-height:24px;">
+                                <div>${response.review_data.comment}</div>
+                            </div>
+                            ${response.is_user_review ?
+                            '<button class="delete-review">Delete</button>' : ''}
+                        </div>
+                    `;
 
-                        // Clear the form
-                        $('#review-form textarea').val('');
+                    // Prepend the new review to the review list
+                    $('#reviews-list').prepend(reviewHtml);
 
-                        // Add the new review to the top of the list
-                        $('#reviews-list').prepend($(response.review_html));
+                    // Apply necessary styles and fix positions
+                    applyReviewStyles();
 
-                        // If "No reviews yet" message exists, remove it
-                        $('#reviews-list p').remove();
-                    } else {
-                        alert('Error: ' + response.errors.comment.join(' '));
-                    }
-                },
-                error: function () {
-                    alert('An error occurred while submitting your review.');
+                    // Clear the form
+                    $('#review-form textarea').val('');
+                } else {
+                    alert('Error: ' + response.errors.comment.join(' '));
                 }
-            });
+            },
+            error: function () {
+                alert('An error occurred while submitting your review.');
+            }
         });
     });
+});
+
+// Function to generate the star rating HTML
+function getStarRatingHtml(rating) {
+    let starHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            starHtml += '<span class="star filled">★</span>';  // Filled star
+        } else {
+            starHtml += '<span class="star">☆</span>';  // Empty star
+        }
+    }
+    return starHtml;
+}
+
+// Function to apply necessary styles to the newly added reviews
+function applyReviewStyles() {
+    // Fix star positioning
+    $('.review-header').css('display', 'flex').css('align-items', 'center');
+    $('.review-rating').css('margin-left', '10px');
+
+    // Fix greyed-out text for newly added reviews
+    $('.review-comment div').css('color', 'black');
+
+    // Attach delete button handler for dynamically added review
+    $('.delete-review').off('click').on('click', function () {
+        // Handle delete review logic
+        const reviewId = $(this).data('review-id');
+        const $reviewItem = $(this).closest('.review-item');
+
+        // Send AJAX request to delete review
+        $.ajax({
+            type: 'POST',
+            url: `/delete-review/${reviewId}/`, // URL for deleting the review
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}', // CSRF token
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Fade out and remove the review item
+                    $reviewItem.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                } else {
+                    alert(response.error || 'An error occurred while deleting the review.');
+                }
+            },
+            error: function () {
+                alert('An error occurred while deleting the review.');
+            }
+        });
+    });
+}
+
 </script>  <!-- submitting the review -->
 
 <script>

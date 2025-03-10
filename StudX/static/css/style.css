@@ -1497,87 +1497,93 @@ footer {
 /*delete ko confirmation box yaha samma*/
 
 /* reviews section ko suru */
-.reviews-section h3{
-    display:flex;
-    justify-content:center;
+/* Reviews Section */
+.reviews-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-section h3 {
     font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
 }
 
-
+/* Review Form */
 .review-form-container {
-    border: 2px solid #ddd;  /* Light gray border */
-    border-radius: 8px;  /* Smooth rounded edges */
-    padding: 15px;
-    background-color: #f9f9f9; /* Light background */
-    margin-bottom: 20px; /* Space below the form */
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+    margin-bottom: 30px;
 }
 
-.review-form-container textarea {
+#review-form {
+    margin-bottom: 20px;
+}
+
+#review-form textarea {
     width: 100%;
-    height: 80px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     padding: 10px;
-    font-size: 14px;
-    resize: none; /* Prevent resizing */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    resize: vertical;
 }
 
-.review-form-container .star-rating {
-    margin: 10px 0; /* Space between stars and submit button */
+.star-rating {
+    margin-bottom: 10px;
 }
 
-.review-form-container .submit-button {
-    display: block;
-    background-color: #007bff; /* Blue button */
+.star {
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.submit-button {
+    background: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
-    font-size: 16px;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    transition: 0.3s ease;
+    font-size: 1rem;
 }
 
-.review-form-container .submit-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.submit-button:hover {
+    background: #0056b3;
 }
 
 
+/* Reviews List */
 .reviews-list {
-    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .review-item {
     padding: 15px;
-    border-bottom: 1px solid #111111;
+    border-bottom: 1px solid #eee;
 }
 
 .review-item:last-child {
     border-bottom: none;
 }
-/*
+
 .review-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
-*/
-.review-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between username and stars */
-}
-
-.review-rating {
+.review-header .user-info {
     display: flex;
     align-items: center;
 }
@@ -1585,6 +1591,12 @@ footer {
 .review-header strong {
     font-size: 1.1rem;
     color: #007bff;
+    margin-right: 10px;
+}
+
+.review-rating {
+    font-size: 1.2rem;
+    color: #ffc107;
 }
 
 .review-date {
@@ -1592,64 +1604,291 @@ footer {
     color: #777;
 }
 
-.review-comment div {
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #555;
-}
-
 .delete-review {
-    background-color: red;  /* Red background */
-    color: white;  /* White text */
-    border: none;  /* Remove default border */
-    padding: 6px 12px;  /* Adjust padding */
-    border-radius: 5px;  /* Rounded corners */
-    cursor: pointer;  /* Show pointer on hover */
-    font-size: 14px;
-    transition: background 0.3s ease-in-out;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .delete-review:hover {
-    background-color: darkred;  /* Darker red on hover */
+    background: #c82333;
 }
 
-.modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-.modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-        width: 300px;
-        margin: 20% auto;
-    }
-.modal-content p {
-    margin-bottom: 20px;
-    }
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 25px; /* Adjust this value to widen spacing */
+/* Review Comment */
+.review-comment {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
     margin-top: 10px;
 }
 
-
-.star {
-    font-size: 1.5rem;
-    color: #ccc; /* Default color for empty stars */
-    cursor: pointer;
+/* Modal for Delete Confirmation */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
 }
 
-.star.filled {
-    color: #ffcc00; /* Color for filled stars */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+
 /* reviews section ko yaha samma */
 
+/* comment section ko suru*/
+
+.comment-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.comment-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Comment Form */
+#comment-form {
+    margin-bottom: 30px;
+}
+
+#comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+#comment-form button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#comment-form button:hover {
+    background: #0056b3;
+}
+
+/* Comment List */
+#comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comment {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-header strong {
+    font-size: 1.1rem;
+    color: #007bff;
+}
+
+.comment-date {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.comment-content {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.reply-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.reply-btn:hover {
+    background: #218838;
+}
+
+/* Reply Textarea */
+.reply-textarea {
+    margin-top: 15px;
+    display: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.reply-textarea textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.reply-submit {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.reply-submit:hover {
+    background: #0056b3;
+}
+
+/* Reply List */
+.reply-list {
+    list-style: none;
+    padding-left: 30px;
+    margin-top: 10px;
+}
+
+.reply {
+    padding: 10px;
+    border-left: 2px solid #007bff;
+    margin-bottom: 10px;
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.reply .comment-header strong {
+    color: #28a745; /* Different color for replies */
+}
+
+.reply .comment-content {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+/* Delete Button Styling */
+.delete-comment, .delete-reply {
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+/* Delete Button Hover Effect */
+.delete-comment:hover, .delete-reply:hover {
+    background-color: #c0392b;
+}
+
+/* Delete Button Focus Effect */
+.delete-comment:focus, .delete-reply:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.6);
+}
+/* Modal Background (Overlay) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    z-index: 1000; /* Ensure it's on top of everything */
+}
+
+/* Modal Content */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: absolute; /* Position the modal content */
+    top: 50%; /* Move down by 50% of the viewport height */
+    left: 50%; /* Move right by 50% of the viewport width */
+    transform: translate(-50%, -50%); /* Center the modal */
+}
+/* Delete Confirmation Text */
+#delete-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Modal Buttons Layout */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+
+/* Fade-in Animation for Modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* reviews section ko yaha samma */

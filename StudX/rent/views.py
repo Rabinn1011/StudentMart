@@ -63,25 +63,42 @@ def add_Room(request):
 
     return render(request, 'add_room.html', {'form': form})
 
-
 def room_detail(request, room_id):
     room = get_object_or_404(Room, id=room_id)
     reviews = room.reviews.all().order_by('-created_at')  # Fetch room-specific reviews
+
+    form = ReviewForm()  # No need to handle POST requests here
+
+    return render(request, 'roomdetails.html', {
+        'room': room,
+        'reviews': reviews,  # Pass reviews to the template
+        'form': form,  # Pass review form to the template
+    })
+
+
+def add_review(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
 
     if request.method == 'POST' and request.user.is_authenticated:
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
-            review.room = room  # Associate review with room instead of product
+            review.room = room
             review.user = request.user
             review.save()
 
-            # Render the new review to HTML
-            review_html = render_to_string('review_item.html', {'review': review})
+            # Send review data and whether the review belongs to the user
+            review_data = {
+                'username': review.user.username,
+                'comment': review.comment,
+                'rating': review.rating,
+                'created_at': review.created_at.strftime('%b %d, %Y'),  # Format date
+            }
 
             return JsonResponse({
                 'success': True,
-                'review_html': review_html,
+                'review_data': review_data,
+                'is_user_review': request.user == review.user,  # Flag for delete button
             })
         else:
             return JsonResponse({
@@ -89,13 +106,10 @@ def room_detail(request, room_id):
                 'errors': form.errors,
             })
     else:
-        form = ReviewForm()
-
-    return render(request, 'roomdetails.html', {
-        'room': room,
-        'reviews': reviews,  # Pass reviews to the template
-        'form': form,  # Pass review form to the template
-    })
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid request method.',
+        })
 
 logger = logging.getLogger(__name__)
 
