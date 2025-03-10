@@ -213,56 +213,9 @@ logger = logging.getLogger(__name__)
 
 
 def product(request, pk):
-    product = get_object_or_404(Product, id=pk)
-    reviews = product.reviews.all().order_by('-created_at')
+    product = Product.objects.get(id=pk)
+    return render(request, 'product.html', {'product': product})
 
-    if request.method == 'POST' and request.user.is_authenticated:
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.product = product
-            review.user = request.user
-            review.save()
-
-            # Log the review text (debugging ko lagi )
-           # print(f"New review submitted: {review.comment}")
-
-            # Render the new review to HTML
-            review_html = render_to_string('review_item.html', {'review': review})
-           # print(f"Review HTML: {review_html}")
-
-            return JsonResponse({
-                'success': True,
-                'review_html': review_html,
-            })
-        else:
-            return JsonResponse({
-                'success': False,
-                'errors': form.errors,
-            })
-    else:
-        form = ReviewForm()
-
-    return render(request, 'product.html', {
-        'product': product,
-        'reviews': reviews,
-        'form': form,
-    })
-
-
-@login_required
-@require_POST
-def delete_review(request, review_id):
-    try:
-        review = Review.objects.get(id=review_id)
-        # Check if the current user is the author of the review
-        if request.user == review.user:
-            review.delete()
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'error': 'You are not authorized to delete this review.'})
-    except Review.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Review not found.'})
 
 def login_user(request):
     next_url = request.GET.get('next')

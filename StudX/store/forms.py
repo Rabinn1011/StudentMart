@@ -48,28 +48,6 @@ class ProductImageForm(forms.ModelForm):
         fields = ['image']
 
 
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ['comment', 'rating']
-        rating = forms.IntegerField(
-            widget=forms.NumberInput(attrs={
-                'type': 'range',  #range input for star selection
-                'min': 1,
-                'max': 5,
-                'step': 1,
-            }),
-            validators=[MinValueValidator(1), MaxValueValidator(5)]
-        )
-        widgets = {
-            'comment': forms.Textarea(attrs={
-                'rows': 3,  # Reduce the number of visible rows
-                'cols': 50,  # Optional, controls width
-
-                'placeholder': 'Write your review here...',
-            })
-        }
-
 
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:

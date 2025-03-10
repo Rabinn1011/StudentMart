@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import os , uuid
-from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class CartProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -68,18 +68,6 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Image for {self.product.name}"
 
-class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField()
-    rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
-        default=5  # Optional: Set a default rating
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Review by {self.user.username} on {self.product.name}"
 
 class Order(models.Model):
     STATUS_CHOICES = [

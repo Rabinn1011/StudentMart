@@ -1641,5 +1641,15 @@ footer {
     margin-top: 10px;
 }
 
+
+.star {
+    font-size: 1.5rem;
+    color: #ccc; /* Default color for empty stars */
+    cursor: pointer;
+}
+
+.star.filled {
+    color: #ffcc00; /* Color for filled stars */
+}
 /* reviews section ko yaha samma */
 

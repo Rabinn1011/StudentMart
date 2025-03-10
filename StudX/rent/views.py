@@ -1,9 +1,23 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from rent.forms import RoomForm
+from rent.forms import *
 from rent.models import Room
 
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from .models import Review
+
+
+
+
+import logging
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from .models import Room, Review  # Ensure these are correct based on your app structure
+from .forms import ReviewForm
 
 def room(request):
     rooms = Room.objects.all()
@@ -51,10 +65,51 @@ def add_Room(request):
 
 
 def room_detail(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    reviews = room.reviews.all().order_by('-created_at')  # Fetch room-specific reviews
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.room = room  # Associate review with room instead of product
+            review.user = request.user
+            review.save()
+
+            # Render the new review to HTML
+            review_html = render_to_string('review_item.html', {'review': review})
+
+            return JsonResponse({
+                'success': True,
+                'review_html': review_html,
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors,
+            })
+    else:
+        form = ReviewForm()
+
+    return render(request, 'roomdetails.html', {
+        'room': room,
+        'reviews': reviews,  # Pass reviews to the template
+        'form': form,  # Pass review form to the template
+    })
+
+logger = logging.getLogger(__name__)
+
+
+@login_required
+@require_POST
+def delete_review(request, review_id):
     try:
-        room = Room.objects.get(id=room_id)
-
-    except Room.DoesNotExist:
-        raise Http404("Room not found")
-
-    return render(request, 'roomdetails.html', {'room': room})
+        review = Review.objects.get(id=review_id)
+        # Check if the current user is the author of the review
+        if request.user == review.user:
+            review.delete()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'You are not authorized to delete this review.'})
+    except Review.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Review not found.'})
