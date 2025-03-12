@@ -55,7 +55,7 @@
         });
     </script>
 
-    </section>
+</section>
 
 <div class="form-container">
     <div class="reviews-section">
@@ -88,7 +88,7 @@
             {% for review in reviews %}
             <div class="review-item">
                 <div class="review-header">
-                    <div class ="user-info">
+                    <div class="user-info">
                         <strong>{{ review.user.username }}</strong>
                         <div class="review-rating" style="position:relative;">
                             <!-- Display star rating -->
@@ -127,123 +127,145 @@
     </div> <!-- Closing reviews-section -->
 </div>
 
-<!-- Add this script for AJAX submission -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function () {
-    // Handle review form submission
-    $('#review-form').on('submit', function (e) {
-        e.preventDefault();  // Prevent the form from submitting normally
-
-        $.ajax({
-            type: 'POST',
-            url: '{% url "add_review" room.id %}',  // Use the correct URL for adding review
-            data: $(this).serialize(),
-            success: function (response) {
-                if (response.success) {
-                    // Create the review HTML using the response data
-                    const reviewHtml = `
-                        <div class="review-item">
-                            <div class="review-header">
-                                <strong>${response.review_data.username}</strong>
-                                <span class="review-date">${response.review_data.created_at}</span>
-                            </div>
-                            <div class="review-rating">
-                                ${getStarRatingHtml(response.review_data.rating)}
-                            </div>
-                            <div class="review-comment" style="min-height:24px;">
-                                <div>${response.review_data.comment}</div>
-                            </div>
-                            ${response.is_user_review ?
-                            '<button class="delete-review">Delete</button>' : ''}
-                        </div>
-                    `;
-
-                    // Prepend the new review to the review list
-                    $('#reviews-list').prepend(reviewHtml);
-
-                    // Apply necessary styles and fix positions
-                    applyReviewStyles();
-
-                    // Clear the form
-                    $('#review-form textarea').val('');
-                } else {
-                    alert('Error: ' + response.errors.comment.join(' '));
-                }
-            },
-            error: function () {
-                alert('An error occurred while submitting your review.');
-            }
-        });
-    });
-});
-
-// Function to generate the star rating HTML
-function getStarRatingHtml(rating) {
-    let starHtml = '';
-    for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-            starHtml += '<span class="star filled">★</span>';  // Filled star
-        } else {
-            starHtml += '<span class="star">☆</span>';  // Empty star
-        }
-    }
-    return starHtml;
-}
-
-// Function to apply necessary styles to the newly added reviews
-function applyReviewStyles() {
-    // Fix star positioning
-    $('.review-header').css('display', 'flex').css('align-items', 'center');
-    $('.review-rating').css('margin-left', '10px');
-
-    // Fix greyed-out text for newly added reviews
-    $('.review-comment div').css('color', 'black');
-
-    // Attach delete button handler for dynamically added review
-    $('.delete-review').off('click').on('click', function () {
-        // Handle delete review logic
-        const reviewId = $(this).data('review-id');
-        const $reviewItem = $(this).closest('.review-item');
-
-        // Send AJAX request to delete review
-        $.ajax({
-            type: 'POST',
-            url: `/delete-review/${reviewId}/`, // URL for deleting the review
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}', // CSRF token
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Fade out and remove the review item
-                    $reviewItem.fadeOut(300, function () {
-                        $(this).remove();
-                    });
-                } else {
-                    alert(response.error || 'An error occurred while deleting the review.');
-                }
-            },
-            error: function () {
-                alert('An error occurred while deleting the review.');
-            }
-        });
-    });
-}
-
-</script>  <!-- submitting the review -->
-
-<script>
     $(document).ready(function () {
+        // Handle review form submission
+        $('#review-form').on('submit', function (e) {
+            e.preventDefault();  // Prevent the form from submitting normally
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "add_review" room.id %}',  // Use the correct URL for adding review
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        // Create the review HTML using the response data
+                        const reviewHtml = `
+                            <div class="review-item">
+                                 <div class="review-header">
+                                     <div class="user-info">
+                                        <strong>${response.review_data.username}</strong>
+                                        <div class="review-rating" style="position:relative;">
+				                            ${getStarRatingHtml(response.review_data.rating)}
+
+                                         </div>
+                                     </div>
+                                        <span class="review-date">${response.review_data.created_at}</span>
+                                        ${response.is_user_review ?
+                                            `<button class="delete-review" data-review-id="${response.review_data.id}">Delete</button>` : ''}
+                                 </div>
+			                     <div class="review-comment" style="min-height:24px;">
+                                        <div>${response.review_data.comment}</div>
+                                 </div>
+                            </div>
+                        `;
+
+                        // Prepend the new review to the review list
+                        $('#reviews-list').prepend(reviewHtml);
+
+                        // Apply necessary styles and fix positions
+                        applyReviewStyles();
+
+                        // Clear the form
+                        $('#review-form textarea').val('');
+                    } else {
+                        alert('Error: ' + response.errors.comment.join(' '));
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while submitting your review.');
+                }
+            });
+        });
+    });
+
+    // Function to generate the star rating HTML
+    function getStarRatingHtml(rating) {
+        let starHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starHtml += '<span class="star filled">★</span>';  // Filled star
+            } else {
+                starHtml += '<span class="star">☆</span>';  // Empty star
+            }
+        }
+        return starHtml;
+    }
+
+    // Function to apply necessary styles to the newly added reviews
+function applyReviewStyles() {
+    $('.review-list').css({
+        'list-style': 'none',
+        'padding': '0',
+        'margin': '0'
+
+    });
+
+    $('.review-item').css({
+        'border-bottom': '1px solid #eee',
+        'padding': '15px'
+    });
+
+    $('.review-header').css({
+        'display': 'flex',
+        'justify-content': 'space-between',
+        'align-items': 'center',
+        'margin-bottom': '10px'
+    });
+
+    $('.review-header .user-info').css({
+        'display': 'flex',
+        'align-items': 'center'
+    });
+
+    $('.review-rating').css({
+        'position': 'relative',
+        'color': '#f5c107',
+        'font-size': '1.2rem'
+    });
+
+    $('.review-comment').css({
+        'line-height': '1.5',
+        'margin-top': '10px',
+        'color': '#555',
+        'font-size': '1rem'
+    });
+
+    $('.delete-review').css({
+        'background-color': '#dc3545',
+        'color': 'white',
+        'border': 'none',
+        'padding': '5px 10px',
+        'border-radius': '5px',
+        'cursor': 'pointer',
+        'font-size': '0.9rem'
+    });
+}
+
+
     // Handle star rating selection
-    $('.star-rating .star').on('click', function () {
-        const value = $(this).data('value'); // Get the selected rating value
+    $(document).ready(function () {
+        $('.star-rating .star').on('click', function () {
+            const value = $(this).data('value'); // Get the selected rating value
 
-        // Update the hidden input field
-        $('#id_rating').val(value);
+            // Update the hidden input field
+            $('#id_rating').val(value);
 
-        // Update the stars to reflect the selected rating
+            // Update the stars to reflect the selected rating
+            $('.star-rating .star').each(function () {
+                if ($(this).data('value') <= value) {
+                    $(this).addClass('filled').text('★'); // Filled star
+                } else {
+                    $(this).removeClass('filled').text('☆'); // Empty star
+                }
+            });
+        });
+
+        // Initialize the stars based on the default value (e.g., 5)
+        const defaultRating = $('#id_rating').val();
         $('.star-rating .star').each(function () {
-            if ($(this).data('value') <= value) {
+            if ($(this).data('value') <= defaultRating) {
                 $(this).addClass('filled').text('★'); // Filled star
             } else {
                 $(this).removeClass('filled').text('☆'); // Empty star
@@ -251,20 +273,8 @@ function applyReviewStyles() {
         });
     });
 
-    // Initialize the stars based on the default value (e.g., 5)
-    const defaultRating = $('#id_rating').val();
-    $('.star-rating .star').each(function () {
-        if ($(this).data('value') <= defaultRating) {
-            $(this).addClass('filled').text('★'); // Filled star
-        } else {
-            $(this).removeClass('filled').text('☆'); // Empty star
-        }
-    });
-});
-</script>  <!-- star rating -->
-<script>
+    // Handle delete review
     $(document).ready(function () {
-        // Handle delete review button click
         $(document).on('click', '.delete-review', function () {
             const reviewId = $(this).data('review-id'); // Get the review ID
             const $reviewItem = $(this).closest('.review-item'); // Get the review item
@@ -291,9 +301,7 @@ function applyReviewStyles() {
                 $.ajax({
                     type: 'POST',
                     url: `/delete-review/${reviewId}/`, // URL for deleting the review
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}', // Include CSRF token
-                    },
+                    headers: { "X-CSRFToken": '{{ csrf_token }}' }, // Include CSRF token
                     success: function (response) {
                         if (response.success) {
                             // Fade out and remove the review item
@@ -318,7 +326,8 @@ function applyReviewStyles() {
             });
         });
     });
-</script>   <!-- delete review button -->
+</script>
+
 
 {% endblock %}
 
