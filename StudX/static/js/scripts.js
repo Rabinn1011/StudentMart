@@ -62,16 +62,17 @@ document.querySelectorAll('.red-button').forEach(button => {
 
 // js for taking comment and replies
 $(document).ready(function () {
-    // Function to format the date properly
+    // Format date like "April 16, 2025"
     function formatDate(dateString) {
         let date = new Date(dateString);
         let options = { year: "numeric", month: "long", day: "numeric" };
         return date.toLocaleDateString("en-US", options);
     }
-    // Comment submission
+
+    // Submit comment
     $("#comment-form").submit(function (e) {
         e.preventDefault();
-        var formData = $(this).serialize();
+        const formData = $(this).serialize();
 
         $.ajax({
             type: "POST",
@@ -81,9 +82,11 @@ $(document).ready(function () {
                 if (response.error) {
                     alert(response.error);
                 } else {
-                    var formattedDate = formatDate(response.created_at);
-                    var deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Comment</button>`;
-                    var newCommentHTML = `
+                    const formattedDate = formatDate(response.created_at);
+                    const deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Comment</button>`;
+                    const replyButtonHTML = isSeller ? `<button class="reply-btn" data-id="${response.id}">Reply</button>` : "";
+
+                    const newCommentHTML = `
                         <li id="comment-${response.id}" class="comment">
                             <div class="comment-header">
                                 <strong>${response.user}</strong>
@@ -93,7 +96,11 @@ $(document).ready(function () {
                             <div class="comment-content">
                                 ${response.content}
                             </div>
-                            <button class="reply-btn" data-id="${response.id}">Reply</button>
+                            ${replyButtonHTML}
+                            <div id="reply-${response.id}" class="reply-textarea" style="display:none;">
+                                <textarea class="reply-content" placeholder="Write a reply..."></textarea>
+                                <button class="reply-submit" data-parent="${response.id}">Post Reply</button>
+                            </div>
                             <ul class="reply-list"></ul>
                         </li>
                     `;
@@ -104,15 +111,15 @@ $(document).ready(function () {
                         $("#comment-list").prepend(newCommentHTML);
                     }
 
-                    // Add replies to the comment (if any)
+                    // Render replies if included
                     if (response.replies) {
                         response.replies.forEach(function (reply) {
-                            var replyHTML = `
+                            const formattedReplyDate = formatDate(reply.created_at);
+                            const replyHTML = `
                                 <li class="reply">
                                     <div class="comment-header">
                                         <strong>${reply.user}</strong>
                                         <span class="comment-date">${formattedReplyDate}</span>
-                                        ${deleteButton}
                                     </div>
                                     <div class="comment-content">
                                         ${reply.content}
@@ -123,10 +130,8 @@ $(document).ready(function () {
                         });
                     }
 
-                    // Reapply styles and bind events for new comments
                     applyCommentStyles();
                     bindDeleteEvent();
-
                     $("#comment-content").val("");
                     $("#parent-id").val("");
                 }
@@ -134,24 +139,19 @@ $(document).ready(function () {
         });
     });
 
-    // Show reply textarea when "Reply" is clicked
+    // Toggle reply textarea
     $(document).on("click", ".reply-btn", function () {
-        var parentID = $(this).data("id");
-        var replyTextarea = $("#reply-" + parentID);
+        const parentID = $(this).data("id");
+        const replyTextarea = $("#reply-" + parentID);
         replyTextarea.toggle();
-
-        if (replyTextarea.is(":visible")) {
-            $(this).text("Cancel Reply");
-        } else {
-            $(this).text("Reply");
-        }
+        $(this).text(replyTextarea.is(":visible") ? "Cancel Reply" : "Reply");
     });
 
-    // Post reply when "Post Reply" button is clicked
+    // Post reply
     $(document).on("click", ".reply-submit", function () {
-        var parentID = $(this).data("parent");
-        var replyContent = $("#reply-" + parentID + " .reply-content").val();
-        var productID = $("input[name='product_id']").val();
+        const parentID = $(this).data("parent");
+        const replyContent = $("#reply-" + parentID + " .reply-content").val();
+        const productID = $("input[name='product_id']").val();
 
         if (replyContent.trim() === "") {
             alert("Reply content cannot be empty!");
@@ -162,21 +162,22 @@ $(document).ready(function () {
             type: "POST",
             url: "/add_comment/",
             data: {
-                'product_id': productID,
-                'parent': parentID,
-                'content': replyContent,
-                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                product_id: productID,
+                parent: parentID,
+                content: replyContent,
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
             },
             success: function (response) {
                 if (response.error) {
                     alert(response.error);
                 } else {
-                    var formattedDate = formatDate(response.created_at);
-                    var deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Reply</button>`;
-                    var newReplyHTML = `
-                        <li class="reply">
+                    const formattedDate = formatDate(response.created_at);
+                    const deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Reply</button>`;
+                    var displayName = response.reply_display_name || response.user;
+                    const newReplyHTML = `
+                        <li class="reply" id="reply-${response.id}">
                             <div class="comment-header">
-                                <strong>${response.user}</strong>
+                                <strong>${displayName}<i class="fas fa-circle-check verified-icon"></i></strong>
                                 <span class="comment-date">${formattedDate}</span>
                                 ${deleteButton}
                             </div>
@@ -185,8 +186,8 @@ $(document).ready(function () {
                             </div>
                         </li>
                     `;
-                    $("#comment-" + parentID + " .reply-list").append(newReplyHTML);
 
+                    $("#comment-" + parentID + " .reply-list").append(newReplyHTML);
                     applyCommentStyles();
                     bindDeleteEvent();
 
@@ -198,20 +199,18 @@ $(document).ready(function () {
         });
     });
 
-    // Bind delete event to dynamically added delete buttons
+    // Delete comment or reply
     function bindDeleteEvent() {
         $(document).off("click", ".delete-btn").on("click", ".delete-btn", function () {
-            var commentID = $(this).data("id");
+            const commentID = $(this).data("id");
 
-            if (!confirm("Are you sure you want to delete this comment?")) {
-                return;
-            }
+            if (!confirm("Are you sure you want to delete this comment?")) return;
 
             $.ajax({
                 type: "POST",
                 url: `/delete_comment/${commentID}/`,
                 data: {
-                    'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
                 },
                 success: function (response) {
                     if (response.success) {
@@ -224,18 +223,24 @@ $(document).ready(function () {
         });
     }
 
-    // Call this function once on page load
     bindDeleteEvent();
 
-    // Function to apply CSS styles after adding comments or replies
+    // Style buttons and headers
     function applyCommentStyles() {
-        $(".comment-header strong").css("color", "#007bff");
+            // Apply style to comment usernames
+        $(".comment > .comment-header strong").css("color", "#007bff"); // Blue for main comments
+
+            // Apply style to reply usernames
+        $(".reply > .comment-header strong").css("color", "#28a745"); // Green for replies
+
+
+
         $(".reply-btn").css({
-            "background": "#28a745",
-            "color": "white",
-            "border": "none",
-            "padding": "5px 10px",
-            "cursor": "pointer"
+            background: "#28a745",
+            color: "white",
+            border: "none",
+            padding: "5px 10px",
+            cursor: "pointer"
         }).hover(function () {
             $(this).css("background", "#218838");
         }, function () {
@@ -243,14 +248,14 @@ $(document).ready(function () {
         });
 
         $(".delete-btn").css({
-            "background-color": "#e74c3c",
-            "color": "white",
-            "padding": "5px 10px",
-            "border": "none",
-            "border-radius": "3px",
-            "cursor": "pointer",
-            "font-size": "14px",
-            "margin-left": "10px"
+            backgroundColor: "#e74c3c",
+            color: "white",
+            padding: "5px 10px",
+            border: "none",
+            borderRadius: "3px",
+            cursor: "pointer",
+            fontSize: "14px",
+            marginLeft: "10px"
         }).hover(function () {
             $(this).css("background", "#c82333");
         }, function () {
@@ -258,9 +263,6 @@ $(document).ready(function () {
         });
     }
 });
-
-
-
 
 
 

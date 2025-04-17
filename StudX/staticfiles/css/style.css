@@ -1813,6 +1813,14 @@ footer {
     color: #444;
 }
 
+.verified-icon {
+    color: #28a745; /* Green */
+    margin-left: 5px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+
 /* Delete Button Styling */
 .delete-comment, .delete-reply {
     background-color: #e74c3c;

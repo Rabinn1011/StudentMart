@@ -38,7 +38,7 @@
                 </div>
                 <div>
                     <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
-                        <p>{{ product.seller.seller_details.seller_name }}</p>
+                        <p>{{ product.seller.seller_details.seller_name }}<i class="fas fa-circle-check verified-icon"></i></p>
                     </a>
                 </div>
             </div>
@@ -184,93 +184,94 @@
 </section>
 
 <div class="form-container">
-<div class="comment-section">
-    <h3>Comments</h3>
+    <div class="comment-section">
+        <h3>Q&A with Seller</h3>
 
-    {% if request.user.is_authenticated %}
-    <!-- Main comment form -->
-    <form id="comment-form">
-        {% csrf_token %}
-        <input type="hidden" name="product_id" value="{{ product.id }}">
-        <input type="hidden" name="parent" id="parent-id" value="">
-        <textarea name="content" id="comment-content" placeholder="Write a comment..." required></textarea>
-        <button type="submit">Post Comment</button>
-    </form>
-    {% else %}
-    <p class="login-message">You must be <a href="{% url 'login' %}">logged in</a> to comment.</p>
-    {% endif %}
+        {% if request.user.is_authenticated %}
+        <!-- Main comment form -->
+        <form id="comment-form">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="parent" id="parent-id" value="">
+            <textarea name="content" id="comment-content" placeholder="Write your query..." required></textarea>
+            <button type="submit">Post</button>
+        </form>
+        {% else %}
+        <p class="login-message">You must be <a href="{% url 'login' %}">logged in</a> to add your query.</p>
+        {% endif %}
 
-    <!-- List of comments -->
-    <ul id="comment-list">
-        {% for comment in comments %}
-        <li id="comment-{{ comment.id }}" class="comment">
-            <div class="comment-header">
-                <strong>{{ comment.user.username }}</strong>
-                <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
+        <!-- List of comments -->
+        <ul id="comment-list">
+            {% for comment in comments %}
+            <li id="comment-{{ comment.id }}" class="comment">
+                <div class="comment-header">
+                    <strong>{{ comment.user.username }}</strong>
+                    <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
 
-                <!-- Delete Comment Button -->
-                {% if request.user == comment.user %}
-                <button class="delete-comment" data-id="{{ comment.id }}" data-type="comment">Delete Comment</button>
+                    <!-- Delete Comment Button -->
+                    {% if request.user == comment.user %}
+                    <button class="delete-comment" data-id="{{ comment.id }}" data-type="comment">Delete Comment
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="comment-content">
+                    {{ comment.content }}
+                </div>
+
+                {% if request.user.is_authenticated and request.user == product.seller %}
+                <!-- Reply Button -->
+                <button class="reply-btn" data-id="{{ comment.id }}">Reply</button>
+
+                <!-- Reply Textarea (hidden initially) -->
+                <div id="reply-{{ comment.id }}" class="reply-textarea" style="display:none;">
+                    <textarea class="reply-content" placeholder="Write a reply..."></textarea>
+                    <button class="reply-submit" data-parent="{{ comment.id }}">Post Reply</button>
+                </div>
+
                 {% endif %}
+
+                <!-- Replies nested under the main comment -->
+                <ul class="reply-list">
+                    {% for reply in comment.replies.all %}
+                    <li class="reply" id="reply-{{ reply.id }}">
+                        <div class="comment-header">
+                            <strong>{{ reply.user.seller_details.seller_name }}<i class="fas fa-circle-check verified-icon"></i></strong>
+                            <span class="comment-date">{{ reply.created_at|date:"F d, Y" }}</span>
+
+                            <!-- Delete Reply Button -->
+                            {% if request.user == reply.user %}
+                            <button class="delete-reply" data-id="{{ reply.id }}" data-parent="{{ comment.id }}"
+                                    data-type="reply">Delete Reply
+                            </button>
+                            {% endif %}
+                        </div>
+                        <div class="comment-content">
+                            {{ reply.content }}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Modal for Deletion (Both Comment & Reply) -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <p id="delete-message"></p>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="red-button">Yes</button>
+                <button id="cancelDelete" class="blue-button">Cancel</button>
             </div>
-            <div class="comment-content">
-                {{ comment.content }}
-            </div>
-
-            {% if request.user.is_authenticated %}
-            <!-- Reply Button -->
-            <button class="reply-btn" data-id="{{ comment.id }}">Reply</button>
-
-            <!-- Reply Textarea (hidden initially) -->
-            <div id="reply-{{ comment.id }}" class="reply-textarea" style="display:none;">
-                <textarea class="reply-content" placeholder="Write a reply..."></textarea>
-                <button class="reply-submit" data-parent="{{ comment.id }}">Post Reply</button>
-            </div>
-            {% else %}
-            <p class="login-message">You must be <a href="{% url 'login' %}">logged in</a> to reply.</p>
-            {% endif %}
-
-            <!-- Replies nested under the main comment -->
-            <ul class="reply-list">
-                {% for reply in comment.replies.all %}
-                <li class="reply" id="reply-{{ reply.id }}">
-                    <div class="comment-header">
-                        <strong>{{ reply.user.username }}</strong>
-                        <span class="comment-date">{{ reply.created_at|date:"F d, Y" }}</span>
-
-                        <!-- Delete Reply Button -->
-                        {% if request.user == reply.user %}
-                        <button class="delete-reply" data-id="{{ reply.id }}" data-parent="{{ comment.id }}"
-                                data-type="reply">Delete Reply
-                        </button>
-                        {% endif %}
-                    </div>
-                    <div class="comment-content">
-                        {{ reply.content }}
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-
-<!-- Modal for Deletion (Both Comment & Reply) -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <p id="delete-message"></p>
-        <div class="modal-buttons">
-            <button id="confirmDelete" class="red-button">Yes</button>
-            <button id="cancelDelete" class="blue-button">Cancel</button>
         </div>
     </div>
+    <script>
+        const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
+    </script>
+
+
 </div>
-
-
-
-</div>
-
 
 
 {% endblock %}

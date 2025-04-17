@@ -219,6 +219,7 @@ def product(request, pk):
     return render(request, 'product.html', {'product': product, 'comments': comments, 'form': form})
 
 
+
 @login_required
 def add_comment(request):
     if request.method == "POST":
@@ -226,25 +227,47 @@ def add_comment(request):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
-            comment.product_id = request.POST.get('product_id')  # Get product ID from AJAX
+            product_id = request.POST.get('product_id')
+            parent_id = request.POST.get('parent')
+
+            # Get product object
+            try:
+                product = Product.objects.get(id=product_id)
+            except Product.DoesNotExist:
+                return JsonResponse({'error': 'Product not found'}, status=404)
+
+            def get_display_name(user):
+                return getattr(user.seller_details, 'seller_name', user.username)
+
+            # Check if this is a reply
+            if parent_id:
+                parent_comment = Comment.objects.filter(id=parent_id).first()
+                if not parent_comment:
+                    return JsonResponse({'error': 'Parent comment not found'}, status=404)
+
+                # Only allow replies from the product's seller
+                if request.user != product.seller:
+                    return JsonResponse({'error': 'Only the seller can reply to comments'}, status=403)
+
+                comment.parent = parent_comment
+
+            comment.product = product
             comment.save()
 
-            # Get the latest comment data and replies
-            parent_comment = comment.parent.id if comment.parent else None
             response_data = {
                 'id': comment.id,
                 'user': comment.user.username,
+                'reply_display_name': get_display_name(comment.user) if comment.parent else None,
                 'content': comment.content,
                 'created_at': comment.created_at.strftime("%Y-%m-%d %H:%M"),
-                'parent': parent_comment
+                'parent': comment.parent.id if comment.parent else None
             }
 
-            # Include replies for the comment if it's a parent comment
             if not comment.parent:
                 replies = []
                 for reply in comment.replies.all():
                     replies.append({
-                        'user': reply.user.username,
+                        'user': get_display_name(reply.user),
                         'content': reply.content,
                         'created_at': reply.created_at.strftime("%Y-%m-%d %H:%M")
                     })
@@ -253,6 +276,7 @@ def add_comment(request):
             return JsonResponse(response_data)
 
     return JsonResponse({'error': 'Invalid data'}, status=400)
+
 
 def delete_comment(request, id):
     if request.user.is_authenticated:
