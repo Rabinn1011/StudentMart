@@ -35,7 +35,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from django.db.models import Q
 from .models import Product, Order
-
+from django.core.paginator import Paginator
 seller_group, created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
 permissions = Permission.objects.filter(content_type=content_type, codename__in=[
@@ -214,9 +214,23 @@ logger = logging.getLogger(__name__)
 
 def product(request, pk):
     product = get_object_or_404(Product, id=pk)
-    comments = product.comments.filter(parent=None).order_by('-created_at')  # Get only parent comments
+
+    all_parent_comments = product.comments.filter(parent=None).order_by('-created_at')
+
+    # Paginate parent comments (10 per page)
+    paginator = Paginator(all_parent_comments, 5)
+    page_number = request.GET.get('page') or 1
+    comments_page = paginator.get_page(page_number)
+
     form = CommentForm()
-    return render(request, 'product.html', {'product': product, 'comments': comments, 'form': form})
+
+    context = {
+        'product': product,
+        'comments': comments_page,  # paginated parent comments
+        'form': form,
+        'page_obj': comments_page,  # used for rendering Prev/Next
+    }
+    return render(request, 'product.html', context)
 
 
 
