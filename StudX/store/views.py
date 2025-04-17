@@ -237,7 +237,9 @@ def add_comment(request):
                 return JsonResponse({'error': 'Product not found'}, status=404)
 
             def get_display_name(user):
-                return getattr(user.seller_details, 'seller_name', user.username)
+                if hasattr(user, 'seller_details') and user.seller_details.seller_name:
+                    return user.seller_details.seller_name
+                return user.username
 
             # Check if this is a reply
             if parent_id:
@@ -245,9 +247,9 @@ def add_comment(request):
                 if not parent_comment:
                     return JsonResponse({'error': 'Parent comment not found'}, status=404)
 
-                # Only allow replies from the product's seller
-                if request.user != product.seller:
-                    return JsonResponse({'error': 'Only the seller can reply to comments'}, status=403)
+                # Only allow replies from the product's seller or the original commenter
+                if request.user != product.seller and request.user != parent_comment.user:
+                    return JsonResponse({'error': 'Only the seller or the original commenter can reply to comments'}, status=403)
 
                 comment.parent = parent_comment
 
@@ -258,18 +260,22 @@ def add_comment(request):
                 'id': comment.id,
                 'user': comment.user.username,
                 'reply_display_name': get_display_name(comment.user) if comment.parent else None,
+                'is_seller': comment.user == product.seller,
+                'current_user': request.user.username,
                 'content': comment.content,
                 'created_at': comment.created_at.strftime("%Y-%m-%d %H:%M"),
                 'parent': comment.parent.id if comment.parent else None
             }
 
+            # If this is a parent comment, send any replies too
             if not comment.parent:
                 replies = []
                 for reply in comment.replies.all():
                     replies.append({
                         'user': get_display_name(reply.user),
                         'content': reply.content,
-                        'created_at': reply.created_at.strftime("%Y-%m-%d %H:%M")
+                        'created_at': reply.created_at.strftime("%Y-%m-%d %H:%M"),
+                        'is_seller': reply.user == product.seller
                     })
                 response_data['replies'] = replies
 

@@ -38,7 +38,8 @@
                 </div>
                 <div>
                     <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
-                        <p>{{ product.seller.seller_details.seller_name }}<i class="fas fa-circle-check verified-icon"></i></p>
+                        <p>{{ product.seller.seller_details.seller_name }}<i
+                                class="fas fa-circle-check verified-icon"></i></p>
                     </a>
                 </div>
             </div>
@@ -182,7 +183,9 @@
 
 
 </section>
-
+<script>
+    const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
+</script>
 <div class="form-container">
     <div class="comment-section">
         <h3>Q&A with Seller</h3>
@@ -218,7 +221,8 @@
                     {{ comment.content }}
                 </div>
 
-                {% if request.user.is_authenticated and request.user == product.seller %}
+                {% if request.user.is_authenticated %}
+                {% if request.user == product.seller or request.user == comment.user %}
                 <!-- Reply Button -->
                 <button class="reply-btn" data-id="{{ comment.id }}">Reply</button>
 
@@ -227,7 +231,7 @@
                     <textarea class="reply-content" placeholder="Write a reply..."></textarea>
                     <button class="reply-submit" data-parent="{{ comment.id }}">Post Reply</button>
                 </div>
-
+                {% endif %}
                 {% endif %}
 
                 <!-- Replies nested under the main comment -->
@@ -235,7 +239,14 @@
                     {% for reply in comment.replies.all %}
                     <li class="reply" id="reply-{{ reply.id }}">
                         <div class="comment-header">
-                            <strong>{{ reply.user.seller_details.seller_name }}<i class="fas fa-circle-check verified-icon"></i></strong>
+                            <strong class="{% if reply.user == product.seller %}seller-name{% else %}buyer-name{% endif %}">
+                                {% if reply.user == product.seller %}
+                                {{ reply.user.seller_details.seller_name }}
+                                <i class="fas fa-circle-check verified-icon" title="Verified Seller"></i>
+                                {% else %}
+                                {{ reply.user.username }}
+                                {% endif %}
+                            </strong>
                             <span class="comment-date">{{ reply.created_at|date:"F d, Y" }}</span>
 
                             <!-- Delete Reply Button -->
@@ -266,9 +277,6 @@
             </div>
         </div>
     </div>
-    <script>
-        const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
-    </script>
 
 
 </div>

@@ -59,8 +59,7 @@ document.querySelectorAll('.red-button').forEach(button => {
     });
 });
 
-
-// js for taking comment and replies
+ // logic for comment and reply
 $(document).ready(function () {
     // Format date like "April 16, 2025"
     function formatDate(dateString) {
@@ -69,7 +68,15 @@ $(document).ready(function () {
         return date.toLocaleDateString("en-US", options);
     }
 
-    // Submit comment
+    // Toggle reply textarea
+    $(document).on("click", ".reply-btn", function () {
+        const parentID = $(this).data("id");
+        const replyTextarea = $("#reply-" + parentID);
+        replyTextarea.toggle();
+        $(this).text(replyTextarea.is(":visible") ? "Cancel Reply" : "Reply");
+    });
+
+    // Submit new comment (top-level)
     $("#comment-form").submit(function (e) {
         e.preventDefault();
         const formData = $(this).serialize();
@@ -84,7 +91,9 @@ $(document).ready(function () {
                 } else {
                     const formattedDate = formatDate(response.created_at);
                     const deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Comment</button>`;
-                    const replyButtonHTML = isSeller ? `<button class="reply-btn" data-id="${response.id}">Reply</button>` : "";
+                    const replyButtonHTML = response.current_user === response.user || isSeller
+                        ? `<button class="reply-btn" data-id="${response.id}">Reply</button>`
+                        : "";
 
                     const newCommentHTML = `
                         <li id="comment-${response.id}" class="comment">
@@ -105,22 +114,26 @@ $(document).ready(function () {
                         </li>
                     `;
 
-                    if (response.parent) {
-                        $(`#comment-${response.parent} .reply-list`).append(newCommentHTML);
-                    } else {
-                        $("#comment-list").prepend(newCommentHTML);
-                    }
+                    $("#comment-list").prepend(newCommentHTML);
 
-                    // Render replies if included
+                    // Render any replies (e.g. from seller if they auto-respond)
                     if (response.replies) {
                         response.replies.forEach(function (reply) {
                             const formattedReplyDate = formatDate(reply.created_at);
+
+                            // Determine if it's from the seller and if there's a verified icon
+                            const isSellerReply = reply.is_seller;
+                            const displayName = reply.user;
+                            const verifiedIcon = isSellerReply ? '<i class="fas fa-circle-check verified-icon" title="Verified Seller"></i>' : '';
+
                             const replyHTML = `
                                 <li class="reply">
                                     <div class="comment-header">
-                                        <strong>${reply.user}</strong>
+                                        <strong class="${isSellerReply ? 'seller-name' : 'buyer-name'}">
+                                            ${displayName} ${verifiedIcon}
+                                        </strong>
                                         <span class="comment-date">${formattedReplyDate}</span>
-                                    </div>
+                                     </div>
                                     <div class="comment-content">
                                         ${reply.content}
                                     </div>
@@ -139,15 +152,7 @@ $(document).ready(function () {
         });
     });
 
-    // Toggle reply textarea
-    $(document).on("click", ".reply-btn", function () {
-        const parentID = $(this).data("id");
-        const replyTextarea = $("#reply-" + parentID);
-        replyTextarea.toggle();
-        $(this).text(replyTextarea.is(":visible") ? "Cancel Reply" : "Reply");
-    });
-
-    // Post reply
+    // Post a reply (from seller or original commenter)
     $(document).on("click", ".reply-submit", function () {
         const parentID = $(this).data("parent");
         const replyContent = $("#reply-" + parentID + " .reply-content").val();
@@ -173,11 +178,16 @@ $(document).ready(function () {
                 } else {
                     const formattedDate = formatDate(response.created_at);
                     const deleteButton = `<button class="delete-btn" data-id="${response.id}">Delete Reply</button>`;
-                    var displayName = response.reply_display_name || response.user;
-                    const newReplyHTML = `
+
+                    let displayName = response.reply_display_name || response.user;
+                    let verifiedIcon = response.is_seller
+                        ? '<i class="fas fa-circle-check verified-icon" title="Verified Seller"></i>'
+                        : "";
+
+                    const replyHTML = `
                         <li class="reply" id="reply-${response.id}">
                             <div class="comment-header">
-                                <strong>${displayName}<i class="fas fa-circle-check verified-icon"></i></strong>
+                                <strong>${displayName} ${verifiedIcon}</strong>
                                 <span class="comment-date">${formattedDate}</span>
                                 ${deleteButton}
                             </div>
@@ -187,13 +197,15 @@ $(document).ready(function () {
                         </li>
                     `;
 
-                    $("#comment-" + parentID + " .reply-list").append(newReplyHTML);
+                    $(`#comment-${response.parent} .reply-list`).append(replyHTML);
+
                     applyCommentStyles();
                     bindDeleteEvent();
 
-                    $("#reply-" + parentID).hide();
-                    $("#reply-" + parentID + " .reply-content").val("");
-                    $(".reply-btn[data-id='" + parentID + "']").text("Reply");
+                    // Reset textarea and reply button
+                    $(`#reply-${response.parent} .reply-content`).val("");
+                    $(`.reply-btn[data-id='${response.parent}']`).text("Reply");
+                    $(`#reply-${response.parent}`).hide();
                 }
             }
         });
@@ -215,6 +227,7 @@ $(document).ready(function () {
                 success: function (response) {
                     if (response.success) {
                         $(`#comment-${commentID}`).remove();
+                        $(`#reply-${commentID}`).remove(); // just in case it's a reply
                     } else {
                         alert("Error deleting comment.");
                     }
@@ -227,13 +240,8 @@ $(document).ready(function () {
 
     // Style buttons and headers
     function applyCommentStyles() {
-            // Apply style to comment usernames
-        $(".comment > .comment-header strong").css("color", "#007bff"); // Blue for main comments
-
-            // Apply style to reply usernames
-        $(".reply > .comment-header strong").css("color", "#28a745"); // Green for replies
-
-
+        $(".comment > .comment-header strong").css("color", "#007bff");
+        $(".reply > .comment-header strong").css("color", "#28a745");
 
         $(".reply-btn").css({
             background: "#28a745",
@@ -263,6 +271,7 @@ $(document).ready(function () {
         });
     }
 });
+
 
 
 
