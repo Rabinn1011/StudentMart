@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
-
+{% load tz %}
 {% block content %}
 <div class="form-container">
-<div class="receipt-container">
+    <div class="receipt-container">
         <p class="title">Order Receipt</p>
         <p class="info"><span class="bold">Order ID:</span> {{ order.order_id }}</p>
         <p class="info"><span class="bold">Product:</span> {{ order.product.name }}</p>
         <p class="info"><span class="bold">Amount Paid:</span> NPR {{ order.amount|floatformat:2 }}</p>
         <p class="info"><span class="bold">Transaction ID:</span> {{ order.khalti_pidx }}</p>
-        <p class="info"><span class="bold">Date:</span> {{ order.created_at }}</p>
+        <p class="info"><span class="bold">Date:</span> {{ nepali_time|date:"Y-m-d h:i A" }} (NPT)</p>
         <p class="info"><span class="bold">Status:</span> <span style="color: green;">{{ order.status }}</span></p>
         <div class="footer">Thank you for shopping with us!</div>
-    <a href="{% url 'generate_receipt_pdf' order.id %}" class="blue-button">Download PDF</a>
+        <a href="{% url 'generate_receipt_pdf' order.id %}" class="blue-button">Download PDF</a>
 
     </div>
-    </div>
+</div>
 {% endblock %}
