@@ -15,7 +15,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://khalti.com/static/khalti-checkout.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -27,16 +29,16 @@
 <div class="msg-container">
     <!-- Messaging Block -->
     {% if messages %}
-        <div class="messages-container" id="messagess">
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">
-                    {{ message }}
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                </div>
-            {% endfor %}
+    <div class="messages-container" id="messagess">
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <script>
@@ -76,19 +78,17 @@
             <h4>ABOUT US</h4>
             <p>StudX: The ultimate online marketplace for students, offering engineering tools, gadgets,
                 clothing, and rental rooms, all in one convenient platform.</p>
+            <p>&copy; 2024 StudX. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:support@moviefiesta.com">support@studx.com</a></p>
+            <div class="social-icons">
+                <a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a>
+                <a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a>
+                <a href="https://discord.com" target="_blank"><i class="bx bxl-discord"></i></a>
+            </div>
         </div>
-        <p>&copy; 2024 StudX. All rights reserved.</p>
-        <p>Contact us: <a href="mailto:support@moviefiesta.com">support@studx.com</a></p>
-        <div class="social-icons">
-            <a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a>
-            <a href="https://discord.com" target="_blank"><i class="bx bxl-discord"></i></a>
-        </div>
-    </div>
 
 </footer>
 </body>
 <script src="{% static 'js/scripts.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 </html>

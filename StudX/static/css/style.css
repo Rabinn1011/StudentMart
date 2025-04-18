@@ -44,7 +44,6 @@ body {
 
 
 .container {
-
     width: 100%;
     height: 90px;
     display: flex;
@@ -59,8 +58,6 @@ body {
     height: auto;
 }
 
-
-
 .logo:hover {
     transform: scale(1.1);
 }
@@ -73,7 +70,7 @@ body {
 }
 
 .nav-list {
-    position: fixed; /*fixed nav bar ko lagi.. error xa aaile!! register, help&support haru matra fixed xa*/
+    position: fixed; /*fixed nav bar ko lagi! register, help&support haru matra fixed xa*/
     top: 0;
     right: 0;
     display: flex;
@@ -429,22 +426,7 @@ body {
     transition: transform 0.2s;
 }
 
-.product-card-room {
-    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    width: 15rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 5px;
-    transition: transform 0.2s;
-}
 .product-card:hover {
-    transform: scale(1.05);
-}
-
-.product-card-room:hover {
     transform: scale(1.05);
 }
 
@@ -514,7 +496,6 @@ body {
     background-color: #403c35;
 
 }
-
 
 /* Pagination Container */
 #pagination-controls {
@@ -847,18 +828,7 @@ display: flex;
 .form-group label{
     display: none;
 }
-.blue-button {
-    text-decoration: none;
-    background-color: #4de4ff;
-    color: white;
-    padding: 10px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
+
 
 .green-button {
     background-color: #68b55c;
@@ -872,18 +842,6 @@ display: flex;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.red-button {
-    text-decoration: none;
-    background-color: #ff4d4d;
-    color: white;
-    padding: 10px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
 
 .add-to-cart:hover {
     background-color: #d23d3d;
@@ -914,18 +872,6 @@ display: flex;
     width: 90%;
     margin: 10px auto;
     min-height: 450px;
-    height: 90%;
-}
-
-.form-containers {
-    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 90%;
-    margin: 10px auto;
-    align-items: flex-start; /* Aligns items at the top */
     height: 90%;
 }
 
@@ -1026,17 +972,6 @@ display: flex;
 
 }
 /*seller profile ko*/
-.form-container-selpro {
-
-    background-color: #fbf9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 100%;
-    margin: 20px auto;
-    height: 90%;
-}
-
 
 .seller-detail {
   flex-direction: column;
@@ -1067,11 +1002,17 @@ display: flex;
 
 .blue-button,
 .red-button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
+    text-decoration: none;
+    background-color: #4de4ff;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px 15px;
+    cursor: pointer;
 }
 
 .blue-button {
@@ -1091,18 +1032,8 @@ display: flex;
   margin-top: 30px;
 }
 
-.product-container-selpro {
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    gap: 20px;
-    padding: 10px;
-}
-
 .product-card-selpro {
-     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-
+    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
     margin-top: 20px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -1115,7 +1046,6 @@ display: flex;
     text-align: center;
     justify-content: space-between;
     padding: 15px;
-
     transition: transform 0.2s;
 }
 
@@ -1146,55 +1076,15 @@ display: flex;
     font-size: 16px;
     font-weight: bold;
     color: #000;
-
-.viewbutton-selpro a {
-    text-decoration: none;
-    display: inline-block;
-    width: 100%;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #272522;
-    color: #f1e7e7;
-    border-radius: 15px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
-
-.viewbutton-selpro a:hover {
-    transition: transform 0.2s;
-    background-color: #403c35;
-
-}
-}
-
 /*seller profile ko yaha samma*/
 
 /* edit usr ko suru*/
-
-
-
-
 .item-section {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-}
-
-.form-container-edisel {
-     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-    background-color: #f8f9fa;
-    background-color: #fbf9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 100%;
-    margin: 20px auto;
-    height: 90%;
-    padding: 10px;
 }
 
 h2 {
@@ -1281,9 +1171,6 @@ select {
     justify-content: center;
     align-items: center;
 }
-
-
-
 /* slider ko yaha samma */
 /* Footer styles */
 footer {
@@ -1431,22 +1318,6 @@ footer {
 
 /*dropdown menu yaha samma*/
 
-/*user proofile ko suru*/
-.form-container-usepro {
-    position: relative;
-    background-color: #fbf9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 100%;
-    margin: 20px auto;
-    height: 90%;
-}
-.button-container {
-    bottom: 0;
-    left: 0;
-}
-/*user profle ko yaha samma*/
 
 /*delete ko confirmation box*/
 .confirm-box {
@@ -1845,46 +1716,6 @@ footer {
     outline: none;
     box-shadow: 0 0 5px rgba(231, 76, 60, 0.6);
 }
-/* Modal Background (Overlay) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    z-index: 1000; /* Ensure it's on top of everything */
-}
-
-/* Modal Content */
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    position: absolute; /* Position the modal content */
-    top: 50%; /* Move down by 50% of the viewport height */
-    left: 50%; /* Move right by 50% of the viewport width */
-    transform: translate(-50%, -50%); /* Center the modal */
-}
-/* Delete Confirmation Text */
-#delete-message {
-    font-size: 18px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* Modal Buttons Layout */
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
 
 
 
@@ -1979,3 +1810,128 @@ footer {
   }
 }
 
+/* h&s page ko suru */
+.form-cont {
+    background: #f9f9f9;
+    overflow: hidden;
+    min-height: 450px;
+    height: 90%;
+    width: 70%;
+    margin: 0 auto;
+    padding: 40px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    color: #222;
+}
+
+    .heading {
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #111;
+    }
+
+    .faq-container {
+        margin-top: 20px;
+    }
+
+    .faq-box {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .faq-question {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        color: #333;
+        background: #f1f1f1;
+    }
+
+    .faq-toggle-btn {
+        background-color: #111;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        line-height: 30px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .faq-toggle-btn:hover {
+        background-color: #333;
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 20px;
+        background: #fff;
+        color: #444;
+        font-size: 0.95rem;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+
+    .faq-box.open {
+        box-shadow: 0 0 15px rgba(26, 115, 232, 0.4);
+        border-color: #1a73e8;
+    }
+
+    .faq-box.open .faq-answer {
+        padding: 15px 20px;
+        max-height: 300px;
+    }
+
+    h2 {
+        margin-top: 40px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111;
+    }
+
+    ul {
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    ul li {
+        margin-bottom: 8px;
+    }
+
+    .atag {
+        text-decoration: none;
+        color: #1a73e8;
+    }
+
+    .atag:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+        .form-cont {
+            padding: 20px 15px;
+        }
+
+        .faq-question {
+            font-size: 0.95rem;
+        }
+
+        .faq-toggle-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+        }
+    }

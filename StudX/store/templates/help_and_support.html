@@ -1,38 +1,90 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="form-container" style="padding:20px;">
-    <h1 class="heading">Help and Support</h1>
-    
-    <p class="mb-4">
-        Welcome to the Help and Support page. We’re here to assist you with any questions or issues you may have while using our website.
-    </p>
 
+<div class="form-cont" style="padding:20px;">
+    <h1 class="heading">Help and Support</h1>
+    <p class="mb-4">Welcome to the Help and Support page. We’re here to assist you with any questions or issues you may
+        have while using our website.</p>
     <h2 class="text-2xl font-semibold mb-3">Frequently Asked Questions</h2>
-    <div class="faq-section">
-        <h3 class="text-xl font-medium">1. How do I create an account?</h3>
-        <p>Click on the "Register" button at the top of the page and fill out the required details.</p>
-        
-        <h3 class="text-xl font-medium mt-3">2. How can I add products to my cart?</h3>
-        <p>To add a product to your cart, simply click on the "Add to Cart" button on the product page.</p>
-        
-        <h3 class="text-xl font-medium mt-3">3. What should I do if I forgot my password?</h3>
-        <p>Click on the "Forgot Password" link on the login page and follow the instructions to reset your password.</p>
+
+    <div class="faq-container">
+        <!-- FAQ Item 1 -->
+        <div class="faq-box">
+            <div class="faq-question">
+                <span>1. How do I create an user account?</span>
+                <button class="faq-toggle-btn">+</button>
+            </div>
+            <div class="faq-answer">
+                <p>Click on the "Register" button at the top of the page and fill out the required details.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-box">
+            <div class="faq-question">
+                <span>2. How do I become a seller?</span>
+                <button class="faq-toggle-btn">+</button>
+            </div>
+            <div class="faq-answer">
+                <p>Firstly, Login with an user account and click on "Become a Seller" then, fill up the necessary
+                    form.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-box">
+            <div class="faq-question">
+                <span>3. How can I add products to my cart?</span>
+                <button class="faq-toggle-btn">+</button>
+            </div>
+            <div class="faq-answer">
+                <p>Simply click on the "Add to Cart" button on the product page. You need to be logged in first.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-box">
+            <div class="faq-question">
+                <span>4. What should I do if I forgot my password?</span>
+                <button class="faq-toggle-btn">+</button>
+            </div>
+            <div class="faq-answer">
+                <p>Click on the "Forgot Password" link on the login page and follow the instructions to reset your
+                    password.</p>
+            </div>
+        </div>
+
+        <!-- Add more FAQs as needed -->
     </div>
 
     <h2 class="text-2xl font-semibold mt-6 mb-3">Contact Us</h2>
-    <p>
-        If your question isn't listed above, feel free to reach out to us directly:
-    </p>
+    <p>If your question isn't listed above, feel free to reach out to us directly:</p>
     <ul class="list-disc list-inside">
-        <li>Email: <a href="mailto:support@ystudx.com" class="text-blue-600">support@studx.com</a></li>
+        <li>Email: <a class="atag" href="mailto:support@ystudx.com">support@studx.com</a></li>
         <li>Phone: +1 234 567 890</li>
     </ul>
 
     <h2 class="text-2xl font-semibold mt-6 mb-3">Helpful Resources</h2>
     <ul class="list-disc list-inside">
-        <li><a href="/terms" class="text-blue-600">Terms and Conditions</a></li>
-        <li><a href="/privacy" class="text-blue-600">Privacy Policy</a></li>
+        <li><a class="atag" href="/terms" >Terms and Conditions</a></li>
+        <li><a class="atag" href="/privacy" >Privacy Policy</a></li>
     </ul>
 </div>
+
+<script>
+    // Select all FAQ boxes
+    const faqBoxes = document.querySelectorAll('.faq-box');
+
+    faqBoxes.forEach(box => {
+        const toggleBtn = box.querySelector('.faq-toggle-btn');
+        const question = box.querySelector('.faq-question');
+
+        question.addEventListener('click', () => {
+            // Toggle 'open' class to expand/collapse the answer
+            box.classList.toggle('open');
+            toggleBtn.textContent = box.classList.contains('open') ? '-' : '+';
+        });
+    });
+</script>
 {% endblock %}

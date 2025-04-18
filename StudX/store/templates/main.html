@@ -89,7 +89,7 @@
         <div class="product-container">
             {% if rooms.exists %}
             {% for room in rooms %}
-            <div class="product-card-room">
+            <div class="product-card">
                 <img alt="{{ room.location }}" class="product-image" src="{{ room.photo.url }}">
                 <h3 class="product-title">{{ room.type }}</h3>
                 <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
