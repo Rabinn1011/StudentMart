@@ -1,18 +1,48 @@
 {% extends 'base.html' %}
 {% load tz %}
 {% block content %}
+
+<style>
+    .form-container {
+display: flex;
+justify-content: center;
+padding: 2rem;
+background: #f9f9f9;
+}
+</style>
+
 <div class="form-container">
     <div class="receipt-container">
-        <p class="title">Order Receipt</p>
-        <p class="info"><span class="bold">Order ID:</span> {{ order.order_id }}</p>
-        <p class="info"><span class="bold">Product:</span> {{ order.product.name }}</p>
-        <p class="info"><span class="bold">Amount Paid:</span> NPR {{ order.amount|floatformat:2 }}</p>
-        <p class="info"><span class="bold">Transaction ID:</span> {{ order.khalti_pidx }}</p>
-        <p class="info"><span class="bold">Date:</span> {{ nepali_time|date:"Y-m-d h:i A" }} (NPT)</p>
-        <p class="info"><span class="bold">Status:</span> <span style="color: green;">{{ order.status }}</span></p>
-        <div class="footer">Thank you for shopping with us!</div>
+        <h2 class="receipt-title">Order Receipt</h2>
+        <table class="receipt-table">
+            <tr>
+                <th>Order ID</th>
+                <td>{{ order.order_id }}</td>
+            </tr>
+            <tr>
+                <th>Product</th>
+                <td>{{ order.product.name }}</td>
+            </tr>
+            <tr>
+                <th>Amount Paid</th>
+                <td>NPR {{ order.amount|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <th>Transaction ID</th>
+                <td>{{ order.khalti_pidx }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ nepali_time|date:"Y-m-d h:i A" }} (NPT)</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><span class="status-success">{{ order.status }}</span></td>
+            </tr>
+        </table>
+        <div class="footer_receipt">Thank you for shopping with us!</div>
         <a href="{% url 'generate_receipt_pdf' order.id %}" class="blue-button">Download PDF</a>
-
     </div>
 </div>
+
 {% endblock %}

@@ -740,49 +740,39 @@ def order_receipt(request, order_id):
 logger = logging.getLogger(__name__)
 
 
-@login_required  # Ensures only logged-in users can access
+from django.template.loader import get_template
+from django.template import Context
+from xhtml2pdf import pisa
+from io import BytesIO
+
+@login_required
 def generate_receipt_pdf(request, order_id):
-    try:
-        # Retrieve the order
-        order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order, id=order_id)
 
-        # Restrict access: Only the user who placed the order can download
-        if request.user != order.user:
-            return HttpResponseForbidden("You are not authorized to view this receipt.")
+    if request.user != order.user:
+        return HttpResponseForbidden("Unauthorized access.")
 
-        # Create a PDF response
-        response = HttpResponse(content_type="application/pdf")
-        response["Content-Disposition"] = f'attachment; filename="receipt_{order.order_id}.pdf"'
+    # Timezone conversion
+    from pytz import timezone
+    nepal_tz = timezone("Asia/Kathmandu")
+    nepali_time = order.created_at.astimezone(nepal_tz)
 
-        # Initialize PDF canvas
-        p = canvas.Canvas(response, pagesize=letter)
-        width, height = letter
+    template = get_template("order_receipt_pdf.html")
+    context = {
+        "order": order,
+        "nepali_time": nepali_time,
+        "pdf": True,  # This disables {% extends 'base.html' %}
+    }
 
-        # Add title
-        p.setFont("Helvetica-Bold", 16)
-        p.drawString(200, height - 50, "Order Receipt")
+    html = template.render(context)
 
-        # Add order details
-        p.setFont("Helvetica", 12)
-        p.drawString(50, height - 100, f"Order ID: {order.order_id}")
-        p.drawString(50, height - 120, f"Product: {order.product.name if order.product else 'N/A'}")
-        p.drawString(50, height - 140, f"Amount Paid: NPR {order.amount / 100:.2f}")
-        p.drawString(50, height - 160, f"Transaction ID: {order.khalti_pidx if order.khalti_pidx else 'N/A'}")
-        nepal_tz = timezone("Asia/Kathmandu")
-        nepali_time = order.created_at.astimezone(nepal_tz)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
 
-        p.drawString(50, height - 180, f"Date: {nepali_time.strftime('%Y-%m-%d %I:%M %p')} (NPT)")
-        p.drawString(50, height - 200, f"Status: {order.status}")
-
-        # Footer message
-        p.setFont("Helvetica-Oblique", 10)
-        p.drawString(50, height - 250, "Thank you for shopping with us!")
-
-        # Finalize PDF
-        p.showPage()
-        p.save()
-
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="receipt_{order.order_id}.pdf"'
         return response
+    else:
+        return HttpResponse("Error generating PDF", status=500)
 
-    except Exception as e:
-        return HttpResponse(f"An error occurred while generating the receipt. Error: {str(e)}", status=500)
