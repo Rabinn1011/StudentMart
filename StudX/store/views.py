@@ -1,5 +1,6 @@
 import json, logging
 import requests
+from pytz import timezone
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from django.conf import settings
@@ -115,13 +116,6 @@ def filter_products(request):
         "current_page": paginated_products.number,
     })
 
-
-def contact(request):
-    return render(request, 'contact.html')
-
-
-def about(request):
-    return render(request, 'about.html')
 
 
 def login_required_redirect(request):
@@ -542,7 +536,7 @@ def seller_profile(request, encoded_username):
 
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in.")
-        return redirect('contact')
+        return redirect('login')
 
     if request.user.is_authenticated:
         # Get the profile of the seller based on the passed username
@@ -720,10 +714,14 @@ def khalti_payment_callback(request):
             product = order.product
             product.is_sold = True
             product.save()
+            nepal_tz = timezone("Asia/Kathmandu")
+            order.created_at = order.created_at.astimezone(nepal_tz)
             order.save()
             messages.success(request, "Payment Successful! Thank you for your purchase.")
-            return redirect("home")
+            return redirect("order_receipt", order_id=order.id)
     order.status = "failed"
+    nepal_tz = timezone("Asia/Kathmandu")
+    order.created_at = order.created_at.astimezone(nepal_tz)
     order.save()
     messages.error(request, "Payment verification failed. Please contact support.")
     return redirect("home")
@@ -731,14 +729,18 @@ def khalti_payment_callback(request):
 
 @login_required  # Ensure the user is logged in
 def order_receipt(request, order_id):
-    order = get_object_or_404(Order, id=order_id, status="completed")
+    order = get_object_or_404(Order, id=order_id )
 
     # Restrict access: Only the buyer can view this order
     if request.user != order.user:
         messages.error(request, "You are not authorized to view this receipt.")
         return redirect("home")
 
-    return render(request, "order_receipt.html", {"order": order})
+    # Convert to Nepal time
+    nepal_tz = timezone("Asia/Kathmandu")
+    created_at_local = order.created_at.astimezone(nepal_tz)
+
+    return render(request, "order_receipt.html", {"order": order , "created_at_local":created_at_local})
 
 
 logger = logging.getLogger(__name__)
@@ -772,7 +774,10 @@ def generate_receipt_pdf(request, order_id):
         p.drawString(50, height - 120, f"Product: {order.product.name if order.product else 'N/A'}")
         p.drawString(50, height - 140, f"Amount Paid: NPR {order.amount / 100:.2f}")
         p.drawString(50, height - 160, f"Transaction ID: {order.khalti_pidx if order.khalti_pidx else 'N/A'}")
-        p.drawString(50, height - 180, f"Date: {order.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+        nepal_tz = timezone("Asia/Kathmandu")
+        nepali_time = order.created_at.astimezone(nepal_tz)
+
+        p.drawString(50, height - 180, f"Date: {nepali_time.strftime('%Y-%m-%d %I:%M %p')} (NPT)")
         p.drawString(50, height - 200, f"Status: {order.status}")
 
         # Footer message

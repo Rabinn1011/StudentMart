@@ -941,7 +941,8 @@ display: flex;
 
 
 @media screen and (min-width: 500px) {
-    .menu-btn {
+    .menu-btn, .wrapper {
+
         display: none;
     }
 }
