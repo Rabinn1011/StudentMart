@@ -207,12 +207,12 @@
             };
         </script>
 
-
+    </div>
 </section>
 <script>
     const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
 </script>
-<div class="form-container">
+    <section class="item-section">
     <div class="comment-section">
         <h3>Q&A with Seller</h3>
 
@@ -316,8 +316,6 @@
             </div>
         </div>
 
-
-    </div>
-
+</section>
 
     {% endblock %}
