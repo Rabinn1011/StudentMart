@@ -1032,6 +1032,8 @@ display: flex;
   margin-top: 30px;
 }
 
+
+
 .product-card-selpro {
     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
     margin-top: 20px;
@@ -1823,7 +1825,6 @@ footer {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     color: #222;
 }
-
     .heading {
         font-size: 2.5rem;
         font-weight: bold;
@@ -1900,15 +1901,6 @@ footer {
         font-size: 1.5rem;
         font-weight: 600;
         color: #111;
-    }
-
-    ul {
-        margin-left: 20px;
-        margin-top: 10px;
-    }
-
-    ul li {
-        margin-bottom: 8px;
     }
 
     .atag {
