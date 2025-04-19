@@ -487,7 +487,10 @@ def user_profile(request, encoded_username):
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
     if request.user.is_authenticated:
+
         user_profile1 = get_object_or_404(User, username=username)
+        user_orders = Order.objects.filter(user=user_profile1).select_related('product').order_by('-created_at')
+
     # Pass relevant user data to the template
     context = {
         'username': user_profile1.username,
@@ -495,9 +498,10 @@ def user_profile(request, encoded_username):
         'last_name': user_profile1.last_name,
         'email': user_profile1.email,
         'change_password_url': reverse('password_change'),  # Change Password URL
+        'orders': user_orders,
 
     }
-    return render(request, 'user_profile.html', {'user_profile1': user_profile1})
+    return render(request, 'user_profile.html', context)
 
 
 @login_required

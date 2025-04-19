@@ -10,20 +10,44 @@
 
                 <ul class="seller-info-list">
 
-                    <li><strong>User Name:</strong> {{ user_profile1.username }}</li>
+                    <li><strong>User Name:</strong> {{ username }}</li>
 
-                    <li><strong>First Name:</strong> {{ user_profile1.first_name }}</li>
-                    <li><strong>Last Name:</strong> {{ user_profile1.last_name }}
-                    <li><strong>email:</strong> {{ user_profile1.email }}
+                    <li><strong>First Name:</strong> {{ first_name }}</li>
+                    <li><strong>Last Name:</strong> {{ last_name }}
+                    <li><strong>Email:</strong> {{ email }}
 
 
                 </ul>
-            <div class="button-container">
-            <a href="{% url 'password_change' %}" class="blue-button">Change Password</a>
-        </div>
+                <div class="button-container">
+                    <a href="{% url 'password_change' %}" class="blue-button">Change Password</a>
+                </div>
             </div>
+        <h3 class="heading">Your Orders</h3>
+{% if orders %}
+    <ul class="order-list">
+        {% for order in orders %}
+            <a href="{% url 'order_receipt' order.id %}">
+     <div class="order order-tooltip">
+    <div class="order-header">
+        <div class="product-order">
+            <strong>Product:</strong> {{ order.product.name }}
+        </div>
+        <div class="product-status">
+            <strong>Status:</strong> {{ order.status }}
+        </div>
+        <div class="order-date">
+            <strong>Ordered At:</strong> {{ order.created_at|date:"Y-m-d H:i" }}
+        </div>
+    </div>
 
-
+    <div class="tooltip-message">Click here to see Order receipt</div>
+</div>
+            </a>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not placed any orders yet.</p>
+{% endif %}
 
         </div>
     </section>
