@@ -4,7 +4,7 @@
     <section class="form-container">
         <div class="form-design">
             <!-- Seller Details Section -->
-            <h2 class="heading">{{ seller.seller_name }}<i class="fas fa-circle-check verified-icon"></i></h2>
+            <h2 class="heading">{{ seller.seller_name }}</h2>
             <div class="seller-detail">
                 <img src="{{ seller.photo.url }}" alt="seller-image" class="seller-photo"/>
 
@@ -61,7 +61,7 @@
                                 <h4 class="product-title-selpro">{{ product.name }}</h4>
                                 <p class="price-selpro"><strong>Price:</strong> Rs.{{ product.price }}</p>
 
-                                <a class="viewbutton-selpro" href="{% url 'product' product.id %}">View Products</a>
+                                <a class="viewbutton-selpro" href="{% url 'product' product.id %}">View Product</a>
                             </div>
                         {% endfor %}
                     </div>
