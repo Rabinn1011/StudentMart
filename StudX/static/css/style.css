@@ -781,11 +781,6 @@ hr {
     padding: 0;
 }
 
-
-.seller-detail {
-    display: flex;
-    padding: 20px 0;
-}
 .sell{
 display: flex;
 }
@@ -884,6 +879,30 @@ display: flex;
     margin: 10px auto;
     height: 90%;
 }
+/*seller profile ko*/
+
+.seller-detail {
+  flex-direction: row;
+    gap: 20px;
+    display: flex;
+    padding: 20px 0;
+}
+
+.seller-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.seller-info-list {
+  list-style: none;
+  padding: 0;
+}
+
+.seller-info-list li {
+  margin-bottom: 10px;
+}
 
 
 @media screen and (min-width: 500px) {
@@ -975,29 +994,18 @@ display: flex;
     .item-details h2{
         font-size: 1.8rem;
     }
+    .seller-detail{
+        flex-direction: column;
+        gap: 0;
+    }
+    .item-details .price{
+        font-size: 0.8rem;
+    }
+    .box-price{
+        font-size: 1.2rem;
+    }
 
-}
-/*seller profile ko*/
 
-.seller-detail {
-  flex-direction: row;
-    gap: 20px;
-}
-
-.seller-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.seller-info-list {
-  list-style: none;
-  padding: 0;
-}
-
-.seller-info-list li {
-  margin-bottom: 10px;
 }
 
 .blue-button,
