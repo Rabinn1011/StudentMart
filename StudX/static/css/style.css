@@ -760,7 +760,7 @@ input[type="checkbox"] {
 
 .item-details {
     padding: 10px;
-    height: 80%;
+    width: 90%;
 }
 
 .item-details h2 {
@@ -968,6 +968,12 @@ display: flex;
     }
     .product-card{
         width: 13rem;
+    }
+
+}
+@media screen and (max-width: 320px){
+    .item-details h2{
+        font-size: 1.8rem;
     }
 
 }
