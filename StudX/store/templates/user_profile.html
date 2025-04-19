@@ -22,32 +22,32 @@
                     <a href="{% url 'password_change' %}" class="blue-button">Change Password</a>
                 </div>
             </div>
-        <h3 class="heading">Your Orders</h3>
-{% if orders %}
-    <ul class="order-list">
-        {% for order in orders %}
-            <a href="{% url 'order_receipt' order.id %}">
-     <div class="order order-tooltip">
-    <div class="order-header">
-        <div class="product-order">
-            <strong>Product:</strong> {{ order.product.name }}
-        </div>
-        <div class="product-status">
-            <strong>Status:</strong> {{ order.status }}
-        </div>
-        <div class="order-date">
-            <strong>Ordered At:</strong> {{ order.created_at|date:"Y-m-d H:i" }}
-        </div>
-    </div>
+            <h3 class="heading">Your Orders</h3>
+            {% if orders %}
+                <ul class="order-list">
+                    {% for order in orders %}
+                        <a href="{% url 'order_receipt' order.id %}">
+                            <div class="order order-tooltip">
+                                <div class="order-header">
+                                    <div class="product-order">
+                                        <strong>Product:</strong> {{ order.product.name }}
+                                    </div>
+                                    <div class="product-status">
+                                        <strong>Status:</strong> {{ order.status }}
+                                    </div>
+                                    <div class="order-date">
+                                        <strong>Ordered At:</strong> {{ order.created_at|date:"Y-m-d H:i" }}
+                                    </div>
+                                </div>
 
-    <div class="tooltip-message">Click here to see Order receipt</div>
-</div>
-            </a>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You have not placed any orders yet.</p>
-{% endif %}
+                                <div class="tooltip-message">Click here to see Order receipt</div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You have not placed any orders yet.</p>
+            {% endif %}
 
         </div>
     </section>

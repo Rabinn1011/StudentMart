@@ -10,8 +10,6 @@ padding: 2rem;
 background: #f9f9f9;
 }
 </style>
-
-<div class="form-container">
     <div class="receipt-container">
         <h2 class="receipt-title">Order Receipt</h2>
         <table class="receipt-table">
@@ -43,6 +41,5 @@ background: #f9f9f9;
         <div class="footer_receipt">Thank you for shopping with us!</div>
         <a href="{% url 'generate_receipt_pdf' order.id %}" class="blue-button">Download PDF</a>
     </div>
-</div>
 
 {% endblock %}
