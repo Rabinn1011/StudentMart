@@ -795,7 +795,7 @@ input[type="checkbox"] {
 
 .gallery-container {
     flex: 1;
-    max-width: 95%;
+    max-width: 500px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -1242,6 +1242,7 @@ hr {
 
     .item-card {
         flex-direction: column;
+
     }
 
     .item-details h2 {
@@ -1259,6 +1260,15 @@ hr {
         flex-direction: column;
     }
 }
+@media screen and (max-width: 825px){
+    .item-section{
+        flex-direction: column;
+    }
+    .gallery-container{
+        max-width: 90%;
+    }
+}
+
 @media (min-width: 500px)and (max-width: 700px) {
     .item-details {
         width: 90%;
