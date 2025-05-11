@@ -530,7 +530,7 @@ body {
     width: 90%;
     text-align: center;
     padding: 10px 0;
-    font-size: 0.5rem;
+    font-size: 0.8rem;
     font-weight: bold;
     background-color: #272522;
     color: #f1e7e7;
@@ -795,7 +795,7 @@ input[type="checkbox"] {
 
 .gallery-container {
     flex: 1;
-    max-width: 500px;
+    max-width: 95%;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -806,6 +806,7 @@ input[type="checkbox"] {
     position: sticky;
     top: 2rem;
     flex: 1;
+    max-width: 95%;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -948,13 +949,13 @@ input[type="checkbox"] {
 }
 
 .box-price {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     margin: 10px 0;
     font-weight: bold;
 }
 
 .price {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     color: #d23d3d;
     margin: 10px;
     font-weight: bold;
@@ -1253,7 +1254,11 @@ hr {
 
 
 }
-
+@media screen and (max-width: 550px){
+    .button-container{
+        flex-direction: column;
+    }
+}
 @media (min-width: 500px)and (max-width: 700px) {
     .item-details {
         width: 90%;
@@ -1287,11 +1292,23 @@ hr {
     }
 
     .box-price {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
-
-    .button-container {
+    .price{
+        font-size: 1rem;
+        margin: 0;
+    }
+    .title{
+        font-size: 1.8rem;
+    }
+    .tab-button{
+        font-size: 0.8rem;
+    }
+    .box-price-container{
         flex-direction: column;
+    }
+    .badge-container{
+        margin-top: 10px;
     }
 }
 
