@@ -33,6 +33,8 @@ document.addEventListener('click', () => {
     dropdownMenu.style.display = 'none';
 });
 
+//tab panel selector
+
 //delete product (profile ko seller_profile.html ma xa,,, yeta milena! idk why) functionality ko
 
 document.querySelectorAll('.red-button').forEach(button => {
@@ -59,12 +61,12 @@ document.querySelectorAll('.red-button').forEach(button => {
     });
 });
 
- // logic for comment and reply
+// logic for comment and reply
 $(document).ready(function () {
     // Format date like "April 16, 2025"
     function formatDate(dateString) {
         let date = new Date(dateString);
-        let options = { year: "numeric", month: "long", day: "numeric" };
+        let options = {year: "numeric", month: "long", day: "numeric"};
         return date.toLocaleDateString("en-US", options);
     }
 
@@ -273,68 +275,65 @@ $(document).ready(function () {
 });
 
 
-
-
-
- //js for handling delete comment and replies
+//js for handling delete comment and replies
 
 $(document).ready(function () {
-        // Open the delete modal for comments and replies
-        $(document).on('click', '.delete-comment, .delete-reply', function () {
-            const type = $(this).data('type');  // comment or reply
-            const id = $(this).data('id');      // comment or reply id
-            const parentId = $(this).data('parent');  // Only for replies
+    // Open the delete modal for comments and replies
+    $(document).on('click', '.delete-comment, .delete-reply', function () {
+        const type = $(this).data('type');  // comment or reply
+        const id = $(this).data('id');      // comment or reply id
+        const parentId = $(this).data('parent');  // Only for replies
 
-            // Set the message in the modal based on the type (comment/reply)
-            if (type === 'comment') {
-                $('#delete-message').text('Are you sure you want to delete this comment?');
-            } else {
-                $('#delete-message').text('Are you sure you want to delete this reply?');
-            }
+        // Set the message in the modal based on the type (comment/reply)
+        if (type === 'comment') {
+            $('#delete-message').text('Are you sure you want to delete this comment?');
+        } else {
+            $('#delete-message').text('Are you sure you want to delete this reply?');
+        }
 
-            // Store the type and id in the modal for later use
-            $('#deleteModal').data('type', type).data('id', id).data('parent-id', parentId);
-            $('#deleteModal').show();
-        });
+        // Store the type and id in the modal for later use
+        $('#deleteModal').data('type', type).data('id', id).data('parent-id', parentId);
+        $('#deleteModal').show();
+    });
 
-        // Confirm deletion (send request to server)
-        $('#confirmDelete').on('click', function () {
-            const type = $('#deleteModal').data('type');
-            const id = $('#deleteModal').data('id');
-            const parentId = $('#deleteModal').data('parent-id');
+    // Confirm deletion (send request to server)
+    $('#confirmDelete').on('click', function () {
+        const type = $('#deleteModal').data('type');
+        const id = $('#deleteModal').data('id');
+        const parentId = $('#deleteModal').data('parent-id');
 
-            // Form the URL based on the type (comment/reply)
-            const url = (type === 'comment') ? `/delete_comment/${id}/` : `/delete_reply/${id}/`;
-            const data = {
-                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
-            };
+        // Form the URL based on the type (comment/reply)
+        const url = (type === 'comment') ? `/delete_comment/${id}/` : `/delete_reply/${id}/`;
+        const data = {
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+        };
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                success: function (response) {
-                    if (response.success) {
-                        if (type === 'comment') {
-                            $(`#comment-${id}`).remove();  // Remove the comment
-                        } else {
-                            $(`#reply-${id}`).remove();    // Remove the reply
-                        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    if (type === 'comment') {
+                        $(`#comment-${id}`).remove();  // Remove the comment
                     } else {
-                        alert('Failed to delete!');
+                        $(`#reply-${id}`).remove();    // Remove the reply
                     }
-                    $('#deleteModal').hide();
-                },
-                error: function () {
-                    alert('Error occurred while deleting.');
-                    $('#deleteModal').hide();
+                } else {
+                    alert('Failed to delete!');
                 }
-            });
-        });
-
-        // Cancel deletion
-        $('#cancelDelete').on('click', function () {
-            $('#deleteModal').hide();
+                $('#deleteModal').hide();
+            },
+            error: function () {
+                alert('Error occurred while deleting.');
+                $('#deleteModal').hide();
+            }
         });
     });
+
+    // Cancel deletion
+    $('#cancelDelete').on('click', function () {
+        $('#deleteModal').hide();
+    });
+});
 

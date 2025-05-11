@@ -37,6 +37,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from .models import Product, Order
 from django.core.paginator import Paginator
+
 seller_group, created = Group.objects.get_or_create(name='Sellers')
 content_type = ContentType.objects.get_for_model(Product)
 permissions = Permission.objects.filter(content_type=content_type, codename__in=[
@@ -59,7 +60,7 @@ def home(request):
     rooms = Room.objects.all()[:10]  # Keep rooms limited to 10
 
     # Pagination logic
-    paginator = Paginator(products, 20)  # Show 5 products per page
+    paginator = Paginator(products, 10)  # Show 10 products per page
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -90,24 +91,25 @@ def home(request):
 
 def filter_products(request):
     category = request.GET.get("category", None)
-    page = request.GET.get("page", 1)  # Get current page number
+    page = request.GET.get("page", 1)
 
     products = Product.objects.all()
     if category:
         products = products.filter(category=category)
 
-    paginator = Paginator(products, 10)  # 5 products per page
+    paginator = Paginator(products, 10)
     paginated_products = paginator.get_page(page)
 
-    product_list = [
-        {
+    product_list = []
+    for product in paginated_products:
+        product_list.append({
             "id": product.id,
             "name": product.name,
             "image_url": product.image.url,
             "location": product.seller.seller_details.address,
-        }
-        for product in paginated_products
-    ]
+            "is_sold": product.is_sold,
+            "is_sale": bool(getattr(product, "sale_price", False)),
+        })
 
     return JsonResponse({
         "products": product_list,
@@ -115,7 +117,6 @@ def filter_products(request):
         "has_prev": paginated_products.has_previous(),
         "current_page": paginated_products.number,
     })
-
 
 
 def login_required_redirect(request):
@@ -227,7 +228,6 @@ def product(request, pk):
     return render(request, 'product.html', context)
 
 
-
 @login_required
 def add_comment(request):
     if request.method == "POST":
@@ -257,7 +257,8 @@ def add_comment(request):
 
                 # Only allow replies from the product's seller or the original commenter
                 if request.user != product.seller and request.user != parent_comment.user:
-                    return JsonResponse({'error': 'Only the seller or the original commenter can reply to comments'}, status=403)
+                    return JsonResponse({'error': 'Only the seller or the original commenter can reply to comments'},
+                                        status=403)
 
                 comment.parent = parent_comment
 
@@ -299,6 +300,7 @@ def delete_comment(request, id):
         comment.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False}, status=403)
+
 
 def delete_reply(request, id):
     if request.user.is_authenticated:
@@ -487,7 +489,6 @@ def user_profile(request, encoded_username):
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
     if request.user.is_authenticated:
-
         user_profile1 = get_object_or_404(User, username=username)
         user_orders = Order.objects.filter(user=user_profile1).select_related('product').order_by('-created_at')
 
@@ -729,7 +730,7 @@ def khalti_payment_callback(request):
 
 @login_required  # Ensure the user is logged in
 def order_receipt(request, order_id):
-    order = get_object_or_404(Order, id=order_id )
+    order = get_object_or_404(Order, id=order_id)
 
     # Restrict access: Only the buyer can view this order
     if request.user != order.user:
@@ -738,16 +739,16 @@ def order_receipt(request, order_id):
 
     # Convert to Nepal time
     nepal_time = order.created_at.astimezone(timezone('Asia/Kathmandu'))
-    return render(request, "order_receipt.html", {"order": order , 'nepali_time': nepal_time})
+    return render(request, "order_receipt.html", {"order": order, 'nepali_time': nepal_time})
 
 
 logger = logging.getLogger(__name__)
-
 
 from django.template.loader import get_template
 from django.template import Context
 from xhtml2pdf import pisa
 from io import BytesIO
+
 
 @login_required
 def generate_receipt_pdf(request, order_id):
@@ -779,4 +780,3 @@ def generate_receipt_pdf(request, order_id):
         return response
     else:
         return HttpResponse("Error generating PDF", status=500)
-

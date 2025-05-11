@@ -17,12 +17,12 @@ class Room(models.Model):
             return self.owner_name
 
 class Review(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reviews')  # Changed 'product' to 'room'
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        default=5  # Optional: Set a default rating
+        default=5
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

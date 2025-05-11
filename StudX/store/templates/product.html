@@ -1,133 +1,236 @@
 {% extends 'base.html' %}
-{% load custom_filters %}
+{% load static custom_filters %}
 {% block content %}
-<style>
-    #pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 12px;
-}
+    <style>
+        #pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 12px;
+        }
 
-.pagination-button {
-    padding: 6px 12px;
-    background-color: #333;
-    color: white;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-}
+        .pagination-button {
+            padding: 6px 12px;
+            background-color: #333;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-.pagination-button:hover {
-    background-color: #555;
-}
+        .pagination-button:hover {
+            background-color: #555;
+        }
 
-.page-number {
-    font-weight: bold;
-    font-size: 16px;
-}
-</style> <!-- do not move it to css for now! Name conflict issue -->
-<section class="item-section">
-    <div class="item-card">
-        <div class="item-image">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img alt="" src="{{ product.image.url }}">
+        .page-number {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style> <!-- do not move it to css for now! Name conflict issue Q&A section ko ho -->
+
+    <section class="item-section">
+        <div class="product-det-container">
+            <!-- Left: Gallery -->
+            <div class="gallery-container" >
+                <section class="gallery">
+                    <div class="gallery-main">
+                        <img src="{{ product.image.url }}"  alt="main image"/>
                     </div>
-                    {% for image in product.additional_images.all %}
-                    <div class="swiper-slide">
-                        <img src="{{ image.image.url }}">
+                    <div class="thumbnail-list">
+                        <button type="button" class="thumbnail-button">
+                            <img src="{{ product.image.url }}" alt="main thumbnail"/>
+                        </button>
+                        {% for image in product.additional_images.all %}
+                            <button type="button" class="thumbnail-button">
+                                <img src="{{ image.image.url }}" alt="alternate image"/>
+                            </button>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
+                </section>
             </div>
 
-            <!-- Swiper JS -->
-            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-        </div>
-        <div class="item-details">
-            <h2>{{ product.name }}</h2>
-            <hr/>
-            <div class="item-description">
-                <p>{{ product.description }}</p>
-            </div>
-            <div class="seller-detail">
-                <div>
-                    <a href="{% url 'seller_profile' product.seller.username %}">
-                        <img src="{{ product.seller.seller_details.photo.url }}" alt="seller-image">
-                    </a>
-                </div>
-                <div>
-                    <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
-                        <p>{{ product.seller.seller_details.seller_name }}<i
-                                class="fas fa-circle-check verified-icon"></i></p>
-                    </a>
-                </div>
-            </div>
-            <div class="box-price-container">
-                <span class="box-price">PRICE: </span>
+            <!-- Right: Product Info -->
+            <div class="info-container">
+                <section class="info">
 
-                {% if product.is_sale %}
-                <p class="price">
-                    <del>NRs.{{ product.price }}</del>  <!-- Strike-through original price -->
-                    <strong>NRs.{{ product.sale_price }}</strong> <!-- Highlight sale price -->
-                </p>
-                {% else %}
-                <p class="price">NRs.{{ product.price }}</p>
-                {% endif %}
-            </div>
-            <div class="button-container">
-                {% if request.user == product.seller %}
-                <a href="{% url 'edit_product' product.id %}" class="blue-button">Edit</a>
-                <a href="{% url 'delete_product' product.id %}"
-                   class="red-button"
-                   data-action="delete-product"
-                   onclick="return false;">Delete</a>
-                <div id="custom-confirm" class="confirm-box" style="display: none;">
-                    <div class="confirm-content">
-                        <p>Are you sure you want to delete this item?</p>
-                        <button id="confirm-yes" class="btn btn-danger">Yes</button>
-                        <button id="confirm-no" class="btn btn-secondary">No</button>
+                    <div class="info-header">
+                        <h1 class="title">{{ product.name }}</h1>
+
                     </div>
-                </div>
-                {% else %}
-                {% if not product.is_sold %}
-                <button class="blue-button">Buy Now</button>
-                <form action="{% url 'initiate_khalti_payment' product.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="blue-button">Pay with Khalti</button>
-                </form>
-                {% else %}
-                <button class="blue-button" disabled>Sold Out</button>
-                {% endif %}
-                </form>
-                <button id="add-cart" class="red-button" value="{{ product.id }}" data-action="add-to-cart">Add to
-                    Cart
-                </button>
-                {% endif %}
+                    <div class="tabs">
+
+                        <div class="tab-buttons">
+                            <button class="tab-button active" data-tab="overview">Overview</button>
+                            <button class="tab-button" data-tab="details">Details</button>
+                            <button class="tab-button" data-tab="contact-seller">Contact Seller</button>
+
+                        </div>
+
+                        <!-- tab panels -->
+                        <div class="tab-content">
+
+                            <!-- on overview panel -->
+                            <div id="overview" class="tab-panel active">
+                                <div class="seller-detail">
+                                    <div>
+                                        <a href="{% url 'seller_profile' product.seller.username %}">
+                                            <img src="{{ product.seller.seller_details.photo.url }}"
+                                                 alt="seller-image">
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
+                                            <p>{{ product.seller.seller_details.seller_name }}<i
+                                                    class="fas fa-circle-check verified-icon"></i></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Price -->
+                                <div class="box-price-container">
+                                    <span class="box-price">PRICE: </span>
+
+                                    {% if product.is_sale %}
+                                        <p class="price">
+                                            <del>NRs.{{ product.price }}</del>
+                                            <!-- Strike-through original price -->
+                                            <strong>NRs.{{ product.sale_price }}</strong>
+                                            <!-- Highlight sale price -->
+                                        </p>
+                                    {% else %}
+                                        <p class="price">NRs.{{ product.price }}</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Stock Badges -->
+                                <div class="badge-container">
+                                    {% if product.is_sold %}
+                                        <span class="badge out-of-stock">
+                                    <i class="fas fa-times-circle"></i> Out of Stock
+                                </span>
+                                    {% else %}
+                                        <span class="badge in-stock">
+                                    <i class="fas fa-check-circle"></i> In Stock
+                                </span>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="button-container" style="margin-bottom: 1rem;">
+                                    {% if request.user == product.seller %}
+                                        <a href="{% url 'edit_product' product.id %}" class="blue-button">Edit</a>
+                                        <a href="{% url 'delete_product' product.id %}"
+                                           class="red-button"
+                                           data-action="delete-product"
+                                           onclick="return false;">Delete</a>
+                                        <div id="custom-confirm" class="confirm-box" style="display: none;">
+                                            <div class="confirm-content">
+                                                <p>Are you sure you want to delete this item?</p>
+                                                <button id="confirm-yes" class="btn btn-danger">Yes</button>
+                                                <button id="confirm-no" class="btn btn-secondary">No</button>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% if not product.is_sold %}
+                                            <button class="blue-button"><i class="fas fa-bolt"
+                                                                           style="margin-right: 0.2rem;"></i>Buy Now
+                                            </button>
+                                            <form action="{% url 'initiate_khalti_payment' product.id %}"
+                                                  method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" class="blue-button">Pay with Khalti</button>
+                                            </form>
+                                        {% else %}
+                                            <button class="blue-button" disabled><i class="fas fa-ban"
+                                                                                    style="margin-right: 0.2rem;"></i>Sold
+                                                Out
+                                            </button>
+                                        {% endif %}
+
+                                        <button id="add-cart" class="red-button" value="{{ product.id }}"
+                                                data-action="add-to-cart"><i class="fas fa-shopping-cart"
+                                                                             style="margin-right: 0.2rem;"></i>Add to
+                                            Cart
+                                        </button>
+                                    {% endif %}
+
+                                </div>
+
+                                <!-- Payment Options -->
+                                <div class="payment">
+                                    <p class="payment-text">Secure payment with:</p>
+                                    <div class="payment-icons">
+
+                                        <img src="{% static 'assests/khalti-seeklogo.svg' %}" alt="Khalti"
+                                             class="payment-icon khalti">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="details" class="tab-panel">
+                                <div class="item-description">
+                                    <p>{{ product.description|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
             </div>
+    </section>
+
+
+    <!-- Login Prompt Modal -->
+    <div id="login-prompt" class="confirm-box" style="display: none;">
+        <div class="confirm-content">
+            <p>You need to log in to add this product to your cart. Do you want to go to the login page?</p>
+            <button id="login-yes" class="btn btn-cart">Yes</button>
+            <button id="login-no" class="btn btn-buy">No</button>
         </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.tab-button');
+            const panels = document.querySelectorAll('.tab-panel');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // deactivate all buttons & panels
+                    buttons.forEach(b => b.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+
+                    // activate clicked button
+                    btn.classList.add('active');
+
+                    // show associated panel
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script>
+        // Thumbnail gallery click handler
+        document.querySelectorAll('.thumbnail-list .thumbnail-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const imgSrc = this.querySelector('img').src;
+                document.querySelector('.gallery-main img').src = imgSrc;
+            });
+        });
+    </script>
 
 
-        <!-- Modal for Non-Logged-In Users -->
-        <div id="login-prompt" class="confirm-box" style="display: none;">
-            <div class="confirm-content">
-                <p>You need to log in to add this product to your cart. Do you want to go to the login page?</p>
-                <button id="login-yes" class="blue-button">Yes</button>
-                <button id="login-no" class="red-button">No</button>
-            </div>
-        </div>
-
-        <script>
-            // Check if button pressed
-            $(document).on('click', '#add-cart', function (e) {
-                e.preventDefault();
-                {% if request.user.is_authenticated %}
+    <script>
+        // Check if button pressed
+        $(document).on('click', '#add-cart', function (e) {
+            e.preventDefault();
+            {% if request.user.is_authenticated %}
                 // User is logged in, proceed with AJAX request
                 $.ajax({
                     type: 'POST',
@@ -144,7 +247,7 @@
                         console.log("Error adding to cart");
                     }
                 });
-                {% else %}
+            {% else %}
                 // User is not logged in, show login prompt modal
                 document.getElementById('login-prompt').style.display = 'flex';
 
@@ -157,30 +260,30 @@
                 document.getElementById('login-no').onclick = function () {
                     document.getElementById('login-prompt').style.display = 'none';
                 };
-                {% endif %}
-            });
-        </script>
-        <script src="https://khalti.com/static/khalti-checkout.js"></script>
-        <script>
-            var khaltiConfig = {
-                "publicKey": "{{ settings.KHALTI_PUBLIC_KEY }}",  // Use the correct public key
-                "productIdentity": "{{ product.id }}",
-                "productName": "{{ product.name }}",
-                "productUrl": window.location.href,
-                "amount": {{ product.price|floatformat:0 }} * 100, // Convert to paisa
-                "eventHandler": {
-                    onSuccess: function (payload) {
-                        fetch("{% url 'khalti_verify' %}", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded",
-                                "X-CSRFToken": "{{ csrf_token }}"
-                            },
-                            body: new URLSearchParams({
-                                "token": payload.token,
-                                "amount": payload.amount
-                            })
+            {% endif %}
+        });
+    </script>
+    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script>
+        var khaltiConfig = {
+            "publicKey": "{{ settings.KHALTI_PUBLIC_KEY }}",  // Use the correct public key
+            "productIdentity": "{{ product.id }}",
+            "productName": "{{ product.name }}",
+            "productUrl": window.location.href,
+            "amount": {{ product.price|floatformat:0 }} * 100, // Convert to paisa
+            "eventHandler": {
+                onSuccess: function (payload) {
+                    fetch("{% url 'khalti_verify' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        body: new URLSearchParams({
+                            "token": payload.token,
+                            "amount": payload.amount
                         })
+                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === "success") {
@@ -191,131 +294,132 @@
                             }
                         })
                         .catch(error => console.error("Error:", error));
-                    },
-                    onError: function (error) {
-                        console.log("Khalti Error:", error);
-                    },
-                    onClose: function () {
-                        console.log("Khalti widget closed.");
-                    }
+                },
+                onError: function (error) {
+                    console.log("Khalti Error:", error);
+                },
+                onClose: function () {
+                    console.log("Khalti widget closed.");
                 }
-            };
+            }
+        };
 
-            var khaltiCheckout = new KhaltiCheckout(khaltiConfig);
-            document.getElementById("khalti-payment-button").onclick = function () {
-                khaltiCheckout.show({ amount: {{ product.price|floatformat:0 }} * 100 });
-            };
-        </script>
+        var khaltiCheckout = new KhaltiCheckout(khaltiConfig);
+        document.getElementById("khalti-payment-button").onclick = function () {
+            khaltiCheckout.show({amount: {{ product.price|floatformat:0 }} * 100});
+        };
+    </script>
 
-    </div>
-</section>
-<script>
-    const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
-</script>
+    <script>
+        const isSeller = {% if request.user == product.seller %}true{% else %}false{% endif %};
+    </script>
     <section class="item-section">
-    <div class="comment-section">
-        <h3>Q&A with Seller</h3>
+        <div class="comment-section">
+            <h3>Q&A with Seller</h3>
 
-        {% if request.user.is_authenticated %}
-        <!-- Main comment form -->
-        <form id="comment-form">
-            {% csrf_token %}
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <input type="hidden" name="parent" id="parent-id" value="">
-            <textarea name="content" id="comment-content" placeholder="Write your query..." required></textarea>
-            <button type="submit">Post</button>
-        </form>
-        {% else %}
-        <p class="login-message">You must be <a href="{% url 'login' %}">logged in</a> to add your query.</p>
-        {% endif %}
+            {% if request.user.is_authenticated %}
+                <!-- Main comment form -->
+                <form id="comment-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" name="parent" id="parent-id" value="">
+                    <textarea name="content" id="comment-content" placeholder="Write your query..." required></textarea>
+                    <button type="submit">Post</button>
+                </form>
+            {% else %}
+                <p class="login-message">You must be <a href="{% url 'login' %}">logged in</a> to add your query.</p>
+            {% endif %}
 
-        <!-- List of comments -->
-        <ul id="comment-list">
-            {% for comment in comments %}
-            <li id="comment-{{ comment.id }}" class="comment">
-                <div class="comment-header">
-                    <strong>{{ comment.user.username }}</strong>
-                    <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
-
-                    <!-- Delete Comment Button -->
-                    {% if request.user == comment.user %}
-                    <button class="delete-comment" data-id="{{ comment.id }}" data-type="comment">Delete Comment
-                    </button>
-                    {% endif %}
-                </div>
-                <div class="comment-content">
-                    {{ comment.content }}
-                </div>
-
-                {% if request.user.is_authenticated %}
-                {% if request.user == product.seller or request.user == comment.user %}
-                <!-- Reply Button -->
-                <button class="reply-btn" data-id="{{ comment.id }}">Reply</button>
-
-                <!-- Reply Textarea (hidden initially) -->
-                <div id="reply-{{ comment.id }}" class="reply-textarea" style="display:none;">
-                    <textarea class="reply-content" placeholder="Write a reply..."></textarea>
-                    <button class="reply-submit" data-parent="{{ comment.id }}">Post Reply</button>
-                </div>
-                {% endif %}
-                {% endif %}
-
-                <!-- Replies nested under the main comment -->
-                <ul class="reply-list">
-                    {% for reply in comment.replies.all %}
-                    <li class="reply" id="reply-{{ reply.id }}">
+            <!-- List of comments -->
+            <ul id="comment-list">
+                {% for comment in comments %}
+                    <li id="comment-{{ comment.id }}" class="comment">
                         <div class="comment-header">
-                            <strong class="{% if reply.user == product.seller %}seller-name{% else %}buyer-name{% endif %}">
-                                {% if reply.user == product.seller %}
-                                {{ reply.user.seller_details.seller_name }}
-                                <i class="fas fa-circle-check verified-icon" title="Verified Seller"></i>
-                                {% else %}
-                                {{ reply.user.username }}
-                                {% endif %}
-                            </strong>
-                            <span class="comment-date">{{ reply.created_at|date:"F d, Y" }}</span>
+                            <strong>{{ comment.user.username }}</strong>
+                            <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
 
-                            <!-- Delete Reply Button -->
-                            {% if request.user == reply.user %}
-                            <button class="delete-reply" data-id="{{ reply.id }}" data-parent="{{ comment.id }}"
-                                    data-type="reply">Delete Reply
-                            </button>
+                            <!-- Delete Comment Button -->
+                            {% if request.user == comment.user %}
+                                <button class="delete-comment" data-id="{{ comment.id }}" data-type="comment">Delete
+                                    Comment
+                                </button>
                             {% endif %}
                         </div>
                         <div class="comment-content">
-                            {{ reply.content }}
+                            {{ comment.content }}
                         </div>
+
+                        {% if request.user.is_authenticated %}
+                            {% if request.user == product.seller or request.user == comment.user %}
+                                <!-- Reply Button -->
+                                <button class="reply-btn" data-id="{{ comment.id }}">Reply</button>
+
+                                <!-- Reply Textarea (hidden initially) -->
+                                <div id="reply-{{ comment.id }}" class="reply-textarea" style="display:none;">
+                                    <textarea class="reply-content" placeholder="Write your reply..."></textarea>
+                                    <button class="reply-submit" data-parent="{{ comment.id }}">Post Reply</button>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        <!-- Replies nested under the main comment -->
+                        <ul class="reply-list">
+                            {% for reply in comment.replies.all %}
+                                <li class="reply" id="reply-{{ reply.id }}">
+                                    <div class="comment-header">
+                                        <strong class="{% if reply.user == product.seller %}seller-name{% else %}buyer-name{% endif %}">
+                                            {% if reply.user == product.seller %}
+                                                {{ reply.user.seller_details.seller_name }}
+                                                <i class="fas fa-circle-check verified-icon"
+                                                   title="Verified Seller"></i>
+                                            {% else %}
+                                                {{ reply.user.username }}
+                                            {% endif %}
+                                        </strong>
+                                        <span class="comment-date">{{ reply.created_at|date:"F d, Y" }}</span>
+
+                                        <!-- Delete Reply Button -->
+                                        {% if request.user == reply.user %}
+                                            <button class="delete-reply" data-id="{{ reply.id }}"
+                                                    data-parent="{{ comment.id }}"
+                                                    data-type="reply">Delete Reply
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <div class="comment-content">
+                                        {{ reply.content }}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
-                    {% endfor %}
-                </ul>
-            </li>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
 
-        <!-- Pagination Controls -->
-        <div id="pagination-controls">
-            {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}" class="pagination-button">← Prev</a>
-            {% endif %}
+            <!-- Pagination Controls -->
+            <div id="pagination-controls">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-button">← Prev</a>
+                {% endif %}
 
-            <span class="page-number">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                <span class="page-number">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
 
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}" class="pagination-button">Next →</a>
-            {% endif %}
-        </div>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-button">Next →</a>
+                {% endif %}
+            </div>
 
-        <!-- Modal for Deletion (Both Comment & Reply) -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <p id="delete-message"></p>
-                <div class="modal-buttons">
-                    <button id="confirmDelete" class="red-button">Yes</button>
-                    <button id="cancelDelete" class="blue-button">Cancel</button>
+            <!-- Modal for Deletion (Both Comment & Reply) -->
+            <div id="deleteModal" class="modal">
+                <div class="modal-content">
+                    <p id="delete-message"></p>
+                    <div class="modal-buttons">
+                        <button id="confirmDelete" class="red-button">Yes</button>
+                        <button id="cancelDelete" class="blue-button">Cancel</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-</section>
+    </section>
 
-    {% endblock %}
+{% endblock %}

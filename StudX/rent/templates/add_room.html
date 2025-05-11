@@ -1,49 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="form-container">
-    <h2 class="heading">Add Room</h2>
-    <form class="form-design" method="POST" enctype="multipart/form-data">
-       {% csrf_token %}
-    {{ form.as_p }}
-        <input type="hidden" id="latitude" name="latitude">
-        <input type="hidden" id="longitude" name="longitude">
+    <div class="form-container">
+        <h2 class="heading">Add Room</h2>
+        <form class="form-design" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
 
-        <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
-    <button class='green-button' type="submit">Submit</button>
-    </form>
-</div>
- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Initialize the map
-        var map = L.map('map').setView([28.2096, 83.9856], 13); // Default location (Pokhara)
+            <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
+            <button class='green-button' type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the map
+            var map = L.map('map').setView([28.2096, 83.9856], 13); // Default location (Pokhara)
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
-        // Marker for selected location
-        var marker = null;
+            // Marker for selected location
+            var marker = null;
 
-        // Map click event to update location
-        map.on('click', function (e) {
-            var lat = e.latlng.lat;
-            var lng = e.latlng.lng;
+            // Map click event to update location
+            map.on('click', function (e) {
+                var lat = e.latlng.lat;
+                var lng = e.latlng.lng;
 
-            // Remove existing marker if it exists
-            if (marker) {
-                map.removeLayer(marker);
-            }
+                // Remove existing marker if it exists
+                if (marker) {
+                    map.removeLayer(marker);
+                }
 
-            // Add a new marker at the clicked location
-            marker = L.marker([lat, lng]).addTo(map);
+                // Add a new marker at the clicked location
+                marker = L.marker([lat, lng]).addTo(map);
 
-            // Update the hidden location field in the form
-             document.getElementById("latitude").value = lat;
-             document.getElementById("longitude").value = lng;
+                // Update the hidden location field in the form
+                document.getElementById("latitude").value = lat;
+                document.getElementById("longitude").value = lng;
+            });
         });
-    });
-</script>
+    </script>
 {% endblock %}

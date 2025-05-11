@@ -430,6 +430,8 @@ body {
 
 /* Product Card */
 .product-card {
+    position: relative;
+    overflow: visible;
     background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
     margin-top: 20px;
     border: 1px solid #ddd;
@@ -440,6 +442,38 @@ body {
     padding: 5px;
     transition: transform 0.2s;
 }
+
+/* circles */
+.product-tag {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: rotate(-15deg);
+    top: -12px;
+    z-index: 5;
+}
+
+
+.product-tag--sale {
+    left: -12px;
+    background: linear-gradient(135deg, #ff8a00 0%, #e52e71 100%);
+}
+
+
+.product-tag--soldout {
+    left: -12px;
+    background: linear-gradient(135deg, #555 0%, #222 100%);
+}
+
 
 .product-card:hover {
     transform: scale(1.05);
@@ -738,80 +772,175 @@ input[type="checkbox"] {
     transform: translateX(-100px);
 }
 
-.item-section {
-    height: 100%;
 
+/* product details page */
+/* Two-column layout */
+.product-det-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    width: 90%;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.item-card {
-    background-image: url('https://www.transparenttextures.com/patterns/white-wall.png');
-    background-color: #f8f9fa;
-    display: flex;
-    align-items: center;
-    background-color: #fbf9f9;
+@media (min-width: 1024px) {
+    .product-det-container {
+        flex-direction: row;
+    }
+}
+
+.gallery-container {
+    flex: 1;
+    max-width: 500px;
     border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.info-container {
+    background: #fff;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+    flex: 1;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Gallery styles */
+.gallery-main {
+    background: #fff;
+    border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    width: 90%;
-    margin: 20px auto;
-    height: 90%;
+    margin-bottom: 1rem;
 }
 
-.item-image {
-
-    width: 50%;
-    max-height: 30rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
-    gap: 5px;
-    margin-left: 20px;
-}
-
-.item-image img {
-    border-radius: 10px;
-    max-width: 20rem;
-    max-height: 100%;
-}
-
-.item-details {
-    padding: 10px;
-    width: 90%;
-}
-
-.item-details h2 {
-    display: flex;
-    justify-content: center;
-    margin: 0;
-    font-size: 5rem;
-    color: #333;
-    font-weight: bold;
-}
-
-hr {
+.gallery-main img {
+    width: 100%;
     display: block;
-    height: 2vh;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 2rem;
-    padding: 0;
+    max-height: 500px;
 }
 
-.sell {
+.thumbnail-list {
     display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
 }
 
-.seller-detail img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
-    background-color: #d23d3d;
+.thumbnail-button {
+    flex-shrink: 0;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
 }
 
-.seller-detail p {
-    align-content: center;
-    margin: 10px;
+.thumbnail-button:hover, .thumbnail-button:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+.thumbnail-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Stock badge */
+.badge-container {
+    margin-bottom: 1rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    gap: 0.25rem;
+}
+
+.badge i {
+    font-size: 1rem;
+}
+
+.in-stock {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.out-of-stock {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Info container */
+.info-header {
+    margin-bottom: 1rem;
+}
+
+.title {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Tabs container */
+.tabs {
+    margin-top: 1.5rem;
+}
+
+/* Buttons row */
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1rem;
+}
+
+/* Each tab button */
+.tab-button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+    color: #4b5563;
+}
+
+.tab-button:hover {
+    color: #4b5563;
+    border-color: #d3d3d3;
+}
+
+/* Active tab */
+.tab-button.active {
+    border-color: #2563eb;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
 }
 
 .box-price-container {
@@ -824,11 +953,60 @@ hr {
     font-weight: bold;
 }
 
-.item-details .price {
+.price {
     font-size: 1.8rem;
     color: #d23d3d;
     margin: 10px;
     font-weight: bold;
+}
+
+/* Payment section */
+.payment {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+}
+
+.payment-icons img.khalti {
+    width: 4rem;
+    height: auto;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.payment-text {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.payment-icons {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 2rem;
+    color: #4b5563;
+}
+
+
+hr {
+    display: block;
+    height: 2vh;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 2rem;
+    padding: 0;
+}
+
+
+.seller-detail img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #d23d3d;
+}
+
+.seller-detail p {
+    align-content: center;
+    margin: 10px;
 }
 
 .button-container {
@@ -1198,6 +1376,7 @@ hr {
 /* edit usr ko suru*/
 .item-section {
     display: flex;
+    margin-bottom: 10px;
     justify-content: center;
     align-items: center;
     height: 100%;
