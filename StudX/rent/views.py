@@ -4,14 +4,17 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from rent.forms import *
 from rent.models import Room
+from django.shortcuts import render, get_object_or_404
+from django.forms import modelformset_factory
+from django.http import HttpResponseForbidden
+
+from .forms import RoomForm, RoomImageForm
+from .models import Room, RoomImage
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import Review
-
-
-
 
 import logging
 from django.shortcuts import get_object_or_404
@@ -20,11 +23,11 @@ from django.template.loader import render_to_string
 from .models import Room, Review  # Ensure these are correct based on your app structure
 from .forms import ReviewForm
 
+
 def room(request):
     rooms = Room.objects.all()
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
+
 from store.models import Seller_Details
 
 
@@ -69,6 +72,63 @@ def add_Room(request):
         'form': form,
         'formset': formset,
     })
+
+
+def edit_room(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+
+    # Check if the logged-in user is the one who added the room
+    if request.user != room.detailsBy:
+        return HttpResponseForbidden("You are not allowed to edit this room.")
+
+    RoomImageFormSet = modelformset_factory(RoomImage, form=RoomImageForm, extra=0)
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES, instance=room)
+        formset = RoomImageFormSet(request.POST, request.FILES, queryset=RoomImage.objects.filter(room=room))
+
+        if form.is_valid() and formset.is_valid():
+            form.save()
+
+            # Handle the image formset
+            for form in formset:
+                if form.cleaned_data.get('image'):
+                    room_image = form.save(commit=False)
+                    room_image.room = room
+                    room_image.save()
+
+            messages.success(request, 'Room updated successfully.')
+            return redirect('home')
+
+        else:
+            messages.error(request, 'Please correct the errors below.')
+
+    else:
+        form = RoomForm(instance=room)
+        formset = RoomImageFormSet(queryset=RoomImage.objects.filter(room=room))
+
+    return render(request, 'edit_room.html', {
+        'form': form,
+        'formset': formset,
+        'room': room,
+    })
+
+
+from django.http import JsonResponse
+
+
+def delete_room(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+
+    if request.user != room.detailsBy:
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    if request.method == "POST":
+        room.delete()
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def room_detail(request, room_id):
     room = get_object_or_404(Room, id=room_id)
@@ -117,6 +177,7 @@ def add_review(request, room_id):
             'success': False,
             'error': 'Invalid request method.',
         })
+
 
 logger = logging.getLogger(__name__)
 

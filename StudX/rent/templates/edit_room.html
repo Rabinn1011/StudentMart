@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .edit-room-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-room-wrapper h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .edit-room-wrapper .form-group {
+            margin-bottom: 20px;
+        }
+
+        .edit-room-wrapper .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .edit-room-wrapper .form-group input,
+        .edit-room-wrapper .form-group select,
+        .edit-room-wrapper .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .edit-room-wrapper .form-group input:focus,
+        .edit-room-wrapper .form-group select:focus,
+        .edit-room-wrapper .form-group textarea:focus {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+
+        .edit-room-wrapper .form-group input[type="file"] {
+            padding: 8px;
+        }
+
+        .edit-room-wrapper .form-group .errorlist {
+            margin: 5px 0;
+            color: #d9534f;
+        }
+
+        .edit-room-wrapper h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .edit-room-wrapper .btn-primary {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-room-wrapper .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .edit-room-wrapper .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+    </style>
+
+    <div class="edit-room-wrapper">
+        <h2>Edit Room</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+
+            <h3>Edit Room Images</h3>
+            <div class="form-group">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    {{ form.as_p }}
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn-primary">Update Room</button>
+        </form>
+    </div>
+{% endblock %}

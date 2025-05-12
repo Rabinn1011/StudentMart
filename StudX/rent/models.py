@@ -28,6 +28,7 @@ class Room(models.Model):
     owner_phone = models.CharField(max_length=20)
     type = models.CharField(max_length=100, choices=ROOM_TYPES)
     noOfRooms = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # New field
     latitude = models.FloatField()
     longitude = models.FloatField()
     detailsBy = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -41,7 +42,6 @@ class Room(models.Model):
 
     def __str__(self):
         return f"{self.owner_name}'s {self.get_type_display()}"
-
 
 class RoomImage(models.Model):
     room = models.ForeignKey(
