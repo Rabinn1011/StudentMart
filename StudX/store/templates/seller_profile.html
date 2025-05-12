@@ -23,7 +23,7 @@
                         {% if not seller.is_verified %}
                             Not Verified
                         {% else %}
-                        <i class="fas fa-circle-check verified-icon"></i> Verified
+                            <i class="fas fa-circle-check verified-icon"></i> Verified
                         {% endif %}
                     </li>
                 </ul>
@@ -53,15 +53,23 @@
                     {% endif %}
                 </h3>
                 {% if products1 %}
-                    <div class="products-grid-selpro">
+                    <div id="product-container" class="product-container">
                         {% for product in products1 %}
-                            <div class="product-card-selpro">
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                                     class="product-image-selpro"/>
-                                <h4 class="product-title-selpro">{{ product.name }}</h4>
-                                <p class="price-selpro"><strong>Price:</strong> Rs.{{ product.price }}</p>
+                            <div class="product-card">
+                                <div class="product-tags">
+                                    {% if product.is_sold %}
+                                        <span class="product-tag product-tag--soldout">Sold</span>
+                                    {% elif product.is_sale %}
+                                        <span class="product-tag product-tag--sale">Sale</span>
+                                    {% endif %}
+                                </div>
 
-                                <a class="viewbutton-selpro" href="{% url 'product' product.id %}">View Product</a>
+                                <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                                <h3 class="product-title">{{ product.name }}</h3>
+                                <h5 class="product-location">
+                                    <i class="fa-solid fa-map-marker-alt"></i> {{ product.seller.seller_details.address }}
+                                </h5>
+                                <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
                             </div>
                         {% endfor %}
                     </div>
@@ -69,6 +77,34 @@
                     <p>You have not added any products yet.</p>
                 {% endif %}
             </div>
+
+            <!-- Rooms Section -->
+            <div class="products-section">
+                <h3>Rooms Added by
+                    {% if request.user == seller.user %}
+                        You
+                    {% else %}
+                        {{ seller.seller_name }}
+                    {% endif %}
+                </h3>
+
+                {% if rooms %}
+                    <div class="products-grid-selpro">
+                        {% for room in rooms %}
+                            <div class="product-card">
+                                <img alt="{{ room.location }}" class="product-image" src="{{ room.main_image.url }}">
+                                <h3 class="product-title">{{ room.type }}</h3>
+                                <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Have not added any rooms yet.</p>
+                {% endif %}
+            </div>
+
+
         </div>
         <script>
             document.querySelectorAll('.red-button').forEach(button => {

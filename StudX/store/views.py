@@ -524,6 +524,8 @@ def password_change(request):
     return render(request, 'password_change.html', {'form': form})
 
 
+from rent.models import Room
+
 def seller_profile(request, encoded_username):
     try:
         seller_users = Seller_Details.objects.values_list('user__username', flat=True)
@@ -539,21 +541,26 @@ def seller_profile(request, encoded_username):
     except BadSignature:
         raise Http404("Invalid or tampered username")
 
-    if not request.user.is_authenticated:  # Check if user is logged in
+    if not request.user.is_authenticated:
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
 
-    if request.user.is_authenticated:
-        # Get the profile of the seller based on the passed username
-        seller1 = get_object_or_404(Seller_Details, user__username=username)
+    # Get the seller profile based on the username
+    seller1 = get_object_or_404(Seller_Details, user__username=username)
 
-        # Get all products for the logged-in user (seller)
-        products1 = Product.objects.filter(seller=seller1.user)
+    # Get products added by this seller
+    products1 = Product.objects.filter(seller=seller1.user)
 
-        # Render the seller's profile page with the correct context
-        return render(request, 'seller_profile.html', {'seller': seller1, 'products1': products1})
-    else:
-        return redirect('home')
+    # Get rooms added by this seller
+    rooms = Room.objects.filter(detailsBy=seller1.user)
+
+    # Render the profile page with products and rooms
+    return render(request, 'seller_profile.html', {
+        'seller': seller1,
+        'products1': products1,
+        'rooms': rooms,
+    })
+
 
 
 def edit_seller_profile(request):
