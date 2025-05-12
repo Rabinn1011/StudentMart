@@ -121,13 +121,16 @@ def delete_room(request, room_id):
     room = get_object_or_404(Room, id=room_id)
 
     if request.user != room.detailsBy:
-        return JsonResponse({'error': 'Forbidden'}, status=403)
+        messages.error(request, "You are not authorized to delete this room.")
+        return JsonResponse({'success': False})
 
     if request.method == "POST":
         room.delete()
+        messages.success(request, "Room deleted successfully.")
         return JsonResponse({'success': True})
 
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    messages.error(request, "Invalid request method.")
+    return JsonResponse({'success': False})
 
 
 def room_detail(request, room_id):
