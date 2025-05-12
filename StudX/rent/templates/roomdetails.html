@@ -49,18 +49,30 @@
             margin: 0;
         }
 
+        /* Location Panel Map Outer Wrapper */
         .map-wrapper {
+            width: 100%;
             max-width: 1200px;
-            margin: 30px auto;
             height: 400px;
+            margin: 30px auto;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            background: white;
         }
 
         #map {
-            height: 100%;
             width: 100%;
+            height: 100%;
         }
+
+        @media (max-width: 768px) {
+            .map-wrapper {
+                height: 300px;
+                margin: 20px auto;
+            }
+        }
+
 
         @media (max-width: 768px) {
             .room-info-wrapper h2 {
@@ -101,6 +113,7 @@
                         <div class="tab-buttons">
                             <button class="tab-button active" data-tab="overview">Overview</button>
                             <button class="tab-button" data-tab="details">Details</button>
+                            <button class="tab-button" data-tab="location">Location</button>
                         </div>
                         <!-- on overview panel -->
                         <div class="tab-content">
@@ -124,7 +137,16 @@
                                     <p><strong>More Details:</strong> {{ room.moreDetails|linebreaks }}</p>
                                 </div>
                             </div>
+                            <!-- on location panel -->
+                            <div class="tab-panel" id="location">
+                                <div class="map-wrapper">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
+
+
                         </div>
+
 
                     </div>
 
@@ -132,13 +154,22 @@
             </div>
 
             <!-- Map Section -->
-            <div class="map-wrapper">
-                <div id="map"></div>
-            </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     const buttons = document.querySelectorAll('.tab-button');
                     const panels = document.querySelectorAll('.tab-panel');
+                    let map;  // we’ll hoist map here so both handlers can see it
+
+                    // initialize the map early (or defer until first click—either works)
+                    map = L.map('map').setView([{{ room.latitude }}, {{ room.longitude }}], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    L.marker([{{ room.latitude }}, {{ room.longitude }}])
+                        .bindPopup('<b>{{ room.type }}</b><br>{{ room.location }}')
+                        .addTo(map)
+                        .openPopup();
 
                     buttons.forEach(btn => {
                         btn.addEventListener('click', () => {
@@ -146,17 +177,21 @@
                             buttons.forEach(b => b.classList.remove('active'));
                             panels.forEach(p => p.classList.remove('active'));
 
-                            // activate clicked button
+                            // activate this one
                             btn.classList.add('active');
-
-                            // show associated panel
                             const tabId = btn.getAttribute('data-tab');
                             document.getElementById(tabId).classList.add('active');
+
+                            // If it’s the Location tab, force Leaflet to resize
+                            if (tabId === 'location') {
+                                // slight delay helps ensure the panel is fully visible
+                                setTimeout(() => map.invalidateSize(), 200);
+                            }
                         });
                     });
                 });
-
             </script>
+
 
             <script>
                 // Thumbnail gallery click handler

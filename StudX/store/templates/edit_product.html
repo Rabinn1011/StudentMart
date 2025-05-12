@@ -48,10 +48,15 @@
 
             <!-- Sale Price -->
             <div class="form-group">
-                <h3 style="font-weight: 300">Sale Price:</h3>
-                <label for="{{ form.sale_price.id_for_label }}">Sale Price</label>
-                {{ form.sale_price }}
-            </div>
+    <h3 style="font-weight: 300">Is Sale?</h3>
+    <label for="{{ form.is_sale.id_for_label }}">Is Sale</label>
+    {{ form.is_sale }}
+</div>
+            <div class="form-group" id="sale-price-group" style="display: none;">
+    <h3 style="font-weight: 300">Sale Price:</h3>
+    <label for="{{ form.sale_price.id_for_label }}">Sale Price</label>
+    {{ form.sale_price }}
+</div>
 
             <!-- Additional Images -->
             <div class="form-group">
@@ -80,4 +85,24 @@
         }
     });
 </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isSaleCheckbox = document.getElementById("id_is_sale");
+        const salePriceGroup = document.getElementById("sale-price-group");
+
+        function toggleSalePrice() {
+            if (isSaleCheckbox.checked) {
+                salePriceGroup.style.display = 'block';
+            } else {
+                salePriceGroup.style.display = 'none';
+            }
+        }
+
+        if (isSaleCheckbox) {
+            toggleSalePrice();  // Initial check on load
+            isSaleCheckbox.addEventListener('change', toggleSalePrice);
+        }
+    });
+</script>
+
 {% endblock %}
