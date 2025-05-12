@@ -275,7 +275,7 @@ $(document).ready(function () {
 });
 
 
-//js for handling delete comment and replies
+//js for handling delete comment and replies. NOT FOR AJAX
 
 $(document).ready(function () {
     // Open the delete modal for comments and replies
@@ -293,14 +293,13 @@ $(document).ready(function () {
 
         // Store the type and id in the modal for later use
         $('#deleteModal').data('type', type).data('id', id).data('parent-id', parentId);
-        $('#deleteModal').show();
+        $('#deleteModal').addClass('show');
     });
 
     // Confirm deletion (send request to server)
     $('#confirmDelete').on('click', function () {
         const type = $('#deleteModal').data('type');
         const id = $('#deleteModal').data('id');
-        const parentId = $('#deleteModal').data('parent-id');
 
         // Form the URL based on the type (comment/reply)
         const url = (type === 'comment') ? `/delete_comment/${id}/` : `/delete_reply/${id}/`;
@@ -315,25 +314,26 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     if (type === 'comment') {
-                        $(`#comment-${id}`).remove();  // Remove the comment
+                        $(`#comment-${id}`).remove();
                     } else {
-                        $(`#reply-${id}`).remove();    // Remove the reply
+                        $(`#reply-${id}`).remove();
                     }
                 } else {
                     alert('Failed to delete!');
                 }
-                $('#deleteModal').hide();
+                $('#deleteModal').removeClass('show');
             },
             error: function () {
                 alert('Error occurred while deleting.');
-                $('#deleteModal').hide();
+                $('#deleteModal').removeClass('show');
             }
         });
     });
 
     // Cancel deletion
     $('#cancelDelete').on('click', function () {
-        $('#deleteModal').hide();
+        $('#deleteModal').removeClass('show');
     });
 });
+
 

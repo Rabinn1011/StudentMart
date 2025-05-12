@@ -464,13 +464,13 @@ body {
 
 
 .product-tag--sale {
-    left: -12px;
+    left: -5px;
     background: linear-gradient(135deg, #ff8a00 0%, #e52e71 100%);
 }
 
 
 .product-tag--soldout {
-    left: -12px;
+    left: -5px;
     background: linear-gradient(135deg, #555 0%, #222 100%);
 }
 
@@ -1830,15 +1830,23 @@ footer {
 
 /* Modal for Delete Confirmation */
 .modal {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    display: flex;  /* Flex properties are always applied */
     justify-content: center;
     align-items: center;
+    visibility: hidden;  /* Hidden by default */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease;
+}
+
+.modal.show {
+    visibility: visible;
+    opacity: 1;
 }
 
 .modal-content {
@@ -1850,9 +1858,9 @@ footer {
 
 .modal-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 20px;
 }
-
 
 /* reviews section ko yaha samma */
 
