@@ -29,25 +29,31 @@
         }
     </style> <!-- do not move it to css for now! Name conflict issue Q&A section ko ho -->
 
+
     <section class="item-section">
         <div class="product-det-container">
             <!-- Left: Gallery -->
-            <div class="gallery-container" >
+            <div class="gallery-container">
                 <section class="gallery">
                     <div class="gallery-main">
-                        <img src="{{ product.image.url }}"  alt="main image"/>
+                        <img src="{{ product.image.url }}" alt="main image" class="main-image" id="mainImage"/>
                     </div>
                     <div class="thumbnail-list">
                         <button type="button" class="thumbnail-button">
-                            <img src="{{ product.image.url }}" alt="main thumbnail"/>
+                            <img src="{{ product.image.url }}" alt="main thumbnail" class="thumbnail"/>
                         </button>
                         {% for image in product.additional_images.all %}
                             <button type="button" class="thumbnail-button">
-                                <img src="{{ image.image.url }}" alt="alternate image"/>
+                                <img src="{{ image.image.url }}" alt="alternate image" class="thumbnail"/>
                             </button>
                         {% endfor %}
                     </div>
                 </section>
+            </div>
+            <!-- Lightbox Modal -->
+            <div class="lightbox" id="lightbox">
+                <span class="lightbox-close" onclick="closeLightbox(event)">&times;</span>
+                <img class="lightbox-content" id="lightbox-img" src="" alt=""/>
             </div>
 
             <!-- Right: Product Info -->
@@ -215,15 +221,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://khalti.com/static/khalti-checkout.js"></script>
-    <script>
-        // Thumbnail gallery click handler
-        document.querySelectorAll('.thumbnail-list .thumbnail-button').forEach(button => {
-            button.addEventListener('click', function () {
-                const imgSrc = this.querySelector('img').src;
-                document.querySelector('.gallery-main img').src = imgSrc;
-            });
-        });
-    </script>
+
 
 
     <script>

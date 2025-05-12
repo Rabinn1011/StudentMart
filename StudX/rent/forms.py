@@ -1,14 +1,22 @@
 from django import forms
 from .models import Room
 from django.core.validators import MinValueValidator, MaxValueValidator
-from .models import Review  # Ensure Review is correctly imported from your app
+from .models import Review , RoomImage
+  # Ensure Review is correctly imported from your app
 
 
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        exclude = ['longitude', 'latitude', 'detailsBy']
-
+        exclude = ['detailsBy']  # Only exclude fields that are handled in the view
+        widgets = {
+            'latitude': forms.HiddenInput(),
+            'longitude': forms.HiddenInput(),
+        }
+class RoomImageForm(forms.ModelForm):
+    class Meta:
+        model = RoomImage
+        fields = ['image']
 
 class ReviewForm(forms.ModelForm):
     class Meta:

@@ -336,4 +336,78 @@ $(document).ready(function () {
     });
 });
 
+//for thumbnail and lightbox
+document.addEventListener("DOMContentLoaded", function () {
+    const thumbnails = document.querySelectorAll(".thumbnail-button img");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const mainImage = document.getElementById("mainImage");
+    let scale = 1;
+    let currentIndex = 0;
+    let images = Array.from(thumbnails).map(img => img.src); // Correctly initializes images array
 
+    // Update main image when clicking on a thumbnail
+    thumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener("click", function () {
+            mainImage.src = this.src;
+            currentIndex = index; // Removed incorrect +1 offset
+        });
+    });
+
+    // Open lightbox when clicking on the main image
+    mainImage.addEventListener("click", function () {
+        currentIndex = images.indexOf(mainImage.src);
+        if (currentIndex === -1) currentIndex = 0;
+        openLightbox();
+    });
+
+    function openLightbox() {
+        lightboxImg.src = images[currentIndex];
+        lightbox.style.display = "flex";
+        scale = 1;
+        lightboxImg.style.transform = "scale(1)";
+        lightboxImg.classList.remove("zoomed-in");
+    }
+
+    function navigateLightbox(direction) {
+        currentIndex = (currentIndex + direction + images.length) % images.length;
+        lightboxImg.src = images[currentIndex];
+        scale = 1;
+        lightboxImg.style.transform = "scale(1)";
+        lightboxImg.classList.remove("zoomed-in");
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", function (e) {
+        if (lightbox.style.display === "flex") {
+            if (e.key === "ArrowRight") navigateLightbox(1);
+            if (e.key === "ArrowLeft") navigateLightbox(-1);
+        }
+    });
+
+    // Close when clicking outside the image
+    lightbox.addEventListener("click", function (e) {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    // Zoom
+    lightboxImg.addEventListener("wheel", function (e) {
+        e.preventDefault();
+        const zoomIntensity = 0.1;
+        scale += e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+        scale = Math.min(Math.max(1, scale), 3);
+        lightboxImg.style.transform = `scale(${scale})`;
+        lightboxImg.classList.toggle("zoomed-in", scale > 1);
+    });
+});
+
+function closeLightbox() {
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    lightbox.style.display = "none";
+    lightboxImg.src = "";
+    lightboxImg.style.transform = "scale(1)";
+    lightboxImg.classList.remove("zoomed-in");
+}
