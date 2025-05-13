@@ -79,7 +79,7 @@
                             <div id="overview" class="tab-panel active">
                                 <div class="seller-detail">
                                     <div>
-                                        <a href="{% url 'seller_profile' product.seller.username %}">
+                                        <a href="{% url 'seller_profile' encoded_username=product.seller.username|sign_username %}">
                                             <img src="{{ product.seller.seller_details.photo.url }}"
                                                  alt="seller-image">
                                         </a>
