@@ -61,22 +61,20 @@ class SellerProfileEditForm(forms.ModelForm):
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your name',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your address',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your phone number',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
             'citizenship_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your citizenship number',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
             'dob': forms.DateInput(attrs={
                 'class': 'form-control',

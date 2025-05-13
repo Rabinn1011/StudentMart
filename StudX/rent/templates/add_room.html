@@ -7,48 +7,77 @@
             {% csrf_token %}
             {{ form.as_p }}
             <h3>Additional Images:</h3>
-    {{ formset.management_form }}
-    {% for form in formset %}
-        {{ form.image.label_tag }} {{ form.image }}
-    {% endfor %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {{ form.image.label_tag }} {{ form.image }}
+            {% endfor %}
             <input type="hidden" id="latitude" name="latitude">
             <input type="hidden" id="longitude" name="longitude">
 
             <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
+            <input type="text" id="address" name="address" placeholder="Address will appear here" readonly
+                   style="margin-bottom: 20px; width: 100%; padding: 10px;">
             <button class='green-button' type="submit">Submit</button>
         </form>
+
+
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Initialize the map
-            var map = L.map('map').setView([28.2096, 83.9856], 13); // Default location (Pokhara)
+            var map = L.map('map').setView([28.2096, 83.9856], 13);
 
-            // Add OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Marker for selected location
             var marker = null;
 
-            // Map click event to update location
+            // Function to perform reverse geocoding
+            function getAddress(lat, lng) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        var address = response.display_name;
+
+                        // Split the address by commas
+                        let addressParts = address.split(', ');
+
+                        // Remove the last 4 segments (City, District, State, Postal Code, Country)
+                        let trimmedAddress = addressParts.slice(0, -4).join(', ');
+
+                        document.getElementById('address').textContent = 'Address: ' + trimmedAddress;
+                        document.getElementById('address-field').value = trimmedAddress;
+                    } else {
+                        document.getElementById('address').textContent = 'Address: Unable to fetch address';
+                    }
+                };
+                xhr.send();
+            }
+
+
             map.on('click', function (e) {
                 var lat = e.latlng.lat;
                 var lng = e.latlng.lng;
 
-                // Remove existing marker if it exists
+                // Remove existing marker
                 if (marker) {
                     map.removeLayer(marker);
                 }
 
-                // Add a new marker at the clicked location
+                // Add new marker
                 marker = L.marker([lat, lng]).addTo(map);
 
-                // Update the hidden location field in the form
+                // Update form fields
                 document.getElementById("latitude").value = lat;
                 document.getElementById("longitude").value = lng;
+
+                // Fetch and display address
+                getAddress(lat, lng);
             });
         });
     </script>
+
 {% endblock %}

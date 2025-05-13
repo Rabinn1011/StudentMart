@@ -1,8 +1,115 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
+
+        :root {
+            --shadow-light: rgba(255, 255, 255, 0.7);
+            --shadow-dark: rgba(174, 174, 192, 0.4);
+        }
+
+        /* Base Reset */
+
+        /* Headings */
+        .form-container h2 {
+            font-size: 2.2rem;
+            color: blue;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        input[readonly] {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        label{
+            margin-bottom: 10px;
+        }
+        .form-group input[type="number"]{
+            padding: 14px 18px;
+            width: 25%;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            background: #f5f8fa;
+            border-radius: 15px;
+            transition: box-shadow var(0.3 ease);
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 50%;
+            padding: 14px 18px;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            background: #f5f8fa;
+            border-radius: 15px;
+            transition: box-shadow var(0.3 ease);
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+            inset -4px -4px 8px var(--shadow-light);
+        }
+
+        /* Labels */
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        input[type="file"] {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            position: relative;
+            padding: 0.25rem;
+            border: 2px solid var(--shadow-dark);
+
+        }
+
+        input[type="file"]::file-selector-button {
+            background: blue;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #1a73e8;
+        }
+
+        /* Section Titles */
+        .form-container h3 {
+            margin: 2rem 0 1rem;
+            font-size: 1.2rem;
+            color: blue;
+            border-bottom: 1px solid #d0d4dc;
+            padding-bottom: 0.5rem;
+        }
+
+
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
 <section class="item-section">
-    <div class="form-container" style="padding: 10px;">
+    <div class="form-container" style="padding: 10px; max-width: 65%;">
         <h2>Edit Your Profile</h2>
 
         <form method="post" enctype="multipart/form-data">
@@ -11,42 +118,42 @@
             <!-- Seller Name -->
             <div class="form-group">
                 <h3 style="font-weight: 300">Seller Name:</h3>
-                <label for="{{ form.seller_name.id_for_label }}">Seller Name</label>
+                <label for="{{ form.seller_name.id_for_label }}"></label>
                 {{ form.seller_name }}
             </div>
 
             <!-- Address -->
             <div class="form-group">
                 <h3 style="font-weight: 300">Address:</h3>
-                <label for="{{ form.address.id_for_label }}">Address</label>
+                <label for="{{ form.address.id_for_label }}"></label>
                 {{ form.address }}
             </div>
 
             <!-- Phone Number -->
             <div class="form-group">
                 <h3 style="font-weight: 300">Phone Number:</h3>
-                <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                <label for="{{ form.phone_number.id_for_label }}"></label>
                 {{ form.phone_number }}
             </div>
 
             <!-- Citizenship Number -->
             <div class="form-group">
                 <h3 style="font-weight: 300">Citizenship Number:</h3>
-                <label for="{{ form.citizenship_number.id_for_label }}">Citizenship Number</label>
+                <label for="{{ form.citizenship_number.id_for_label }}"></label>
                 {{ form.citizenship_number }}
             </div>
 
             <!-- Date of Birth -->
             <div class="form-group">
                 <h3 style="font-weight: 300">Date of Birth:</h3>
-                <label for="{{ form.dob.id_for_label }}">Date of Birth</label>
+                <label for="{{ form.dob.id_for_label }}"></label>
                 {{ form.dob }}
             </div>
 
             <!-- Profile Photo -->
             <div class="form-group">
-            <h3 style="font-weight: 300">Profile Photo:</h3>
-                <label for="{{ form.photo.id_for_label }}">Profile Photo</label>
+            <h3 style=" font-weight: 300">Profile Photo:</h3>
+                <label for="{{ form.photo.id_for_label }}"></label>
                 {% if form.photo.value %}
 
                 <div class="photo-preview">

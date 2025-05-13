@@ -8,7 +8,7 @@ from .models import Review , RoomImage
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['owner_name', 'owner_phone', 'type', 'noOfRooms', 'price', 'latitude', 'longitude', 'moreDetails', 'main_image']
+        fields = ['owner_name', 'owner_phone', 'type', 'noOfRooms', 'price', 'latitude', 'longitude','moreDetails', 'main_image']
         widgets = {
             'latitude': forms.HiddenInput(),
             'longitude': forms.HiddenInput(),

@@ -1,90 +1,136 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
     <style>
+
+        :root {
+            --shadow-light: rgba(255, 255, 255, 0.7);
+            --shadow-dark: rgba(174, 174, 192, 0.4);
+        }
+
+        /* Base Reset */
         .edit-room-wrapper {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+            max-width: 65%;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 15px;
         }
 
+        /* Headings */
         .edit-room-wrapper h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
             color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
-        .edit-room-wrapper .form-group {
-            margin-bottom: 20px;
+        input[readonly] {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        label{
+            margin-bottom: 10px;
+        }
+        .form-group input[type="number"]{
+            padding: 14px 18px;
+            width: 25%;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            background: #f5f8fa;
+            border-radius: 15px;
+            transition: box-shadow var(0.3 ease);
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            background: #f5f8fa;
+            border-radius: 15px;
+            transition: box-shadow var(0.3 ease);
         }
 
-        .edit-room-wrapper .form-group label {
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+            inset -4px -4px 8px var(--shadow-light);
+        }
+
+        /* Labels */
+        .form-group label {
             display: block;
-            font-weight: 500;
-            margin-bottom: 6px;
+            font-size: 0.95rem;
             color: #555;
         }
 
-        .edit-room-wrapper .form-group input,
-        .edit-room-wrapper .form-group select,
-        .edit-room-wrapper .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #fff;
-            transition: border-color 0.3s, background-color 0.3s;
+        input[type="file"] {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            position: relative;
+            padding: 0.25rem;
+            border: 2px solid var(--shadow-dark);
+
         }
 
-        .edit-room-wrapper .form-group input:focus,
-        .edit-room-wrapper .form-group select:focus,
-        .edit-room-wrapper .form-group textarea:focus {
-            border-color: #007bff;
-            background-color: #f0f8ff;
-        }
-
-        .edit-room-wrapper .form-group input[type="file"] {
-            padding: 8px;
-        }
-
-        .edit-room-wrapper .form-group .errorlist {
-            margin: 5px 0;
-            color: #d9534f;
-        }
-
-        .edit-room-wrapper h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
-
-        .edit-room-wrapper .btn-primary {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
+        input[type="file"]::file-selector-button {
+            background: blue;
+            color: white;
             border: none;
-            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-right: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s ease;
         }
 
-        .edit-room-wrapper .btn-primary:hover {
-            background-color: #0056b3;
+        input[type="file"]::file-selector-button:hover {
+            background: #1a73e8;
         }
 
-        .edit-room-wrapper .btn-primary:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+        /* Section Titles */
+        .edit-room-wrapper h3 {
+            margin: 2rem 0 1rem;
+            font-size: 1.2rem;
+            color: blue;
+            border-bottom: 1px solid #d0d4dc;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Map Container */
+        #map {
+            width: 100%;
+            height: 360px;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px var(--shadow-dark),
+            -8px -8px 16px var(--shadow-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Address Display */
+
+
+        @media (max-width: 600px) {
+            .edit-room-wrapper {
+                padding: 20px;
+            }
+
+            #map {
+                height: 260px;
+            }
         }
 
     </style>
+
 
     <div class="edit-room-wrapper">
         <h2>Edit Room</h2>
@@ -103,7 +149,95 @@
                 {% endfor %}
             </div>
 
-            <button type="submit" class="btn-primary">Update Room</button>
+            <h3>Edit Room Location (Click on the map to update)</h3>
+            <div class="form-group">
+                <label for="latitude">Latitude:</label>
+                <input type="text" name="latitude" id="latitude" value="{{ room.latitude }}" readonly>
+
+                <label for="longitude">Longitude:</label>
+                <input type="text" name="longitude" id="longitude" value="{{ room.longitude }}" readonly>
+                <label>Address:</label>
+                <input type="text" name="address" id="address-field" value="{{ room.address }}" readonly>
+            </div>
+
+            <div id="map"></div>
+
+            <div id="address" style="display: none;">Address: {{ room.address }}</div>
+
+            <button type="submit" class="green-button">Update Room</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var latitude = {{ room.latitude }};
+            var longitude = {{ room.longitude }};
+
+            var map = L.map('map').setView([latitude, longitude], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Marker with draggable enabled
+            var marker = L.marker([latitude, longitude], {draggable: true}).addTo(map);
+
+            // Function to update the address
+            function getAddress(lat, lng) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        var address = response.display_name;
+
+                        // Split the address by commas
+                        let addressParts = address.split(', ');
+
+                        // Remove the last 4 segments (City, District, State, Postal Code, Country)
+                        let trimmedAddress = addressParts.slice(0, -4).join(', ');
+
+                        document.getElementById('address').textContent = 'Address: ' + trimmedAddress;
+                        document.getElementById('address-field').value = trimmedAddress;
+                    } else {
+                        document.getElementById('address').textContent = 'Address: Unable to fetch address';
+                    }
+                };
+                xhr.send();
+            }
+
+
+            // Fetch initial address on page load
+            getAddress(latitude, longitude);
+
+            // Update fields when marker is dragged
+            marker.on('dragend', function (e) {
+                var lat = e.target.getLatLng().lat;
+                var lng = e.target.getLatLng().lng;
+
+                document.getElementById("latitude").value = lat;
+                document.getElementById("longitude").value = lng;
+
+                // Fetch new address
+                getAddress(lat, lng);
+            });
+
+            // Update fields when map is clicked
+            map.on('click', function (e) {
+                var lat = e.latlng.lat;
+                var lng = e.latlng.lng;
+
+                // Move marker to new location
+                marker.setLatLng([lat, lng]);
+
+                // Update hidden fields
+                document.getElementById("latitude").value = lat;
+                document.getElementById("longitude").value = lng;
+
+                // Fetch new address
+                getAddress(lat, lng);
+            });
+        });
+    </script>
 {% endblock %}

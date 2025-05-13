@@ -66,6 +66,42 @@
             height: 100%;
         }
 
+        .room-direction-card {
+            background: #f8faff;
+            padding: 1rem;
+            border-radius: 16px;
+            border: 2px solid #e0e7ff;
+            box-shadow: 0 4px 12px rgba(152, 179, 255, 0.15);
+            margin: 1rem 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .room-direction-card p {
+            margin: 0 0 1rem 0;
+            color: #374151;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .room-direction-card strong {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .room-direction-card {
+                padding: 1rem;
+            }
+
+            .blue-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
         @media (max-width: 768px) {
             .map-wrapper {
                 height: 300px;
@@ -163,11 +199,18 @@
                             <!-- on location panel -->
                             <div class="tab-panel" id="location">
                                 <div class="map-wrapper">
+                                    <div id="map"></div>
+                                </div>
+                                <div class="room-direction-card">
+                                    <p><strong>Address🏠:</strong> {{ room.address }}</p>
                                     <a href="https://www.google.com/maps/search/?api=1&query={{ room.latitude }},{{ room.longitude }}"
                                        target="_blank">
-                                        <div id="map"></div>
+                                        <button class="blue-button"><i class="fa-solid fa-map-marker-alt"></i> Get
+                                            Directions
+                                        </button>
                                     </a>
                                 </div>
+
                             </div>
 
 

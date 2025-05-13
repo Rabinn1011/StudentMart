@@ -54,14 +54,22 @@ def add_Room(request):
         if form.is_valid() and formset.is_valid():
             room = form.save(commit=False)
             room.detailsBy = request.user
+
+            # Get address and coordinates from POST data
+            room.address = request.POST.get('address', '')
+            room.latitude = request.POST.get('latitude', '')
+            room.longitude = request.POST.get('longitude', '')
+
             room.save()
 
+            # Save additional images
             for form in formset:
-                if form.cleaned_data and form.cleaned_data.get('image'):
+                if form.cleaned_data.get('image'):
                     RoomImage.objects.create(room=room, image=form.cleaned_data['image'])
 
             messages.success(request, 'Room Added Successfully')
             return redirect('home')
+
         else:
             messages.error(request, 'Please correct the errors below')
     else:
@@ -88,9 +96,22 @@ def edit_room(request, room_id):
         formset = RoomImageFormSet(request.POST, request.FILES, queryset=RoomImage.objects.filter(room=room))
 
         if form.is_valid() and formset.is_valid():
-            form.save()
+            room = form.save(commit=False)
 
-            # Handle the image formset
+            # Update latitude, longitude, and address
+            latitude = request.POST.get('latitude')
+            longitude = request.POST.get('longitude')
+            address = request.POST.get('address')
+
+            if latitude and longitude:
+                room.latitude = latitude
+                room.longitude = longitude
+
+            if address:
+                room.address = address
+
+            room.save()
+
             for form in formset:
                 if form.cleaned_data.get('image'):
                     room_image = form.save(commit=False)
@@ -98,7 +119,7 @@ def edit_room(request, room_id):
                     room_image.save()
 
             messages.success(request, 'Room updated successfully.')
-            return redirect('home')
+            return redirect('room_details', room_id=room.id)
 
         else:
             messages.error(request, 'Please correct the errors below.')
