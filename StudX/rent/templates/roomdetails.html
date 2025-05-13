@@ -15,38 +15,54 @@
         }
 
         .item-description {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
 
+
+        .item-description p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #1f2937;
+        }
 
         .item-description strong {
+            display: inline-block;
+            width: 6.5rem;
+            color: #6b7280;
             font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
         }
 
+        /* Price Section */
         .price-section {
-            margin-top: 30px;
-            padding: 20px;
-            color: black;
-            text-align: center;
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: baseline;
+            background: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+
         }
 
         .price-label {
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 8px;
-            opacity: 0.9;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-right: 0.5rem;
+            text-transform: uppercase;
         }
 
         .price-value {
-            font-size: 2.2rem;
-            font-weight: 700;
             margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e63946;
         }
 
         /* Location Panel Map Outer Wrapper */
@@ -159,12 +175,14 @@
                         <div class="tab-content">
                             <div class="tab-panel active" id="overview">
                                 <div class="item-description">
-                                    <p><strong>Contact:</strong> {{ room.owner_phone }}</p>
+                                    <p><strong>Type:</strong> {{ room.type }}</p>
                                 </div>
                                 <div class="item-description">
                                     <p><strong>Number of Rooms:</strong> {{ room.noOfRooms }}</p>
                                 </div>
-
+                                <div class="item-description">
+                                    <p><strong>Contact:</strong> {{ room.owner_phone }}</p>
+                                </div>
                                 <div class="price-section">
                                     <span class="price-label">PRICE:</span>
                                     <p class="price-value">NRs.{{ room.price }}</p>
@@ -227,39 +245,99 @@
                 document.addEventListener('DOMContentLoaded', function () {
                     const buttons = document.querySelectorAll('.tab-button');
                     const panels = document.querySelectorAll('.tab-panel');
-                    let map;  // we’ll hoist map here so both handlers can see it
+                    let map;
+                    let marker = null;
 
-                    // initialize the map early (or defer until first click—either works)
-                    map = L.map('map').setView([{{ room.latitude }}, {{ room.longitude }}], 15);
+                    const initialLat = {{ room.latitude }};
+                    const initialLng = {{ room.longitude }};
+                    const roomType = "{{ room.type }}";
+                    const initialLocation = "{{ room.location }}";
+
+                    // Initialize the map
+                    map = L.map('map').setView([initialLat, initialLng], 15);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                         attribution: '© OpenStreetMap contributors'
                     }).addTo(map);
-                    L.marker([{{ room.latitude }}, {{ room.longitude }}])
-                        .bindPopup('<b>{{ room.type }}</b><br>{{ room.location }}')
+
+                    // Add marker at the initial location with the initial popup
+                    marker = L.marker([initialLat, initialLng])
+                        .bindPopup(`<b>${roomType}</b>${initialLocation}`)
                         .addTo(map)
                         .openPopup();
 
+                    // Function to update marker and popup content
+                    function updateMarker(lat, lng, address) {
+                        // Remove existing marker
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        // Add new marker
+                        marker = L.marker([lat, lng])
+                            .bindPopup(`<b>${roomType}</b>${address}`)
+                            .addTo(map)
+                            .openPopup();
+                    }
+
+                    // Function to perform reverse geocoding
+                    function getAddress(lat, lng) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, true);
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                var response = JSON.parse(xhr.responseText);
+                                var address = response.display_name;
+
+                                // Split the address by commas
+                                let addressParts = address.split(', ');
+
+                                // Remove the last 4 segments (City, District, State, Postal Code, Country)
+                                let trimmedAddress = addressParts.slice(0, -4).join(', ');
+
+                                document.getElementById('address').textContent = 'Address: ' + trimmedAddress;
+                                document.getElementById('address-field').value = trimmedAddress;
+
+                                // Update the marker with the new address
+                                updateMarker(lat, lng, trimmedAddress);
+                            } else {
+                                document.getElementById('address').textContent = 'Address: Unable to fetch address';
+                            }
+                        };
+                        xhr.send();
+                    }
+
+                    // Handle map click event to update marker and address
+                    map.on('click', function (e) {
+                        const lat = e.latlng.lat;
+                        const lng = e.latlng.lng;
+
+                        // Update the latitude and longitude fields
+                        document.getElementById("latitude").value = lat;
+                        document.getElementById("longitude").value = lng;
+
+                        // Fetch and update address
+                        getAddress(lat, lng);
+                    });
+
+                    // Tab switching logic
                     buttons.forEach(btn => {
                         btn.addEventListener('click', () => {
-                            // deactivate all buttons & panels
                             buttons.forEach(b => b.classList.remove('active'));
                             panels.forEach(p => p.classList.remove('active'));
 
-                            // activate this one
                             btn.classList.add('active');
                             const tabId = btn.getAttribute('data-tab');
                             document.getElementById(tabId).classList.add('active');
 
-                            // If it’s the Location tab, force Leaflet to resize
                             if (tabId === 'location') {
-                                // slight delay helps ensure the panel is fully visible
-                                setTimeout(() => map.invalidateSize(), 200);
+                                setTimeout(() => map.invalidateSize(), 100);
                             }
                         });
                     });
                 });
             </script>
+
 
             <script>
                 document.querySelectorAll('.red-button').forEach(button => {
@@ -380,26 +458,7 @@
                 }
             </script>
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var latitude = {{ room.latitude }};
-                    var longitude = {{ room.longitude }};
 
-                    // Debug: Check if the values are being passed correctly
-                    console.log("Latitude:", latitude);
-                    console.log("Longitude:", longitude);
-
-                    var map = L.map('map').setView([latitude, longitude], 15);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '© OpenStreetMap contributors'
-                    }).addTo(map);
-
-                    L.marker([latitude, longitude]).addTo(map)
-                        .bindPopup('<b>{{ room.type }}</b><br>{{ room.location }}').openPopup();
-                });
-            </script>
     </section>
 
     <div class="form-container">

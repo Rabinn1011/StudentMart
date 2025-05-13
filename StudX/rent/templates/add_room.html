@@ -40,16 +40,16 @@
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        var address = response.display_name;
+                        var address = response.address;
 
-                        // Split the address by commas
-                        let addressParts = address.split(', ');
+                        let extractedAddress = '';
 
-                        // Remove the last 4 segments (City, District, State, Postal Code, Country)
-                        let trimmedAddress = addressParts.slice(0, -4).join(', ');
+                        if (address.suburb) extractedAddress += address.suburb + ', ';
+                        if (address.city_district) extractedAddress += address.city_district + ', ';
+                        if (address.city) extractedAddress += address.city;
 
-                        document.getElementById('address').textContent = 'Address: ' + trimmedAddress;
-                        document.getElementById('address-field').value = trimmedAddress;
+                        document.getElementById('address').textContent = 'Address: ' + extractedAddress;
+                        document.getElementById('address-field').value = extractedAddress;
                     } else {
                         document.getElementById('address').textContent = 'Address: Unable to fetch address';
                     }
