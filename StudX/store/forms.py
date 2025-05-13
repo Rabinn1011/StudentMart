@@ -93,17 +93,14 @@ class SellerForm(forms.ModelForm):
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your name',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your address',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your phone number',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
 
             'photo': forms.ClearableFileInput(attrs={
@@ -113,7 +110,6 @@ class SellerForm(forms.ModelForm):
             'citizenship_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your citizenship number',
-                'style': 'display:flex; margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
             }),
             'chitizenship_photo': forms.ClearableFileInput(attrs={
                 'class': 'form-control',

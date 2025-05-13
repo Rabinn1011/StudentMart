@@ -801,7 +801,7 @@ input[type="checkbox"] {
     max-width: 450px;
     overflow-y: auto; /* Enables independent scrolling */
     background: #ffffff;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -812,17 +812,23 @@ input[type="checkbox"] {
     position: sticky;
     top: 20px;
     flex: 1;
+    min-height: 500px;
     max-width: 95%;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto; /* Allows independent scrolling */
 }
 
+@media (max-width: 500px) {
+    .info-container {
+        min-height: 10px;
+    }
+}
 
 /* Gallery styles */
 .gallery-main {
     background: #fff;
-    border-radius: 1rem;
+    border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 1rem;
@@ -1132,29 +1138,85 @@ hr {
     height: 90%;
 }
 
-/*seller profile ko*/
 
-.seller-detail {
-    flex-direction: row;
-    gap: 20px;
+/*user profile ko*/
+/* Container for user profile card */
+.user-detail {
     display: flex;
-    padding: 20px 0;
+    flex-direction: column; /* stack items vertically */
+    align-items: flex-start; /* left-align everything */
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 1rem 0;
+}
+
+/* The info list */
+.user-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0; /* bottom margin to space from button */
+}
+
+/* Each item */
+.user-info-list li {
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    color: #444;
+}
+
+/*user profile ko yaha samma*/
+
+/*seller profile ko*/
+/* Container for the entire profile */
+.seller-detail-selpro {
+    display: flex;
+    flex-wrap: wrap; /* allow the buttons to drop below */
+    align-items: flex-start;
+    gap: 1.5rem;
+    background: #fff;
+    max-width: 600px;
+    margin: 1rem 0; /* flush-left, with vertical spacing */
+    padding: 1.5rem;
+    border-radius: 8px;
 }
 
 .seller-photo {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    order: 2;
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
+    border: 2px solid #ddd;
+    border-radius: 50%;
 }
 
 .seller-info-list {
+    order: 1;
+    flex: 1;
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .seller-info-list li {
-    margin-bottom: 10px;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    color: #444;
+}
+
+.seller-info-list li strong {
+    color: #222;
+}
+
+.but-container {
+    order: 3;
+    flex-basis: 100%; /* span full width below photo/info */
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
 }
 
 /*order container */

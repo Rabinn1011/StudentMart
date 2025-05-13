@@ -5,7 +5,7 @@
         <div class="form-design">
             <!-- Seller Details Section -->
             <h2 class="heading">{{ seller.seller_name }}</h2>
-            <div class="seller-detail">
+            <div class="seller-detail-selpro">
                 <img src="{{ seller.photo.url }}" alt="seller-image" class="seller-photo"/>
 
                 <ul class="seller-info-list">
@@ -28,7 +28,7 @@
                     </li>
                 </ul>
                 {% if request.user == seller.user %}
-                    <div class="button-container">
+                    <div class="but-container">
                         <a href="{% url 'edit_seller_profile' %}" class="blue-button">Edit Profile</a>
                         <a href="{% url 'delete_profile' %}" class="red-button" data-action="delete-profile"
                            onclick="return false;">Delete Profile</a>
@@ -100,11 +100,9 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>Have not added any rooms yet.</p>
+                    <p>Not added any rooms yet.</p>
                 {% endif %}
             </div>
-
-
         </div>
         <script>
             document.querySelectorAll('.red-button').forEach(button => {
