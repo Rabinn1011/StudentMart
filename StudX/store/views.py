@@ -163,44 +163,59 @@ def search_products(request):
 
     return render(request, 'search_results.html', {'query': query, 'results': results})
 
+
 def add_product(request):
-    if not request.user.is_authenticated:  # Check if user is logged in
-        messages.error(request, "You are not logged in. Please log in to add a product.")
-        return redirect(f"/login/?next=/add_product")  # Redirect to login with `next` parameter
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in first.")
+        return redirect('/login/?next=/add_product')
 
-    if not request.user.is_superuser:
-        if not request.user.groups.filter(name='Sellers').exists():
-            messages.error(request, "You do not have permission to add products. Please register as a Seller.")
-            return redirect('seller_info')
+    if not request.user.groups.filter(name='Sellers').exists():
+        messages.error(request, "You need to be a seller to add products.")
+        return redirect('seller_info')
 
-        seller_details = Seller_Details.objects.filter(user=request.user).first()
-        if not seller_details.is_verified:
-            messages.error(request,
-                           "You are not a verified seller. Please update your profile or wait for admin response.")
+    seller_details = Seller_Details.objects.filter(user=request.user).first()
+    if not seller_details or not seller_details.is_verified:
+        messages.error(request, "You are not a verified seller.")
+        return redirect('home')
+
+    # Check if terms are accepted
+    if not request.session.get('terms_accepted'):
+        messages.error(request, "You must accept the terms and conditions to add a product.")
+        return redirect('home')
+
+    # Reset session variable after accessing the page
+    request.session['terms_accepted'] = False
+
+    # Handling product form submission
+    ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST, request.FILES)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=ProductImage.objects.none())
+
+        if product_form.is_valid() and formset.is_valid():
+            product = product_form.save(commit=False)
+            product.seller = request.user
+            product.save()
+
+            for form in formset.cleaned_data:
+                if form:
+                    image = form['image']
+                    ProductImage.objects.create(product=product, image=image)
+
+            messages.success(request, "Product added successfully!")
             return redirect('home')
 
-    try:
-        ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=3)
-        if request.method == 'POST':
-            product_form = ProductForm(request.POST, request.FILES)
-            formset = ImageFormSet(request.POST, request.FILES, queryset=ProductImage.objects.none())
-            if product_form.is_valid() and formset.is_valid():
-                product = product_form.save(commit=False)
-                product.seller = request.user  # Set the current user as the seller
-                product.save()
-                for form in formset.cleaned_data:
-                    if form:
-                        image = form['image']
-                        ProductImage.objects.create(product=product, image=image)
-                return redirect('home')  # Redirect to home or another page
-        else:
-            product_form = ProductForm()
-            formset = ImageFormSet(queryset=ProductImage.objects.none())
-        return render(request, 'add_product.html', {'product_form': product_form, 'formset': formset})
+    else:
+        product_form = ProductForm()
+        formset = ImageFormSet(queryset=ProductImage.objects.none())
 
-    except PermissionDenied:
-        messages.error(request, "You do not have permission to add a product.")
-        return redirect('register')
+    return render(request, 'add_product.html', {'product_form': product_form, 'formset': formset})
+
+
+def confirm_terms(request):
+    # Set session variable when terms are accepted
+    request.session['terms_accepted'] = True
+    return redirect('add_product')
 
 
 logger = logging.getLogger(__name__)
@@ -525,6 +540,7 @@ def password_change(request):
 
 from rent.models import Room
 
+
 def seller_profile(request, encoded_username):
     try:
         seller_users = Seller_Details.objects.values_list('user__username', flat=True)
@@ -560,8 +576,8 @@ def seller_profile(request, encoded_username):
         'rooms': rooms,
     })
 
-def terms_conditions(request):
 
+def terms_conditions(request):
     return render(request, 'terms_conditions.html')
 
 

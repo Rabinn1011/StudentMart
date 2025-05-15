@@ -134,24 +134,23 @@
 
 <script>
     document.querySelectorAll(".addProductBtn").forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Terms and Conditions',
-                html: '<p>By adding a product to StudX, you agree that a commission of 99% will be deducted from your sale. Please read the full <a href="{% url 'terms_conditions' %}" target="_blank" autofocus>terms and conditions</a> before proceeding.</p>',
-                icon: 'info',
-                showCancelButton: true,
-                showCloseButton: true,
-                confirmButtonText: 'I Accept',
-                cancelButtonText: 'I Do Not Accept',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '{% url "add_product" %}';
-                } else {
-                    window.location.href = '/';
-                }
-            });
+    button.addEventListener("click", function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Terms and Conditions',
+            html: '<p>By adding a product to StudX, you agree that a commission of 99% will be deducted from your sale. Please read the full <a href="{% url "terms_conditions" %}" target="_blank">terms and conditions</a> before proceeding.</p>',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'I Accept',
+            cancelButtonText: 'I Do Not Accept',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{% url "confirm_terms" %}';
+            } else {
+                window.location.href = '/';
+            }
         });
     });
+});
 </script>
 
