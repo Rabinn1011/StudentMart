@@ -657,6 +657,10 @@ def help_and_support(request):
 
 
 def initiate_khalti_payment(request, product_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to proceed with the payment.")
+        return redirect('login')
+
     product = get_object_or_404(Product, id=product_id)
     effective_price = product.sale_price if product.is_sale else product.price
     amount = int(effective_price * 100)  # Convert NPR to paisa
@@ -791,7 +795,7 @@ def send_seller_receipt_email(order):
     seller_email = order.product.seller.email
 
     # Email subject and content
-    amount_inrupee=order.amount/100;
+    amount_inrupee = order.amount / 100;
     subject = "Order Receipt - Product Sold"
     context = {
         "order": order,
@@ -811,7 +815,7 @@ def send_seller_receipt_email(order):
 @login_required  # Ensure the user is logged in
 def order_receipt(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    amount_inrupee=order.amount/100;
+    amount_inrupee = order.amount / 100;
     nepal_time = order.created_at.astimezone(timezone('Asia/Kathmandu'))
     context = {
         "order": order,
@@ -839,7 +843,7 @@ from io import BytesIO
 @login_required
 def generate_receipt_pdf(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    amount_inrupee=order.amount/100;
+    amount_inrupee = order.amount / 100;
 
     if request.user != order.user:
         return HttpResponseForbidden("Unauthorized access.")
