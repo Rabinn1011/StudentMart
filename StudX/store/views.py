@@ -762,34 +762,7 @@ def khalti_payment_callback(request):
             order.save()
 
             # Send email to seller
-            seller = product.seller
-            buyer = order.user
-
-            # Get buyer phone number from UserProfile
-            from .models import UserProfile
-            try:
-                buyer_profile = UserProfile.objects.get(user=buyer)
-                buyer_phone = buyer_profile.phone_number
-            except UserProfile.DoesNotExist:
-                buyer_phone = "Not Provided"
-
-            context = {
-                'buyer_name': f"{buyer.first_name} {buyer.last_name}",
-                'buyer_email': buyer.email,
-                'buyer_phone': buyer_phone,
-                'order': order,
-            }
-            email_subject = f"New Order Receipt - Order #{order.id}"
-            email_body = render_to_string('order_receipt_to_seller.html', context)
-
-            email = EmailMessage(
-                subject=email_subject,
-                body=email_body,
-                from_email='your_email@example.com',  # replace with your from email
-                to=[seller.email],
-            )
-            email.content_subtype = 'html'
-            email.send()
+            send_seller_receipt_email(order)
 
             messages.success(request, "Payment Successful! Thank you for your purchase.")
             return redirect("order_receipt", order_id=order.id)
@@ -797,6 +770,38 @@ def khalti_payment_callback(request):
     order.save()
     messages.error(request, "Payment verification failed. Please contact support.")
     return redirect("home")
+
+
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+
+
+def send_seller_receipt_email(order):
+    # Convert to Nepal time
+    nepal_time = order.created_at.astimezone(timezone('Asia/Kathmandu'))
+
+    # Buyer info
+    buyer_name = order.user.get_full_name()
+    buyer_email = order.user.email
+    buyer_phone = order.user.userprofile.phone_number if hasattr(order.user, 'userprofile') else 'Not provided'
+
+    # Seller email
+    seller_email = order.product.seller.email
+
+    # Email subject and content
+    subject = "Order Receipt - Product Sold"
+    context = {
+        "order": order,
+        "nepali_time": nepal_time,
+        "buyer_name": buyer_name,
+        "buyer_email": buyer_email,
+        "buyer_phone": buyer_phone,
+    }
+    email_body = render_to_string("order_receipt_seller.html", context)
+
+    email = EmailMessage(subject, email_body, to=[seller_email])
+    email.content_subtype = "html"
+    email.send()
 
 
 @login_required  # Ensure the user is logged in

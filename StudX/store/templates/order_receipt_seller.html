@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        .receipt-container {
+            background: white;
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-width: 600px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .receipt-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-table th,
+        .receipt-table td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.8rem;
+        }
+
+        .receipt-table th {
+            background-color: #f2f2f2;
+            width: 40%;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .status-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="receipt-container">
+    <h2 class="receipt-title">Order Receipt</h2>
+    <table class="receipt-table">
+        <tr>
+            <th>Order ID</th>
+            <td>{{ order.order_id }}</td>
+        </tr>
+        <tr>
+            <th>Product</th>
+            <td>{{ order.product.name }}</td>
+        </tr>
+        <tr>
+            <th>Amount Paid</th>
+            <td>NPR {{ order.amount|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <th>Transaction ID</th>
+            <td>{{ order.khalti_pidx }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ nepali_time|date:"Y-m-d h:i A" }} (NPT)</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><span class="status-success">{{ order.status }}</span></td>
+        </tr>
+        <tr>
+            <th>Buyer Name</th>
+            <td>{{ buyer_name }}</td>
+        </tr>
+        <tr>
+            <th>Buyer Email</th>
+            <td>{{ buyer_email }}</td>
+        </tr>
+        <tr>
+            <th>Buyer Phone</th>
+            <td>{{ buyer_phone }}</td>
+        </tr>
+    </table>
+    <div class="footer">Thank you for selling with us!</div>
+</div>
+</body>
+</html>
