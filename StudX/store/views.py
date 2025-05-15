@@ -223,7 +223,7 @@ logger = logging.getLogger(__name__)
 
 def product(request, pk):
     product = get_object_or_404(Product, id=pk)
-
+    effective_price = product.sale_price if product.is_sale else product.price
     all_parent_comments = product.comments.filter(parent=None).order_by('-created_at')
 
     # Paginate parent comments (10 per page)
@@ -235,6 +235,7 @@ def product(request, pk):
 
     context = {
         'product': product,
+        'effective_price': effective_price,
         'comments': comments_page,  # paginated parent comments
         'form': form,
         'page_obj': comments_page,  # used for rendering Prev/Next
@@ -657,7 +658,8 @@ def help_and_support(request):
 
 def initiate_khalti_payment(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    amount = int(product.price * 100)  # Convert NPR to paisa
+    effective_price = product.sale_price if product.is_sale else product.price
+    amount = int(effective_price * 100)  # Convert NPR to paisa
     user = request.user
 
     order = Order.objects.create(user=user, product=product, amount=amount)
@@ -807,6 +809,13 @@ def send_seller_receipt_email(order):
 @login_required  # Ensure the user is logged in
 def order_receipt(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    amount_inrupee=order.amount/100;
+    nepal_time = order.created_at.astimezone(timezone('Asia/Kathmandu'))
+    context = {
+        "order": order,
+        "amount_inrupee": amount_inrupee,
+        "nepali_time": nepal_time,
+    }
 
     # Restrict access: Only the buyer can view this order
     if request.user != order.user:
@@ -814,8 +823,7 @@ def order_receipt(request, order_id):
         return redirect("home")
 
     # Convert to Nepal time
-    nepal_time = order.created_at.astimezone(timezone('Asia/Kathmandu'))
-    return render(request, "order_receipt.html", {"order": order, 'nepali_time': nepal_time})
+    return render(request, "order_receipt.html", context)
 
 
 logger = logging.getLogger(__name__)
@@ -829,6 +837,7 @@ from io import BytesIO
 @login_required
 def generate_receipt_pdf(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    amount_inrupee=order.amount/100;
 
     if request.user != order.user:
         return HttpResponseForbidden("Unauthorized access.")
@@ -841,6 +850,7 @@ def generate_receipt_pdf(request, order_id):
     template = get_template("order_receipt_pdf.html")
     context = {
         "order": order,
+        "amount_inrupee": amount_inrupee,
         "nepali_time": nepali_time,
         "pdf": True,  # This disables {% extends 'base.html' %}
     }

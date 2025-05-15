@@ -267,7 +267,7 @@
             "productIdentity": "{{ product.id }}",
             "productName": "{{ product.name }}",
             "productUrl": window.location.href,
-            "amount": {{ product.price|floatformat:0 }} * 100, // Convert to paisa
+            "amount": {{ product.effective_price|floatformat:0 }} * 100, // Convert to paisa
             "eventHandler": {
                 onSuccess: function (payload) {
                     fetch("{% url 'khalti_verify' %}", {
@@ -303,7 +303,7 @@
 
         var khaltiCheckout = new KhaltiCheckout(khaltiConfig);
         document.getElementById("khalti-payment-button").onclick = function () {
-            khaltiCheckout.show({amount: {{ product.price|floatformat:0 }} * 100});
+            khaltiCheckout.show({amount: {{ product.effective_price|floatformat:0 }} * 100});
         };
     </script>
 
