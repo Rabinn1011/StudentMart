@@ -1,7 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-import os , uuid
+import os, uuid
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, default="980-000-0000")
+
+    def __str__(self):
+        return self.user.username
 
 
 class CartProfile(models.Model):
@@ -10,6 +18,7 @@ class CartProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
 
 class Seller_Details(models.Model):
     seller_name = models.CharField(max_length=100)
@@ -25,9 +34,11 @@ class Seller_Details(models.Model):
     def __str__(self):
         return self.seller_name
 
+
 def product_image_upload_path(instance, filename):
     folder_name = slugify(instance.name)
     return os.path.join('uploads/products', folder_name, filename)
+
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -40,13 +51,13 @@ class Product(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    price = models.DecimalField(default=0 ,decimal_places=2,max_digits=6)
-    description = models.CharField(max_length=250,default='',blank=True,null=True)
+    price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    description = models.CharField(max_length=250, default='', blank=True, null=True)
     image = models.ImageField(upload_to=product_image_upload_path, null=True, blank=True)
     is_sale = models.BooleanField(default=False)
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
-    sale_price = models.DecimalField(default=0 ,decimal_places=2,max_digits=6)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES,default='Other')
+    sale_price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Other')
     is_sold = models.BooleanField(default=False)
 
     def __str__(self):
@@ -69,9 +80,9 @@ class ProductImage(models.Model):
         return f"Image for {self.product.name}"
 
 
-
 class Comment(models.Model):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name="comments")  # Assuming you have a Product model
+    product = models.ForeignKey('Product', on_delete=models.CASCADE,
+                                related_name="comments")  # Assuming you have a Product model
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies")
     content = models.TextField()
@@ -79,6 +90,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.content[:20]}"
+
 
 class Order(models.Model):
     STATUS_CHOICES = [

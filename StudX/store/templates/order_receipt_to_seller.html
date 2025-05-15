@@ -1,0 +1,14 @@
+<h2>New Order Received!</h2>
+
+<p><strong>Buyer Name:</strong> {{ buyer_name }}</p>
+<p><strong>Buyer Email:</strong> {{ buyer_email }}</p>
+<p><strong>Buyer Phone:</strong> {{ buyer_phone }}</p>
+
+<h3>Order Details:</h3>
+<ul>
+    <li>Product: {{ order.product.name }}</li>
+    <li>Price: {{ order.price }}</li>
+    <li>Order Date: {{ order.created_at }}</li>
+</ul>
+
+<p>Thank you for selling on StudX!</p>

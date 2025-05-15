@@ -47,11 +47,13 @@ class ProductImageForm(forms.ModelForm):
         model = ProductImage
         fields = ['image']
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content', 'parent']
         widgets = {'parent': forms.HiddenInput()}  # Hide parent field in the form
+
 
 class SellerProfileEditForm(forms.ModelForm):
     class Meta:
@@ -132,7 +134,6 @@ class SignupForm(UserCreationForm):
             'class': 'form-control',
             'placeholder': 'Email Address',
             'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
-
         }),
         required=True
     )
@@ -160,6 +161,15 @@ class SignupForm(UserCreationForm):
             'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
         })
     )
+    phone_number = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Phone Number',
+            'style': 'margin-top:10px; margin-bottom:10px; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%;',
+        }),
+        required=True
+    )
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(attrs={
@@ -179,27 +189,21 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', '' 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
-    # Add dynamic attributes in the constructor
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['username'].widget.attrs['placeholder'] = 'User Name'
         self.fields['username'].label = ""
-        self.fields[
-            'username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
 
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password1'].widget.attrs['placeholder'] = 'Password'
         self.fields['password1'].label = ""
-        self.fields[
-            'password1'].help_text = '<span class="form-text text-muted"><small>Your password must contain at least 8 characters.</small></span>'
 
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
         self.fields['password2'].label = ""
-        self.fields['password2'].help_text = ""
 
 
 class ProductEditForm(forms.ModelForm):

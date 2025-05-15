@@ -28,7 +28,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import *
-from .models import Product, Seller_Details, ProductImage, CartProfile, Order
+from .models import *
 from django.contrib.auth.decorators import login_required, permission_required
 from rent.models import Room
 from .tokens import account_activation_token
@@ -403,8 +403,10 @@ def register(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
+            phone_number = form.cleaned_data.get('phone_number')
             user = form.save(commit=False)
             user.is_active = False
+
             # Check if email already exists
             if User.objects.filter(email=email).exists():
                 messages.error(request, "This email is already registered. Please use a different email.")
@@ -412,7 +414,13 @@ def register(request):
 
             # Save User model
             user.save()
+
+            # Create UserProfile with phone number
+            UserProfile.objects.create(user=user, phone_number=phone_number)
+
+            # Send activation email
             activateEmail(request, user, email)
+
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
@@ -420,7 +428,7 @@ def register(request):
             if user:
                 login(request, user)
                 messages.success(request, f"Welcome {username}! Your account has been successfully created.")
-                return redirect('login')  # Redirect to login or any desired page
+                return redirect('login')
 
         else:
             messages.error(request, "There was an error in your registration form. Please try again.")
@@ -481,6 +489,8 @@ def seller_info(request):
 
 signer = Signer()
 
+from .models import UserProfile  # make sure to import this at the top
+
 
 def user_profile(request, encoded_username):
     try:
@@ -502,19 +512,21 @@ def user_profile(request, encoded_username):
     if not request.user.is_authenticated:
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
-    if request.user.is_authenticated:
-        user_profile1 = get_object_or_404(User, username=username)
-        user_orders = Order.objects.filter(user=user_profile1).select_related('product').order_by('-created_at')
 
-    # Pass relevant user data to the template
+    user_profile1 = get_object_or_404(User, username=username)
+    user_orders = Order.objects.filter(user=user_profile1).select_related('product').order_by('-created_at')
+
+    # Get or create UserProfile for this user (to avoid errors if missing)
+    user_profile_obj, created = UserProfile.objects.get_or_create(user=user_profile1)
+
     context = {
         'username': user_profile1.username,
         'first_name': user_profile1.first_name,
         'last_name': user_profile1.last_name,
         'email': user_profile1.email,
+        'phone_number': user_profile_obj.phone_number,  # <-- add phone number here
         'change_password_url': reverse('password_change'),  # Change Password URL
         'orders': user_orders,
-
     }
     return render(request, 'user_profile.html', context)
 
@@ -713,6 +725,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
 
 def khalti_payment_callback(request):
     logger = logging.getLogger(__name__)
@@ -745,6 +760,37 @@ def khalti_payment_callback(request):
             product.is_sold = True
             product.save()
             order.save()
+
+            # Send email to seller
+            seller = product.seller
+            buyer = order.user
+
+            # Get buyer phone number from UserProfile
+            from .models import UserProfile
+            try:
+                buyer_profile = UserProfile.objects.get(user=buyer)
+                buyer_phone = buyer_profile.phone_number
+            except UserProfile.DoesNotExist:
+                buyer_phone = "Not Provided"
+
+            context = {
+                'buyer_name': f"{buyer.first_name} {buyer.last_name}",
+                'buyer_email': buyer.email,
+                'buyer_phone': buyer_phone,
+                'order': order,
+            }
+            email_subject = f"New Order Receipt - Order #{order.id}"
+            email_body = render_to_string('order_receipt_to_seller.html', context)
+
+            email = EmailMessage(
+                subject=email_subject,
+                body=email_body,
+                from_email='your_email@example.com',  # replace with your from email
+                to=[seller.email],
+            )
+            email.content_subtype = 'html'
+            email.send()
+
             messages.success(request, "Payment Successful! Thank you for your purchase.")
             return redirect("order_receipt", order_id=order.id)
     order.status = "failed"
