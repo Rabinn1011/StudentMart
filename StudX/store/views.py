@@ -795,7 +795,7 @@ def send_seller_receipt_email(order):
     subject = "Order Receipt - Product Sold"
     context = {
         "order": order,
-        "amount": amount_inrupee,
+        "amount_inrupee": amount_inrupee,
         "nepali_time": nepal_time,
         "buyer_name": buyer_name,
         "buyer_email": buyer_email,
