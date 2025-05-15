@@ -32,22 +32,22 @@
                         <a id="profile-icon"><i class=" login fa-solid fa-user"></i></a>
                         <ul class="sub1" id="dropdown-menu">
                             {% if user.is_authenticated %}
-                            {% if seller_details.is_verified %}
-                            <li>
-                                <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
-                                    Profile</a></li>
-                            {% else %}
-                            <li>
-                                <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User
-                                    Profile</a>
-                            </li>
-                            {% endif %}
+                                {% if seller_details.is_verified %}
+                                    <li>
+                                        <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
+                                            Profile</a></li>
+                                {% else %}
+                                    <li>
+                                        <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User
+                                            Profile</a>
+                                    </li>
+                                {% endif %}
 
-                            <li><a href="{% url 'logout' %}">Logout</a></li>
-                            <li><a href="{% url 'cart_summary' %}">My Cart</a></li>
+                                <li><a href="{% url 'logout' %}">Logout</a></li>
+                                <li><a href="{% url 'cart_summary' %}">My Cart</a></li>
                             {% else %}
-                            <li><a href="{% url 'register' %}">Register</a></li>
-                            <li><a href="{% url 'login' %}">Login</a></li>
+                                <li><a href="{% url 'register' %}">Register</a></li>
+                                <li><a href="{% url 'login' %}">Login</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -65,38 +65,38 @@
 <label class="close" for="active"></label>
 <div class="wrapper">
 
-        <form class="mbl-search-container" action="{% url 'search' %}" method="get">
+    <form class="mbl-search-container" action="{% url 'search' %}" method="get">
 
-            <input
-                    type="search"
-                    name="q"
-                    placeholder="Search..."
-                    class="mbl-search-input"
-                    required>
-            <button type="submit" class="search-button">
-                <i class="fas fa-search"></i>
-            </button>
+        <input
+                type="search"
+                name="q"
+                placeholder="Search..."
+                class="mbl-search-input"
+                required>
+        <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+        </button>
 
-        </form>
+    </form>
 
     <ul>
         {% if user.is_authenticated %}
-        <li>
-            <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">UserProfile</a>
-        </li>
-        {% if seller_details.is_verified %}
-        <li><a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">SellerProfile</a>
-        </li>
-         <li><a href="{% url 'add_room' %}">AddRoom</a></li>
-        <li><a href="{% url 'add_product' %}">AddProduct</a></li>
-        {% else %}
-        <li><a href="{% url 'seller_info' %}">BecomeASeller</a></li>
-        {% endif %}
+            <li>
+                <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">UserProfile</a>
+            </li>
+            {% if seller_details.is_verified %}
+                <li><a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">SellerProfile</a>
+                </li>
+                <li><a href="{% url 'add_room' %}">AddRoom</a></li>
+                <li><a href="#" class="addProductBtn">AddProduct</a></li>
+            {% else %}
+                <li><a href="{% url 'seller_info' %}">BecomeASeller</a></li>
+            {% endif %}
 
-        <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
         {% else %}
-        <li><a href="{% url 'register' %}">Register</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
         {% endif %}
         <li><a href="{% url 'help_and_support' %}">Help&Support</a></li>
 
@@ -109,11 +109,11 @@
             <div class="navbar">
               <ul class="nav-list">
                 {% if user.is_authenticated %}
-                  {% if seller_details.is_verified %}
-                    <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller Profile</a></li>
-                      {% else %}
-                      <li><a href="{% url 'seller_info' %}">Become a Seller</a> </li>
-                      {% endif %}
+                    {% if seller_details.is_verified %}
+                        <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller Profile</a></li>
+                    {% else %}
+                        <li><a href="{% url 'seller_info' %}">Become a Seller</a> </li>
+                    {% endif %}
 
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
@@ -123,7 +123,7 @@
                   <li><a href="{% url 'help_and_support' %}">Help & Support</a></li>
                   {% if seller_details.is_verified %}
                       <li><a href="{% url 'add_room' %}">Add Room</a></li>
-                      <li><a href="{% url 'add_product' %}">Add Product</a></li>
+                      <li><a href="#" class="addProductBtn">AddProduct</a></li>
                   {% endif %}
              </ul>
            </div>
@@ -132,4 +132,26 @@
 </div>
 
 
+<script>
+    document.querySelectorAll(".addProductBtn").forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Terms and Conditions',
+                html: '<p>By adding a product to StudX, you agree that a commission of 99% will be deducted from your sale. Please read the full <a href="{% url 'terms_conditions' %}" target="_blank" autofocus>terms and conditions</a> before proceeding.</p>',
+                icon: 'info',
+                showCancelButton: true,
+                showCloseButton: true,
+                confirmButtonText: 'I Accept',
+                cancelButtonText: 'I Do Not Accept',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{% url "add_product" %}';
+                } else {
+                    window.location.href = '/';
+                }
+            });
+        });
+    });
+</script>
 

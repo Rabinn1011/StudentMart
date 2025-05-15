@@ -163,7 +163,6 @@ def search_products(request):
 
     return render(request, 'search_results.html', {'query': query, 'results': results})
 
-
 def add_product(request):
     if not request.user.is_authenticated:  # Check if user is logged in
         messages.error(request, "You are not logged in. Please log in to add a product.")
@@ -561,6 +560,9 @@ def seller_profile(request, encoded_username):
         'rooms': rooms,
     })
 
+def terms_conditions(request):
+
+    return render(request, 'terms_conditions.html')
 
 
 def edit_seller_profile(request):

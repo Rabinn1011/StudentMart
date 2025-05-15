@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -29,16 +30,16 @@
 <div class="msg-container">
     <!-- Messaging Block -->
     {% if messages %}
-    <div class="messages-container" id="messagess">
-        {% for message in messages %}
-        <div class="alert {{ message.tags }}">
-            {{ message }}
-            <div class="progress-bar">
-                <div class="progress"></div>
-            </div>
+        <div class="messages-container" id="messagess">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% endif %}
 
     <script>

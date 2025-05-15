@@ -11,6 +11,7 @@ urlpatterns = [
     path('add_product/', views.add_product, name='add_product'),
     path('register/', views.register, name='register'),
     path('help/', views.help_and_support, name='help_and_support'),
+    path('terms_conditions/', views.terms_conditions, name='terms_conditions'),
     path("khalti/initiate/<int:product_id>/", views.initiate_khalti_payment, name="initiate_khalti_payment"),
     path("khalti/callback/", views.khalti_payment_callback, name="khalti_payment_callback"),
     path("khalti/verify/", views.khalti_verify, name="khalti_verify"),
