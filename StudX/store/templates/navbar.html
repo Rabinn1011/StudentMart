@@ -109,7 +109,7 @@
             <div class="navbar">
               <ul class="nav-list">
                 {% if user.is_authenticated %}
-                    {% if seller_details.is_verified %}
+                    {% if seller_details.is_verified  %}
                         <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller Profile</a></li>
                     {% else %}
                         <li><a href="{% url 'seller_info' %}">Become a Seller</a> </li>
