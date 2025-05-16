@@ -93,7 +93,7 @@
     </section>
 
     <section class="hero-section">
-        <img style="width:100%; max-height: 300px" src="{% static 'assests/bannerr.png' %}" alt="room banner">
+        <img style="width:100%; max-height: 50vh; " src="{% static 'assests/room-banner.png' %}" alt="room banner">
     </section>
 
 
@@ -114,6 +114,13 @@
                 {% else %}
                     <p class="no-rooms">No rooms available at the moment. Please check back later!</p>
                 {% endif %}
+            </div>
+
+            <!-- Pagination Controls -->
+            <div id="pagination-controls">
+                <button id="prev-page" disabled>Prev</button>
+                <span id="page-number">1</span>
+                <button id="next-page">Next</button>
             </div>
         </div>
     </section>
