@@ -156,7 +156,7 @@ def filter_products(request):
 def filter_rooms(request):
     page = request.GET.get('page', 1)
 
-    # 🔥 Order newest first
+
     rooms = Room.objects.all().order_by('-created_at')
 
     paginator = Paginator(rooms, 10)

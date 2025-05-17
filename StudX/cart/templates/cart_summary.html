@@ -1,47 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="form-container">
-{% if cart_products.exists %}
-    <p class="heading"> Item in Your Cart</p>
-    {% for product in cart_products %}
-        <div class="product-card">
-            <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
-            <h3 class="product-title">{{ product.name }}</h3>
-            <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
-            <button type="button" data-index="{{ product.id }}" class=" view-button red-button delete-product">Remove</button>
-        </div>
-    {% endfor %}
-{% else %}
-    <p class="heading">No products available at the moment. Please check back later!</p>
-{% endif %}
+        {% if cart_products.exists %}
+            <p class="heading"> Item in Your Cart</p>
+
+            <div id="product-container" class="product-container">
+                {% for product in cart_products %}
+                    <div class="product-card">
+                        <div class="product-tags">
+                            {% if product.is_sold %}
+                                <span class="product-tag product-tag--soldout">Sold</span>
+                            {% elif product.is_sale %}
+                                <span class="product-tag product-tag--sale">Sale</span>
+                            {% endif %}
+                        </div>
+
+                        <img alt="{{ product.name }}" class="product-image" src="{{ product.image.url }}">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <h5 class="product-location">
+                            <i class="fa-solid fa-map-marker-alt"></i> {{ product.seller.seller_details.address }}
+                        </h5>
+                        <a class="view-button" href="{% url 'product' product.id %}">View Product</a>
+                        <button type="button" data-index="{{ product.id }}"
+                                class=" view-button red-button delete-product" style="border-radius: 14px;">Remove
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <p class="heading">No products available at the moment. Please check back later!</p>
+        {% endif %}
     </div>
     <script>
-    $(document).on('click', '.delete-product', function(e){
-    e.preventDefault();
-    // grab the product id
-    //var productid = $(this).data('index');
+        $(document).on('click', '.delete-product', function (e) {
+            e.preventDefault();
+            // grab the product id
+            //var productid = $(this).data('index');
 
-    $.ajax({
-    type: 'POST',
-    url: '{% url 'cart_delete' %}',
-    data: {
-      product_id: $(this).data('index'),
-      csrfmiddlewaretoken: '{{ csrf_token }}',
-      action: 'post'
-    },
-    success: function(json){
-        //console.log(json)
-        //document.getElementById("cart_quantity").textContent = json.qty
-        location.reload();
-    },
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'cart_delete' %}',
+                data: {
+                    product_id: $(this).data('index'),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post'
+                },
+                success: function (json) {
+                    //console.log(json)
+                    //document.getElementById("cart_quantity").textContent = json.qty
+                    location.reload();
+                },
 
-    error: function(xhr, errmsg, err){
+                error: function (xhr, errmsg, err) {
 
-    }
+                }
 
 
-    });
+            });
 
-})
+        })
     </script>
 {% endblock %}

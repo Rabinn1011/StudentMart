@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 # Example list of test users with different passwords
 TEST_USERS = [
-    {"username": f"user{i}", "password": f"pass{i}"} for i in range(1, 101)
+    {"username": f"user{i}", "password": f"pass{i}"} for i in range(1, 1001)
 ]
 
 class LoginBehavior(TaskSet):
