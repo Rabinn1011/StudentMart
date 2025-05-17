@@ -24,7 +24,7 @@ class ProductForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter product price',
-                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; border-radius: 5px;',
+                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; width: 100%; font-size: 14px; border-radius: 5px;',
             }),
             'image': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
@@ -95,10 +95,14 @@ class SellerForm(forms.ModelForm):
             'seller_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your name',
+                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%; border-radius: 5px;',
+
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your address',
+                'style': 'margin: 10px 0; border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%; border-radius: 5px;',
+
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -108,6 +112,7 @@ class SellerForm(forms.ModelForm):
             'photo': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
                 'style': ' margin-bottom:10px;  padding: 10px; font-size: 14px;',
+
             }),
             'citizenship_number': forms.TextInput(attrs={
                 'class': 'form-control',

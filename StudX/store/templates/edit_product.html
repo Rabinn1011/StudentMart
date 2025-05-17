@@ -1,108 +1,121 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="item-section">
-    <div class="form-container" style="padding: 10px;">
-        <h2>Edit Your Product</h2>
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-            <!-- Product Name -->
-            <div class="form-group">
-                <h3 style="font-weight: 300">Product Name:</h3>
-                <label for="{{ form.name.id_for_label }}">Name</label>
-                {{ form.name }}
-            </div>
-            <!-- Price -->
-            <div class="form-group">
-                <h3 style="font-weight: 300">Price:</h3>
-                <label for="{{ form.price.id_for_label }}">Price</label>
-                {{ form.price }}
-            </div>
-            <div class="form-group">
-    <h3 style="font-weight: 300">Category:</h3>
-    <label for="{{ form.category.id_for_label }}">Category</label>
-    {{ form.category }}
-</div><!---->
-            <!-- Description -->
-            <div class="form-group">
-                <h3 style="font-weight: 300">Description:</h3>
-                <label for="{{ form.description.id_for_label }}">Description</label>
-                {{ form.description }}
-            </div>
+    </style>
+    <section class="item-section">
+        <div class="form-container" style="padding: 10px;">
+            <h2>Edit Your Product</h2>
 
-            <!-- Main Image -->
-            <div class="form-group">
-                <h3 style="font-weight: 300">Main Image:</h3>
-                <label for="{{ form.image.id_for_label }}">Main Image</label>
-                {% if form.image.value %}
-                <div class="photo-preview">
-                    <img src="{{ form.image.value.url }}" alt="Current Product Image" width="150px" height="150px">
-                    <button type="button" id="clear-image" class="clear-photo-button">Clear</button>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Product Name -->
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Product Name:</h3>
+                    <label for="{{ form.name.id_for_label }}">Name</label>
+                    {{ form.name }}
                 </div>
-                <br><br>
-                {% endif %}
-                {{ form.image }}
-            </div>
+                <!-- Price -->
+                <div class="form-group" >
+                    <h3 style="font-weight: 300">Price:</h3>
+                    <label for="{{ form.price.id_for_label }}">Price</label>
+                    {{ form.price }}
+                </div>
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Category:</h3>
+                    <label for="{{ form.category.id_for_label }}">Category</label>
+                    {{ form.category }}
+                </div><!---->
+                <!-- Description -->
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Description:</h3>
+                    <label for="{{ form.description.id_for_label }}">Description</label>
+                    {{ form.description }}
+                </div>
 
-            <!-- Sale Price -->
-            <div class="form-group">
-    <h3 style="font-weight: 300">Is Sale?</h3>
-    <label for="{{ form.is_sale.id_for_label }}">Is Sale</label>
-    {{ form.is_sale }}
-</div>
-            <div class="form-group" id="sale-price-group" style="display: none;">
-    <h3 style="font-weight: 300">Sale Price:</h3>
-    <label for="{{ form.sale_price.id_for_label }}">Sale Price</label>
-    {{ form.sale_price }}
-</div>
+                <!-- Main Image -->
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Main Image:</h3>
+                    <label for="{{ form.image.id_for_label }}">Main Image</label>
+                    {% if form.image.value %}
+                        <div class="photo-preview">
+                            <img src="{{ form.image.value.url }}" alt="Current Product Image" width="150px"
+                                 height="150px">
+                            <button type="button" id="clear-image" class="clear-photo-button">Clear</button>
+                        </div>
+                        <br><br>
+                    {% endif %}
+                    {{ form.image }}
+                </div>
 
-            <!-- Additional Images -->
-            <div class="form-group">
-                <h3 style="font-weight: 300">Additional Images:</h3>
-                <label for="{{ form.additional_images.id_for_label }}">Add More Images</label>
-                {{ form.additional_images }}
-            </div>
+                <!-- Sale Price -->
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Is Sale?</h3>
+                    <label for="{{ form.is_sale.id_for_label }}">Is Sale</label>
+                    {{ form.is_sale }}
+                </div>
+                <div class="form-group" id="sale-price-group" style="display: none;">
+                    <h3 style="font-weight: 300">Sale Price:</h3>
+                    <label for="{{ form.sale_price.id_for_label }}">Sale Price</label>
+                    {{ form.sale_price }}
+                </div>
 
-            <button type="submit" class="green-button">Save Changes</button>
-        </form>
-    </div>
-</section>
+                <!-- Additional Images -->
+                <div class="form-group">
+                    <h3 style="font-weight: 300">Additional Images:</h3>
+                    <label for="{{ form.additional_images.id_for_label }}">Add More Images</label>
+                    {{ form.additional_images }}
+                </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const clearButton = document.getElementById('clear-image');
-        const imageField = document.getElementById('id_image');
-        const imagePreview = document.querySelector('.photo-preview img');
+                <button type="submit" class="green-button">Save Changes</button>
+            </form>
+        </div>
+    </section>
 
-        if (clearButton) {
-            clearButton.addEventListener('click', function () {
-                imageField.value = null;
-                imagePreview.style.display = 'none';
-                clearButton.style.display = 'none';
-            });
-        }
-    });
-</script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const isSaleCheckbox = document.getElementById("id_is_sale");
-        const salePriceGroup = document.getElementById("sale-price-group");
+        document.addEventListener('DOMContentLoaded', function () {
+            const clearButton = document.getElementById('clear-image');
+            const imageField = document.getElementById('id_image');
+            const imagePreview = document.querySelector('.photo-preview img');
 
-        function toggleSalePrice() {
-            if (isSaleCheckbox.checked) {
-                salePriceGroup.style.display = 'block';
-            } else {
-                salePriceGroup.style.display = 'none';
+            if (clearButton) {
+                clearButton.addEventListener('click', function () {
+                    imageField.value = null;
+                    imagePreview.style.display = 'none';
+                    clearButton.style.display = 'none';
+                });
             }
-        }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isSaleCheckbox = document.getElementById("id_is_sale");
+            const salePriceGroup = document.getElementById("sale-price-group");
 
-        if (isSaleCheckbox) {
-            toggleSalePrice();  // Initial check on load
-            isSaleCheckbox.addEventListener('change', toggleSalePrice);
-        }
-    });
-</script>
+            function toggleSalePrice() {
+                if (isSaleCheckbox.checked) {
+                    salePriceGroup.style.display = 'block';
+                } else {
+                    salePriceGroup.style.display = 'none';
+                }
+            }
+
+            if (isSaleCheckbox) {
+                toggleSalePrice();  // Initial check on load
+                isSaleCheckbox.addEventListener('change', toggleSalePrice);
+            }
+        });
+    </script>
 
 {% endblock %}

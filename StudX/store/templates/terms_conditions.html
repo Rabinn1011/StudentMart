@@ -1,8 +1,127 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Terms and Conditions - StudX</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #333;
+        }
 
-{% block content %}
+        h1, h2 {
+            color: #2c3e50;
+        }
 
-    <h1>Terms and Conditions</h1>
-    <p>These are the terms and conditions for adding products to StudX...</p>
+        ul {
+            margin-left: 20px;
+        }
 
-{% endblock %}
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #777;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<button
+        onclick="window.location.href='{% url 'home' %}'"
+        style="padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;"
+>
+    Go Home
+</button>
+
+<h1>Terms and Conditions</h1>
+
+<p>Welcome to StudX. Please read these Terms and Conditions carefully before using our platform.</p>
+
+<h2>1. Commission on Sales</h2>
+<p>By listing your products for sale on StudX, you agree that StudX (the platform administrators) will deduct a
+    commission of <strong>10%</strong> from the final sale price of each product sold through the platform. This
+    commission is necessary to cover platform maintenance, support, and development costs.</p>
+
+<h2>2. Account Registration</h2>
+<p>To use certain features of StudX, including adding products for sale, you must create an account and provide accurate
+    information. You are responsible for maintaining the confidentiality of your account credentials and for all
+    activities that occur under your account.</p>
+
+<h2>3. Seller Verification</h2>
+<p>All sellers must complete a verification process before being allowed to list products. This helps maintain trust and
+    security on the platform. StudX reserves the right to suspend or remove unverified sellers.</p>
+
+<h2>4. Product Listings</h2>
+<ul>
+    <li>Sellers are responsible for providing accurate, complete, and lawful product descriptions.</li>
+    <li>Products must comply with all applicable laws and regulations.</li>
+    <li>Prohibited items include but are not limited to illegal goods, counterfeit products, and items restricted by
+        local laws.
+    </li>
+</ul>
+
+<h2>5. Pricing and Payment</h2>
+<ul>
+    <li>Sellers set their own product prices.</li>
+    <li>All payments for sales are processed through approved payment gateways integrated into StudX.</li>
+    <li>StudX is not responsible for payment disputes between buyers and sellers.</li>
+</ul>
+
+<h2>6. Order Fulfillment and Shipping</h2>
+<p>Sellers are responsible for shipping products to buyers in a timely and professional manner. StudX does not handle or
+    guarantee shipping services.</p>
+
+<h2>7. Returns and Refunds</h2>
+<p>Return and refund policies are agreed upon between buyers and sellers. StudX does not directly manage returns but may
+    assist in dispute resolution.</p>
+
+<h2>8. User Conduct</h2>
+<p>Users agree not to engage in any activity that:</p>
+<ul>
+    <li>Violates any laws or regulations.</li>
+    <li>Interferes with the operation of the platform.</li>
+    <li>Harasses, abuses, or harms other users.</li>
+    <li>Attempts to manipulate ratings, reviews, or transactions.</li>
+</ul>
+
+<h2>9. Intellectual Property</h2>
+<p>All content on StudX, including logos, text, graphics, and software, is protected by intellectual property laws.
+    Users may not reproduce or use this content without permission.</p>
+
+<h2>10. Limitation of Liability</h2>
+<p>StudX is provided "as is" without warranties of any kind. We are not liable for any damages arising from use of the
+    platform, including lost profits, data loss, or service interruptions.</p>
+
+<h2>11. Modifications to Terms</h2>
+<p>StudX reserves the right to update or modify these Terms and Conditions at any time. Continued use of the platform
+    constitutes acceptance of the updated terms.</p>
+
+<h2>12. Governing Law</h2>
+<p>These terms are governed by the laws of the jurisdiction where StudX operates. Any disputes will be resolved in
+    accordance with those laws.</p>
+
+<h2>13. Contact Us</h2>
+<p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:support@studx.com">support@studx.com</a>.
+</p>
+
+<footer>
+    <p>© 2025 StudX. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

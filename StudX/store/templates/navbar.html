@@ -36,6 +36,10 @@
                                     <li>
                                         <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller
                                             Profile</a></li>
+                                    <li>
+                                        <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User
+                                            Profile</a>
+                                    </li>
                                 {% else %}
                                     <li>
                                         <a href="{% url 'user_profile' encoded_username=request.user.username|sign_username %}">User
@@ -109,7 +113,7 @@
             <div class="navbar">
               <ul class="nav-list">
                 {% if user.is_authenticated %}
-                    {% if seller_details.is_verified  %}
+                    {% if seller_details.is_verified %}
                         <li> <a href="{% url 'seller_profile' encoded_username=request.user.username|sign_username %}">Seller Profile</a></li>
                     {% else %}
                         <li><a href="{% url 'seller_info' %}">Become a Seller</a> </li>
@@ -134,23 +138,23 @@
 
 <script>
     document.querySelectorAll(".addProductBtn").forEach(button => {
-    button.addEventListener("click", function(event) {
-        event.preventDefault();
-        Swal.fire({
-            title: 'Terms and Conditions',
-            html: '<p>By adding a product to StudX, you agree that a commission of 99% will be deducted from your sale. Please read the full <a href="{% url "terms_conditions" %}" target="_blank">terms and conditions</a> before proceeding.</p>',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'I Accept',
-            cancelButtonText: 'I Do Not Accept',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{% url "confirm_terms" %}';
-            } else {
-                window.location.href = '/';
-            }
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Terms and Conditions',
+                html: '<p>By adding a product to StudX, you agree that a commission of 10% will be deducted from your sale. Please read the full <a href="{% url "terms_conditions" %}" target="_blank">terms and conditions</a> before proceeding.</p>',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'I Accept',
+                cancelButtonText: 'I Do Not Accept',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{% url "confirm_terms" %}';
+                } else {
+                    window.location.href = '/';
+                }
+            });
         });
     });
-});
 </script>
 

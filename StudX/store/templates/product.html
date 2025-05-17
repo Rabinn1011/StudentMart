@@ -136,13 +136,13 @@
                                         </div>
                                     {% else %}
                                         {% if not product.is_sold %}
-                                            <button class="blue-button"><i class="fas fa-bolt"
-                                                                           style="margin-right: 0.2rem;"></i>Buy Now
-                                            </button>
                                             <form action="{% url 'initiate_khalti_payment' product.id %}"
                                                   method="POST">
                                                 {% csrf_token %}
-                                                <button type="submit" class="blue-button">Pay with Khalti</button>
+                                                <button type="submit" class="blue-button"><i class="fas fa-bolt"
+                                                                                             style="margin-right: 0.2rem;"></i>Pay
+                                                    with Khalti
+                                                </button>
                                             </form>
                                         {% else %}
                                             <button class="blue-button" disabled><i class="fas fa-ban"

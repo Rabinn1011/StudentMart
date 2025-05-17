@@ -59,6 +59,7 @@ class Product(models.Model):
     sale_price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Other')
     is_sold = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

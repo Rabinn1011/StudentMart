@@ -82,9 +82,9 @@
                 </div>
 
                 <!-- Pagination Controls -->
-                <div id="pagination-controls">
+                <div id="pagination-controls" class="pagination-controls">
                     <button id="prev-page" disabled>Prev</button>
-                    <span id="page-number">1</span>
+                    <span id="page-number" class="page-number">1</span>
                     <button id="next-page">Next</button>
                 </div>
             </div>
@@ -98,14 +98,14 @@
 
 
     <!-- Rooms Section -->
-    <section id="romm-section">
+    <section id="room-section">
         <div class="form-container">
             <h2 class="section-title">Available Rooms</h2>
-            <div class="product-container">
-                {% if rooms.exists %}
+            <div id="room-container" class="product-container">
+                {% if rooms %}
                     {% for room in rooms %}
                         <div class="product-card">
-                            <img alt="{{ room.location }}" class="product-image" src="{{ room.main_image.url }}">
+                            <img alt="room" class="product-image" src="{{ room.main_image.url }}">
                             <h3 class="product-title">{{ room.type }}</h3>
                             <a class="view-button" href="{% url 'room_details' room.id %}">View Detail</a>
 
@@ -114,13 +114,14 @@
                 {% else %}
                     <p class="no-rooms">No rooms available at the moment. Please check back later!</p>
                 {% endif %}
+
             </div>
 
-            <!-- Pagination Controls -->
-            <div id="pagination-controls">
-                <button id="prev-page" disabled>Prev</button>
-                <span id="page-number">1</span>
-                <button id="next-page">Next</button>
+            <!-- Room Pagination Controls -->
+            <div id="room-pagination-controls" class="pagination-controls">
+                <button id="room-prev-page" disabled>Prev</button>
+                <span id="room-page-number" class="page-number">1</span>
+                <button id="room-next-page">Next</button>
             </div>
         </div>
     </section>
@@ -159,7 +160,7 @@
         }
     </script>
 
-
+    <!-- scripts for products pagination -->
     <script>
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -249,7 +250,67 @@
             fetchProducts();
         });
     </script>
+    <!-- scripts for room pagination -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentRoomPage = 1;
 
+            const roomContainer = document.getElementById("room-container");
+            const prevButton = document.getElementById("room-prev-page");
+            const nextButton = document.getElementById("room-next-page");
+            const pageNumberLabel = document.getElementById("room-page-number");
+
+            function fetchRooms(page = 1) {
+                currentRoomPage = page;
+                const url = `/filter-rooms/?page=${page}`;
+
+                fetch(url, {
+                    headers: {"X-Requested-With": "XMLHttpRequest"}
+                })
+                    .then(res => res.json())
+                    .then(updateRoomList)
+                    .catch(err => console.error("Error fetching rooms:", err));
+            }
+
+            function updateRoomList(data) {
+                roomContainer.innerHTML = "";
+
+                if (!data.rooms || data.rooms.length === 0) {
+                    roomContainer.innerHTML = "<p class='no-rooms'>No rooms available at the moment. Please check back later!</p>";
+                    prevButton.disabled = true;
+                    nextButton.disabled = true;
+                    pageNumberLabel.innerText = data.current_page || 1;
+                    return;
+                }
+
+                data.rooms.forEach(room => {
+                    roomContainer.innerHTML += `
+        <div class="product-card">
+          <img alt="room" class="product-image" src="${room.image_url}">
+          <h3 class="product-title">${room.type}</h3>
+           <a class="view-button" href="/room_detail/${room.id}">View Detail</a>
+        </div>
+      `;
+                });
+
+                // Update controls
+                pageNumberLabel.innerText = data.current_page;
+                prevButton.disabled = !data.has_prev;
+                nextButton.disabled = !data.has_next;
+            }
+
+            prevButton.addEventListener("click", () => {
+                if (!prevButton.disabled) fetchRooms(currentRoomPage - 1);
+            });
+
+            nextButton.addEventListener("click", () => {
+                if (!nextButton.disabled) fetchRooms(currentRoomPage + 1);
+            });
+
+            // Kick things off
+            fetchRooms();
+        });
+    </script>
 
 
 

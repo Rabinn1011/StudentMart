@@ -1,5 +1,8 @@
 import json, logging
 import requests
+from datetime import datetime, timedelta
+from django.db.models import Sum
+from django.utils.dateparse import parse_date
 from pytz import timezone
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -56,30 +59,59 @@ def create_profile(sender, instance, created, **kwargs):
 def home(request):
     user_in_seller_group = request.user.groups.filter(name='Sellers').exists()
 
-    products = Product.objects.all()
-    rooms = Room.objects.all()[:10]  # Keep rooms limited to 10
+    # Product Pagination Logic
+    products = Product.objects.all().order_by('-created_at')
+    product_paginator = Paginator(products, 10)  # 10 products per page
+    product_page_number = request.GET.get('product_page', 1)
+    product_page_obj = product_paginator.get_page(product_page_number)
 
-    # Pagination logic
-    paginator = Paginator(products, 10)  # Show 10 products per page
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+    # Room Pagination Logic
+    rooms = Room.objects.all().order_by('-created_at')
+    room_paginator = Paginator(rooms, 10)  # 10 rooms per page
+    room_page_number = request.GET.get('room_page', 1)
+    room_page_obj = room_paginator.get_page(room_page_number)
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # AJAX check
-        product_list = [
-            {
-                "id": product.id,
-                "name": product.name,
-                "image": product.image.url,
-                "location": product.seller.seller_details.address,
-            } for product in page_obj.object_list
-        ]
-        return JsonResponse(
-            {"products": product_list, "has_next": page_obj.has_next(), "has_prev": page_obj.has_previous()})
+    # AJAX Request Handling
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Check for product pagination request
+        if 'product_page' in request.GET:
+            product_list = [
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "image": product.image.url,
+                    "location": product.seller.seller_details.address,
+                } for product in product_page_obj.object_list
+            ]
+            return JsonResponse({
+                "products": product_list,
+                "has_next": product_page_obj.has_next(),
+                "has_prev": product_page_obj.has_previous(),
+                "current_page": product_page_obj.number,
+                "type": "products"
+            })
+
+        # Check for room pagination request
+        elif 'room_page' in request.GET:
+            room_list = [
+                {
+                    "id": room.id,
+                    "type": room.type,
+                    "image": room.main_image.url,
+                } for room in room_page_obj.object_list
+            ]
+            return JsonResponse({
+                "rooms": room_list,
+                "has_next": room_page_obj.has_next(),
+                "has_prev": room_page_obj.has_previous(),
+                "current_page": room_page_obj.number,
+                "type": "rooms"
+            })
 
     context = {
-        'products': page_obj,
-        'rooms': rooms,
-        'user_in_seller_group': user_in_seller_group
+        'products': product_page_obj,
+        'rooms': room_page_obj,
+        'user_in_seller_group': user_in_seller_group,
     }
 
     if request.user.is_authenticated:
@@ -117,6 +149,32 @@ def filter_products(request):
         "has_prev": paginated_products.has_previous(),
         "current_page": paginated_products.number,
     })
+
+
+def filter_rooms(request):
+    rooms = Room.objects.all()
+
+    paginator = Paginator(rooms, 10)  # 10 rooms per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        room_list = [
+            {
+                "id": room.id,
+                "type": room.type,
+                "image_url": room.main_image.url,
+
+            } for room in page_obj.object_list
+        ]
+        return JsonResponse({
+            "rooms": room_list,
+            "has_next": page_obj.has_next(),
+            "has_prev": page_obj.has_previous(),
+            "current_page": page_obj.number
+        })
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 def login_required_redirect(request):
@@ -515,9 +573,33 @@ def user_profile(request, encoded_username):
         return redirect('login')
 
     user_profile1 = get_object_or_404(User, username=username)
-    user_orders = Order.objects.filter(user=user_profile1).select_related('product').order_by('-created_at')
 
-    # Get or create UserProfile for this user (to avoid errors if missing)
+    # Time filtering
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+
+    user_orders = Order.objects.filter(user=user_profile1, status='completed').select_related('product').order_by(
+        '-created_at')
+
+    try:
+        if from_date:
+            from_dt = datetime.strptime(from_date, "%Y-%m-%d")
+            user_orders = user_orders.filter(created_at__gte=from_dt)
+        if to_date:
+            to_dt = datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)
+            user_orders = user_orders.filter(created_at__lt=to_dt)
+    except ValueError:
+        messages.error(request, "Invalid date format.")
+
+    # Total expenses (in NPR)
+    total_spent_paisa = user_orders.aggregate(Sum('amount'))['amount__sum'] or 0
+    total_spent_npr = total_spent_paisa / 100
+
+    #amount (in NPR)
+    for order in user_orders:
+        amount_npr = order.amount / 100
+
+    # Get or create UserProfile for phone number
     user_profile_obj, created = UserProfile.objects.get_or_create(user=user_profile1)
 
     context = {
@@ -525,10 +607,15 @@ def user_profile(request, encoded_username):
         'first_name': user_profile1.first_name,
         'last_name': user_profile1.last_name,
         'email': user_profile1.email,
-        'phone_number': user_profile_obj.phone_number,  # <-- add phone number here
-        'change_password_url': reverse('password_change'),  # Change Password URL
+        'phone_number': user_profile_obj.phone_number,
+        'change_password_url': reverse('password_change'),
         'orders': user_orders,
+        'amount_npr': amount_npr,
+        'total_spent_npr': total_spent_npr,
+        'from_date': from_date or '',
+        'to_date': to_date or '',
     }
+
     return render(request, 'user_profile.html', context)
 
 
@@ -581,12 +668,40 @@ def seller_profile(request, encoded_username):
 
     # Get rooms added by this seller
     rooms = Room.objects.filter(detailsBy=seller1.user)
+    own_page = request.user == seller1.user
+    orders = Order.objects.none()
+    if own_page:
 
-    # Render the profile page with products and rooms
+        orders = Order.objects.filter(product__seller=seller1.user).order_by('-created_at')
+        from_date = request.GET.get('from_date')
+        to_date = request.GET.get('to_date')
+
+        if from_date and to_date:
+            from_dt = datetime.strptime(from_date, "%Y-%m-%d")
+            to_dt = datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)
+            orders = orders.filter(created_at__gte=from_dt, created_at__lt=to_dt)
+        elif from_date:
+            from_dt = datetime.strptime(from_date, "%Y-%m-%d")
+            orders = orders.filter(created_at__gte=from_dt)
+        elif to_date:
+            to_dt = datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)
+            orders = orders.filter(created_at__lt=to_dt)
+        for order in orders:
+            order.amount_npr = order.amount / 100
+        total_amount_paisa = orders.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_amount_npr = total_amount_paisa / 100  # Convert paisa to NPR
+        total_commission = total_amount_npr * 0.1
+
     return render(request, 'seller_profile.html', {
         'seller': seller1,
         'products1': products1,
         'rooms': rooms,
+        'own_page': own_page,
+        'orders': orders,
+        'total_amount_npr': total_amount_npr,
+        'total_commission': total_commission,
+        'from_date': request.GET.get('from_date', ''),
+        'to_date': request.GET.get('to_date', ''),
     })
 
 

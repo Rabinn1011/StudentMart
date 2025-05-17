@@ -28,11 +28,12 @@ class Room(models.Model):
     owner_phone = models.CharField(max_length=20)
     type = models.CharField(max_length=100, choices=ROOM_TYPES)
     noOfRooms = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=None)
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=255, blank=True)  # New field
     detailsBy = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     moreDetails = models.TextField()
     main_image = models.ImageField(
         upload_to=room_image_upload_path,
