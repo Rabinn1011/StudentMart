@@ -217,9 +217,12 @@
                             </div>
                             <!-- on location panel -->
                             <div class="tab-panel" id="location">
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ room.latitude }},{{ room.longitude }}"
+                                       target="_blank">
                                 <div class="map-wrapper">
                                     <div id="map"></div>
                                 </div>
+                                </a>
                                 <div class="room-direction-card">
                                     <p><strong>Address🏠:</strong> {{ room.address }}</p>
                                     <a href="https://www.google.com/maps/search/?api=1&query={{ room.latitude }},{{ room.longitude }}"
