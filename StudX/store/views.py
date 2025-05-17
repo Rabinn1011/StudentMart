@@ -593,13 +593,17 @@ def user_profile(request, encoded_username):
     except ValueError:
         messages.error(request, "Invalid date format.")
 
+    # Initialize amount_npr with a default value
+    amount_npr = 0
+
+    # Calculate amount_npr for each order and store it on the order object
+    for order in user_orders:
+        order.amount_npr = order.amount / 100
+        amount_npr = order.amount_npr  # This will store the last order's amount_npr
+
     # Total expenses (in NPR)
     total_spent_paisa = user_orders.aggregate(Sum('amount'))['amount__sum'] or 0
     total_spent_npr = total_spent_paisa / 100
-
-    # amount (in NPR)
-    for order in user_orders:
-        amount_npr = order.amount / 100
 
     # Get or create UserProfile for phone number
     user_profile_obj, created = UserProfile.objects.get_or_create(user=user_profile1)
@@ -619,8 +623,6 @@ def user_profile(request, encoded_username):
     }
 
     return render(request, 'user_profile.html', context)
-
-
 @login_required
 def password_change(request):
     if request.method == 'POST':
@@ -662,6 +664,11 @@ def seller_profile(request, encoded_username):
         messages.error(request, "You are not logged in. Please log in.")
         return redirect('login')
 
+    # Initialize variables that will be used in the template
+    total_amount_npr = 0
+    total_commission = 0
+    orders = Order.objects.none()
+
     # Get the seller profile based on the username
     seller1 = get_object_or_404(Seller_Details, user__username=username)
 
@@ -671,9 +678,8 @@ def seller_profile(request, encoded_username):
     # Get rooms added by this seller
     rooms = Room.objects.filter(detailsBy=seller1.user)
     own_page = request.user == seller1.user
-    orders = Order.objects.none()
-    if own_page:
 
+    if own_page:
         orders = Order.objects.filter(product__seller=seller1.user).order_by('-created_at')
         from_date = request.GET.get('from_date')
         to_date = request.GET.get('to_date')
@@ -688,8 +694,10 @@ def seller_profile(request, encoded_username):
         elif to_date:
             to_dt = datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)
             orders = orders.filter(created_at__lt=to_dt)
+
         for order in orders:
             order.amount_npr = order.amount / 100
+
         total_amount_paisa = orders.aggregate(Sum('amount'))['amount__sum'] or 0
         total_amount_npr = total_amount_paisa / 100  # Convert paisa to NPR
         total_commission = total_amount_npr * 0.1
