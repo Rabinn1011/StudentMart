@@ -125,23 +125,25 @@ def filter_products(request):
     category = request.GET.get("category", None)
     page = request.GET.get("page", 1)
 
-    products = Product.objects.all()
+    # 🔥 Order newest first
+    products = Product.objects.all().order_by('-created_at')
     if category:
         products = products.filter(category=category)
 
     paginator = Paginator(products, 10)
     paginated_products = paginator.get_page(page)
 
-    product_list = []
-    for product in paginated_products:
-        product_list.append({
+    product_list = [
+        {
             "id": product.id,
             "name": product.name,
             "image_url": product.image.url,
             "location": product.seller.seller_details.address,
             "is_sold": product.is_sold,
             "is_sale": bool(getattr(product, "sale_price", False)),
-        })
+        }
+        for product in paginated_products
+    ]
 
     return JsonResponse({
         "products": product_list,
@@ -152,29 +154,30 @@ def filter_products(request):
 
 
 def filter_rooms(request):
-    rooms = Room.objects.all()
+    page = request.GET.get('page', 1)
 
-    paginator = Paginator(rooms, 10)  # 10 rooms per page
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+    # 🔥 Order newest first
+    rooms = Room.objects.all().order_by('-created_at')
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        room_list = [
-            {
-                "id": room.id,
-                "type": room.type,
-                "image_url": room.main_image.url,
+    paginator = Paginator(rooms, 10)
+    page_obj = paginator.get_page(page)
 
-            } for room in page_obj.object_list
-        ]
-        return JsonResponse({
-            "rooms": room_list,
-            "has_next": page_obj.has_next(),
-            "has_prev": page_obj.has_previous(),
-            "current_page": page_obj.number
-        })
+    room_list = [
+        {
+            "id": room.id,
+            "type": room.type,
+            "image_url": room.main_image.url,
+            "location": room.location,
+        }
+        for room in page_obj
+    ]
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({
+        "rooms": room_list,
+        "has_next": page_obj.has_next(),
+        "has_prev": page_obj.has_previous(),
+        "current_page": page_obj.number,
+    })
 
 
 def login_required_redirect(request):
@@ -595,7 +598,7 @@ def user_profile(request, encoded_username):
     total_spent_paisa = user_orders.aggregate(Sum('amount'))['amount__sum'] or 0
     total_spent_npr = total_spent_paisa / 100
 
-    #amount (in NPR)
+    # amount (in NPR)
     for order in user_orders:
         amount_npr = order.amount / 100
 
