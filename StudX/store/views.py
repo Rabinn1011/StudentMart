@@ -238,10 +238,6 @@ def add_product(request):
         messages.error(request, "You are not a verified seller.")
         return redirect('home')
 
-    # Check if terms are accepted
-    if not request.session.get('terms_accepted'):
-        messages.error(request, "You must accept the terms and conditions to add a product.")
-        return redirect('home')
 
     # Reset session variable after accessing the page
     request.session['terms_accepted'] = False
