@@ -18,10 +18,10 @@ def room_image_upload_path(instance, filename):
 
 class Room(models.Model):
     ROOM_TYPES = [
-        ('single', 'Single Room'),
-        ('double', 'Double Room'),
-        ('apartment', 'Apartment'),
-        ('hostel', 'Hostel Bed'),
+        ('Single Room', 'Single Room'),
+        ('Double Room', 'Double Room'),
+        ('Apartment', 'Apartment'),
+        ('Hostel', 'Hostel Bed'),
     ]
 
     owner_name = models.CharField(max_length=100)

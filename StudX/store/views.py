@@ -167,7 +167,6 @@ def filter_rooms(request):
             "id": room.id,
             "type": room.type,
             "image_url": room.main_image.url,
-            "location": room.location,
         }
         for room in page_obj
     ]
