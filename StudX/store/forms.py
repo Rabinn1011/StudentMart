@@ -41,6 +41,11 @@ class ProductForm(forms.ModelForm):
             }),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('is_sale') and cleaned_data.get('sale_price') >= cleaned_data.get('price'):
+            self.add_error('sale_price', "Sale price must be less than the original price.")
+
 
 class ProductImageForm(forms.ModelForm):
     class Meta:
