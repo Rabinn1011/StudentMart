@@ -2516,3 +2516,33 @@ h2 {
         font-size: 16px;
     }
 }
+
+@media screen and (max-width: 700px) {
+    .product-det-container {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .info-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .gallery-container {
+        margin: auto;
+    }
+
+    .tab-buttons {
+        border-bottom: 0;
+        padding: 0.2rem;
+    }
+
+    .tab-button {
+        padding: 0.2rem;
+    }
+
+    .thumbnail-button {
+        width: 3rem;
+        height: 3rem;
+    }
+}
